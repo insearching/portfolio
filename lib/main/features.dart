@@ -11,43 +11,42 @@ class Features extends StatelessWidget {
       padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
       child: Column(
         children: [
-          Text('Features'.toUpperCase(), style: Theme.of(context).textTheme.headline4),
+          Text('Features'.toUpperCase(),
+              style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 32.0),
           Text(
             'What I Do',
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.displayLarge,
           ),
-          Padding(
-            padding: const EdgeInsets.all(48.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                Expanded(
-                  child: FeatureContainer(
-                    imageAsset: 'assets/img/home.png',
-                    title: 'Title',
-                    subtitle: 'Subtitle',
-                  ),
+          const SizedBox(height: 24.0),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: _FeatureContainer(
+                  icon: 'assets/img/android.png',
+                  title: 'Android development',
+                  subtitle: 'Subtitle',
                 ),
-                SizedBox(width: 24.0),
-                Expanded(
-                  child: FeatureContainer(
-                    imageAsset: 'assets/img/home.png',
-                    title: 'Title',
-                    subtitle: 'Subtitle',
-                  ),
+              ),
+              // SizedBox(width: 24.0),
+              Expanded(
+                child: _FeatureContainer(
+                  icon: 'assets/img/flutter.png',
+                  title: 'Flutter development',
+                  subtitle: 'Subtitle',
                 ),
-                SizedBox(width: 24.0),
-                Expanded(
-                  child: FeatureContainer(
-                    imageAsset: 'assets/img/home.png',
-                    title: 'Title',
-                    subtitle: 'Subtitle',
-                  ),
+              ),
+              // SizedBox(width: 24.0),
+              Expanded(
+                child: _FeatureContainer(
+                  icon: 'assets/img/home.png',
+                  title: 'Title',
+                  subtitle: 'Subtitle',
                 ),
-                SizedBox(width: 24.0),
-              ],
-            ),
+              ),
+              SizedBox(width: 24.0),
+            ],
           ),
         ],
       ),
@@ -55,69 +54,72 @@ class Features extends StatelessWidget {
   }
 }
 
-class FeatureContainer extends StatefulWidget {
-  const FeatureContainer({
-    required this.imageAsset,
+class _FeatureContainer extends StatefulWidget {
+  const _FeatureContainer({
+    required this.icon,
     required this.title,
     required this.subtitle,
     Key? key,
   }) : super(key: key);
 
-  final String imageAsset;
+  final String icon;
   final String title;
   final String subtitle;
 
   @override
-  State<FeatureContainer> createState() => _FeatureContainerState();
+  State<_FeatureContainer> createState() => _FeatureContainerState();
 }
 
-class _FeatureContainerState extends State<FeatureContainer> {
+class _FeatureContainerState extends State<_FeatureContainer> {
   bool _isArrowVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedContainer(
-      onElevatedChanged: (value) {
-        setState(() {
-          _isArrowVisible = value;
-        });
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.asset(
-              'assets/img/home.png',
-              color: UIColors.accent,
-              width: 50.0,
-              height: 50.0,
-            ),
-            const SizedBox(height: 32.0),
-            Text(
-              widget.title,
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-            const SizedBox(height: 24.0),
-            Text(
-              widget.subtitle,
-              style: Theme.of(context).textTheme.bodyText2,
-            ),
-            Opacity(
-              opacity: _isArrowVisible ? 1.0 : 0.0,
-              child:  Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  SizedBox(height: 24.0),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 40.0,
-                    color: UIColors.accent,
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ElevatedContainer(
+        onElevatedChanged: (value) {
+          setState(() {
+            _isArrowVisible = value;
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset(
+                widget.icon,
+                color: UIColors.accent,
+                width: 50.0,
+                height: 50.0,
               ),
-            ),
-          ],
+              const SizedBox(height: 32.0),
+              Text(
+                widget.title,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              const SizedBox(height: 24.0),
+              Text(
+                widget.subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Opacity(
+                opacity: _isArrowVisible ? 1.0 : 0.0,
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 24.0),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 40.0,
+                      color: UIColors.accent,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

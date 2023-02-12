@@ -14,46 +14,46 @@ class CustomTheme {
     // Default TextTheme. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and etc.
     textTheme: const TextTheme(
-      headline1: TextStyle(
+      displayLarge: TextStyle(
         fontSize: 48.0,
         fontWeight: FontWeight.bold,
         color: UIColors.white,
       ),
-      headline2: TextStyle(
+      displayMedium: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w400,
         color: UIColors.lightGrey,
       ),
-      headline3: TextStyle(
+      displaySmall: TextStyle(
         fontSize: 48.0,
         fontWeight: FontWeight.bold,
         color: UIColors.defaultTextColor,
       ),
-      headline4: TextStyle(
+      headlineMedium: TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.w400,
         color: UIColors.accent,
       ),
-      subtitle1: TextStyle(
+      titleMedium: TextStyle(
         fontSize: 32.0,
         fontWeight: FontWeight.w400,
         color: UIColors.defaultTextColor,
       ),
-      subtitle2: TextStyle(
+      titleSmall: TextStyle(
         fontSize: 32.0,
         fontWeight: FontWeight.w400,
         color: UIColors.accent,
       ),
-      bodyText1: TextStyle(
+      bodyLarge: TextStyle(
         fontSize: 24.0,
         color: UIColors.defaultTextColor,
         fontWeight: FontWeight.w500,
       ),
-      bodyText2: TextStyle(
+      bodyMedium: TextStyle(
         fontSize: 16.0,
         color: UIColors.defaultTextColor,
       ),
-      button: TextStyle(
+      labelLarge: TextStyle(
         color: UIColors.accent,
         fontFamily: UIFonts.hkMontserrat,
         fontWeight: FontWeight.w500,

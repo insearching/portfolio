@@ -4,12 +4,14 @@ import 'package:portfolio/utils/colors.dart';
 class ElevatedContainer extends StatefulWidget {
   const ElevatedContainer({
     required this.child,
-    required this.onElevatedChanged,
+    this.onElevatedChanged,
+    this.onTap,
     Key? key,
   }) : super(key: key);
 
   final Widget child;
-  final ValueChanged<bool> onElevatedChanged;
+  final ValueChanged<bool>? onElevatedChanged;
+  final VoidCallback? onTap;
 
   @override
   State<ElevatedContainer> createState() => _ElevatedContainerState();
@@ -24,7 +26,7 @@ class _ElevatedContainerState extends State<ElevatedContainer> {
       duration: const Duration(
         milliseconds: 200,
       ),
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         gradient: _isElevated
             ? const LinearGradient(
@@ -64,11 +66,13 @@ class _ElevatedContainerState extends State<ElevatedContainer> {
         ],
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          widget.onTap?.call();
+        },
         onHover: (value) {
           setState(() {
             _isElevated = value;
-            widget.onElevatedChanged(value);
+            widget.onElevatedChanged?.call(value);
           });
         },
         child: _isElevated ? widget.child : widget.child,

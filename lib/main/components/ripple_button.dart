@@ -54,7 +54,7 @@ class _RippleButtonState extends State<RippleButton> {
             },
             child: Text(
               widget.text.toUpperCase(),
-              style: Theme.of(context).textTheme.button,
+              style: Theme.of(context).textTheme.labelLarge,
             ),
           ),
         ),

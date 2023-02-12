@@ -24,8 +24,8 @@ class _HomeState extends State<Home> {
           _Avatar(),
           const SizedBox(height: 16.0),
           Text(
-            name,
-            style: Theme.of(context).textTheme.headline1,
+            widget.name,
+            style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 16.0),
           _PositionLabel(),
@@ -119,14 +119,14 @@ class _PositionLabel extends StatelessWidget {
       children: [
         Text(
           'I am a ',
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         AnimatedTextKit(
           repeatForever: true,
           animatedTexts: [
             TypewriterAnimatedText(
               'Senior Android developer.',
-              textStyle: Theme.of(context).textTheme.subtitle2,
+              textStyle: Theme.of(context).textTheme.titleSmall,
               speed: const Duration(milliseconds: 70),
             ),
           ],

@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class HorizontalDivider extends StatelessWidget {
@@ -6,11 +6,12 @@ class HorizontalDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Container(
-      height: 1.0,
-      width: size.width,
+    return const Divider(
       color: UIColors.black,
+      height: 1.0,
+      thickness: 1.0,
+      indent: 25, //spacing at the start of divider
+      endIndent: 25,
     );
   }
 }

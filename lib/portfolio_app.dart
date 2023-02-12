@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/main/main_page.dart';
 import 'package:portfolio/utils/theme.dart';
 
-const final NAME = 'Serhii Hrabas'
+const String userName = 'Serhii Hrabas';
 
 void main() {
   runApp(const PortfolioApplication());
@@ -15,9 +15,9 @@ class PortfolioApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: NAME,
+      title: userName,
       theme: CustomTheme.mainTheme,
-      home: const MainPage(NAME),
+      home: const MainPage(name: userName),
     );
   }
 }
