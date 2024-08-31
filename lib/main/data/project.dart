@@ -4,12 +4,12 @@ class Project {
     required this.title,
     required this.role,
     required this.description,
-    required this.link,
+    this.link,
   });
 
   final String image;
   final String title;
   final String role;
   final String description;
-  final String link;
+  final String? link;
 }

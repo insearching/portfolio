@@ -71,6 +71,12 @@ flutter:
     - assets/img/twitter.png
     - assets/img/sbb-app.jpg
     - assets/img/sumex.png
+    - assets/img/medically-home.png
+    - assets/img/cashplus.jpg
+    - assets/img/minimed.jpg
+    - assets/img/mechanic-advisor.jpg
+    - assets/img/unlimited-biking.jpg
+    - assets/img/daimler-app.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

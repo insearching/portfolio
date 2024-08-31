@@ -1,8 +1,8 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/components/circle_image.dart';
+import 'package:portfolio/main/ui/components/circle_image.dart';
 
-import 'components/ripple_button.dart';
+import '../ui/components/ripple_button.dart';
 
 class Home extends StatefulWidget {
   const Home({required this.name, Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
           const SizedBox(height: 16.0),
           _PositionLabel(),
           const SizedBox(height: 24.0),
-          const RippleButton(text: "Contact me"),
+          const RippleButton(text: 'Contact me'),
         ],
       ),
     );

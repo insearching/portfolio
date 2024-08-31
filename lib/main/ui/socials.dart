@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:portfolio/main/components/elevated_container.dart';
+import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../utils/colors.dart';
+import '../../utils/colors.dart';
 
 class Socials extends StatelessWidget {
   const Socials({super.key});

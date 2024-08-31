@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class RippleButton extends StatefulWidget {
-  const RippleButton({required this.text, Key? key}) : super(key: key);
+  const RippleButton({
+    required this.text,
+    this.onTap,
+    Key? key,
+  }) : super(key: key);
 
   final String text;
+
+  final VoidCallback? onTap;
 
   @override
   State<RippleButton> createState() => _RippleButtonState();
@@ -46,7 +52,9 @@ class _RippleButtonState extends State<RippleButton> {
                   ],
           ),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              widget.onTap?.call();
+            },
             onHover: (value) {
               setState(() {
                 _isElevated = value;

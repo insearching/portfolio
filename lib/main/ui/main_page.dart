@@ -1,84 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/components/circle_image.dart';
-import 'package:portfolio/main/components/horizontal_divider.dart';
-import 'package:portfolio/main/data/project.dart';
-import 'package:portfolio/main/features.dart';
-import 'package:portfolio/main/home.dart';
-import 'package:portfolio/main/navigation_panel.dart';
-import 'package:portfolio/main/portfolio.dart';
-import 'package:portfolio/main/socials.dart';
+import 'package:portfolio/main/ui/components/circle_image.dart';
+import 'package:portfolio/main/ui/components/horizontal_divider.dart';
+import 'package:portfolio/main/data/repository.dart';
+import 'package:portfolio/main/ui/features.dart';
+import 'package:portfolio/main/ui/home.dart';
+import 'package:portfolio/main/ui/navigation_panel.dart';
+import 'package:portfolio/main/ui/portfolio.dart';
+import 'package:portfolio/main/ui/resume.dart';
+import 'package:portfolio/main/ui/socials.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({required this.name, Key? key}) : super(key: key);
 
   final String name;
-
-  final List<Project> projects = const [
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'Kontrolle app for SBB trains',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sumex.png',
-      title: 'Sumex Insurance app',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'Medically Home',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'Cashplus. Banking App',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sumex.png',
-      title: 'Daimler app',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'MiniMed medical app',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'MiniMed medical app',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'Mechanic Advisor',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-    Project(
-      image: 'assets/img/sbb-app.jpg',
-      title: 'Unlimited Biking',
-      role: 'Senior Android developer',
-      description: 'Senior Android developer',
-      link: '',
-    ),
-  ];
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -155,7 +90,9 @@ class _MainPageState extends State<MainPage> {
                     const HorizontalDivider(),
                     const Features(),
                     const HorizontalDivider(),
-                    Portfolio(projects: widget.projects),
+                    const Portfolio(projects: Repository.projects),
+                    const HorizontalDivider(),
+                    const Resume(),
                   ],
                 ),
               ),

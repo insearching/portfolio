@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/components/elevated_container.dart';
+import 'package:portfolio/main/ui/components/container_title.dart';
+import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class Features extends StatelessWidget {
@@ -7,19 +8,13 @@ class Features extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
+    return const Padding(
+      padding: EdgeInsets.only(top: 64.0, bottom: 64.0),
       child: Column(
         children: [
-          Text('Features'.toUpperCase(),
-              style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 32.0),
-          Text(
-            'What I Do',
-            style: Theme.of(context).textTheme.displayLarge,
-          ),
-          const SizedBox(height: 24.0),
-          const Row(
+          ContainerTitle(title: 'What I Do', subtitle: 'Features'),
+          SizedBox(height: 24.0),
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
