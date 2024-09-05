@@ -128,7 +128,7 @@ class _LargeScreenContentState extends State<_LargeScreenContent> {
       children: [
         const _LeftPanel(),
         const VerticalDivider(width: 1.0, color: UIColors.black),
-        _MainContent(name: widget.name, onMessageSend: widget.onMessageSend)
+        // _MainContent(name: widget.name, onMessageSend: widget.onMessageSend)
       ],
     );
   }
@@ -151,7 +151,8 @@ class _SmallScreenContent extends StatefulWidget {
 class _SmallScreenContentState extends State<_SmallScreenContent> {
   @override
   Widget build(BuildContext context) {
-    return _MainContent(name: widget.name, onMessageSend: widget.onMessageSend);
+    // return _MainContent(name: widget.name, onMessageSend: widget.onMessageSend);
+    return Container();
   }
 }
 
