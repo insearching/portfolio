@@ -77,6 +77,7 @@ flutter:
     - assets/img/mechanic-advisor.jpg
     - assets/img/unlimited-biking.jpg
     - assets/img/daimler-app.png
+    - assets/img/development.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

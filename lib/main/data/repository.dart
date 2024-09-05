@@ -1,3 +1,4 @@
+import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/skill.dart';
 
@@ -99,4 +100,17 @@ class Repository {
     Skill(title: "Android", value: 56),
     Skill(title: "Android", value: 56),
   ];
+
+  static const info = PersonalInfo(
+    image: 'assets/img/development.jpg',
+    title: 'Serhii Hrabas',
+    description: 'Chief Operating Officer \n'
+        'I am available for freelance work. Connect with me via and call in to my account.\n'
+        'Phone: +01234567890\n'
+        'Email: kerboserhii@gmail.com\n'
+        'FIND WITH ME\n',
+    phone: 'phone',
+    email: 'kerboserhii@gmail.com',
+    socials: [''],
+  );
 }

@@ -6,8 +6,6 @@ import 'package:portfolio/utils/colors.dart';
 
 import '../data/project.dart';
 
-
-
 class Portfolio extends StatefulWidget {
   const Portfolio({
     required this.projects,
@@ -91,55 +89,52 @@ class _PortfolioContainerState extends State<_PortfolioContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ElevatedContainer(
-        onTap: widget.onTap,
-        onElevatedChanged: (value) {
-          setState(() {
-            _isArrowVisible = value;
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(4.0),
-                    child: Image.asset(
-                      widget.image,
-                    ),
+    return ElevatedContainer(
+      onTap: widget.onTap,
+      onElevatedChanged: (value) {
+        setState(() {
+          _isArrowVisible = value;
+        });
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: Image.asset(
+                    widget.image,
                   ),
                 ),
               ),
-              const SizedBox(height: 32.0),
-              Center(
-                child: Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  softWrap: true,
-                  overflow: TextOverflow.ellipsis,
-                ),
+            ),
+            const SizedBox(height: 32.0),
+            Center(
+              child: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.bodyLarge,
+                softWrap: true,
+                overflow: TextOverflow.ellipsis,
               ),
-              Opacity(
-                opacity: _isArrowVisible ? 1.0 : 0.0,
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 24.0),
-                    Icon(
-                      Icons.arrow_forward,
-                      size: 40.0,
-                      color: UIColors.accent,
-                    ),
-                  ],
-                ),
+            ),
+            Opacity(
+              opacity: _isArrowVisible ? 1.0 : 0.0,
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 24.0),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 40.0,
+                    color: UIColors.accent,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

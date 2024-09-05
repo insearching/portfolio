@@ -114,6 +114,10 @@ class _AnimatedGradientState extends State<_AnimatedGradient> {
 class _PositionLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    const List<String> positions = [
+      'Senior Android developer',
+      'Senior Flutter developer'
+    ];
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -123,13 +127,15 @@ class _PositionLabel extends StatelessWidget {
         ),
         AnimatedTextKit(
           repeatForever: true,
-          animatedTexts: [
-            TypewriterAnimatedText(
-              'Senior Android developer.',
-              textStyle: Theme.of(context).textTheme.titleSmall,
-              speed: const Duration(milliseconds: 70),
-            ),
-          ],
+          animatedTexts: positions
+              .map(
+                (position) => TypewriterAnimatedText(
+                  position,
+                  textStyle: Theme.of(context).textTheme.titleSmall,
+                  speed: const Duration(milliseconds: 70),
+                ),
+              )
+              .toList(),
         ),
       ],
     );

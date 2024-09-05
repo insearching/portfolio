@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/utils/collections.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class NavigationPanel extends StatefulWidget {
@@ -11,6 +12,32 @@ class NavigationPanel extends StatefulWidget {
 
   @override
   State<NavigationPanel> createState() => _NavigationPanelState();
+}
+
+enum NavigationMenu {
+  home(name: 'Home', icon: 'assets/img/home.png'),
+  features(name: 'Features', icon: 'assets/img/home.png'),
+  portfolio(name: 'Portfolio', icon: 'assets/img/home.png'),
+  resume(name: 'Resume', icon: 'assets/img/home.png'),
+  clients(name: 'Clients', icon: 'assets/img/home.png'),
+  pricing(name: 'pricing', icon: 'assets/img/home.png'),
+  blog(name: 'blog', icon: 'assets/img/home.png'),
+  contact(name: 'Contacts', icon: 'assets/img/home.png');
+
+  final String name;
+  final String icon;
+
+  const NavigationMenu({required this.name, required this.icon});
+}
+
+enum Status {
+  active(status: 'ACTIVE', subStatus: 'OPEN'),
+  inactive(status: 'INACTIVE', subStatus: 'CLOSE');
+
+  final String status;
+  final String subStatus;
+
+  const Status({required this.status, required this.subStatus});
 }
 
 class _NavigationPanelState extends State<NavigationPanel> {
@@ -45,64 +72,17 @@ class _NavigationPanelState extends State<NavigationPanel> {
                   color: isHovered ? const Color(0x15000000) : Colors.transparent),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconLabel(
-                    position: 0,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Home',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 1,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/features.png',
-                    text: 'Features',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 2,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Portfolio',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 3,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Resume',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 4,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Clients',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 5,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Pricing',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 6,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Blog',
-                    onPressed: onMenuItemSelect,
-                  ),
-                  IconLabel(
-                    position: 7,
-                    selectedPosition: selectedPosition,
-                    assetName: 'assets/img/home.png',
-                    text: 'Contact',
-                    onPressed: onMenuItemSelect,
-                  ),
-                ],
+                children: NavigationMenu.values
+                    .mapIndexed(
+                      (menuItem, index) => IconLabel(
+                        position: index,
+                        selectedPosition: selectedPosition,
+                        assetName: menuItem.icon,
+                        text: menuItem.name,
+                        onPressed: onMenuItemSelect,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
           )

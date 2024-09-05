@@ -10,8 +10,8 @@ class HorizontalDivider extends StatelessWidget {
       color: UIColors.black,
       height: 1.0,
       thickness: 1.0,
-      indent: 25, //spacing at the start of divider
-      endIndent: 25,
+      indent: 0, //spacing at the start of divider
+      endIndent: 0,
     );
   }
 }

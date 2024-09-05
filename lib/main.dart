@@ -18,7 +18,12 @@ class PortfolioApplication extends StatelessWidget {
     return MaterialApp(
       title: userName,
       theme: CustomTheme.mainTheme,
-      home: const MainPage(name: userName),
+      home: MainPage(
+        name: userName,
+        onMessageSend: (text) {
+          //todo add callback
+        },
+      ),
     );
   }
 }
