@@ -10,8 +10,30 @@ jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: flutter build web
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Set up Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'  # You can specify a specific version if needed
+
+      # Run Flutter pub get to install dependencies
+      - name: Install Dependencies
+        run: flutter pub get
+
+      # Build Flutter web
+      - name: Build Flutter Web
+        run: flutter build web
+
+  # (Optional) Upload the build artifacts for later use (e.g., deployment)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+         name: flutter-web-build
+         path: build/web  # Path where Flutter outputs the web build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
