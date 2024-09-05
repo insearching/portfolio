@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/utils/theme.dart';
 
+import 'main/ui/components/app_error_widget.dart';
 import 'main/ui/main_page.dart';
 
 const String userName = 'Serhii Hrabas';
 
 void main() {
+  if (kReleaseMode) ErrorWidget.builder = (_) => const AppErrorWidget();
   runApp(const PortfolioApplication());
 }
 

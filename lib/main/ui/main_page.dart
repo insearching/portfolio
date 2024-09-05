@@ -66,16 +66,22 @@ class _MainPageState extends State<MainPage> {
     final isDesktop = size.width > 600;
 
     return Scaffold(
-      appBar: isDesktop ? null : AppBar(
+      appBar: AppBar(
         backgroundColor: UIColors.backgroundColor,
         leading: Builder(
           builder: (context) {
-            return isDesktop ? Container(): IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
+            return isDesktop
+                ? Container()
+                : IconButton(
+                    icon: const Icon(
+                      Icons.menu,
+                      size: 25,
+                      color: UIColors.lightGrey,
+                    ),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
           },
         ),
       ),
