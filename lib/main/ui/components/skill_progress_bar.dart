@@ -25,70 +25,66 @@ class _SkillProgressBarState extends State<SkillProgressBar> {
 
   @override
   Widget build(BuildContext context) {
-    final width = 200.0;
+    const width = 200.0;
     final percentProgress = widget.progress / 100;
     final percentString = '${(percentProgress * 100).toStringAsFixed(0)}%';
     final percentageWidth = width / 100 * widget.progress;
     const height = 8.0;
     const radius = 3.0;
-    return SizedBox(
-      width: width,
-      height: height,
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              widget.title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
               ),
-              Text(
-                percentString,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
+            ),
+            Text(
+              percentString,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
               ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Stack(
-            children: [
-              Container(
-                width: width,
+            ),
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Stack(
+          children: [
+            Container(
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [UIColors.black, UIColors.backgroundColorLight],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomLeft,
+                ),
+                borderRadius: BorderRadius.circular(radius),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Container(
+                width: percentageWidth,
                 height: height,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [UIColors.black, UIColors.backgroundColorLight],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomLeft,
+                  gradient: LinearGradient(
+                    colors: [widget.startColor, widget.endColor],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
                   ),
                   borderRadius: BorderRadius.circular(radius),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Container(
-                  width: percentageWidth,
-                  height: height,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [widget.startColor, widget.endColor],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

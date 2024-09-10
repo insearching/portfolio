@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/ui/components/circle_image.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/ui/contact.dart';
@@ -63,7 +62,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isDesktop = size.width > 600;
+    final isDesktop = size.width > 1000;
 
     return Scaffold(
       appBar: isDesktop
@@ -128,7 +127,11 @@ class _LargeScreenContentState extends State<_LargeScreenContent> {
       children: [
         const _LeftPanel(),
         const VerticalDivider(width: 1.0, color: UIColors.black),
-        // _MainContent(name: widget.name, onMessageSend: widget.onMessageSend)
+        _MainContent(
+          isDesktop: true,
+          name: widget.name,
+          onMessageSend: widget.onMessageSend,
+        )
       ],
     );
   }
@@ -151,8 +154,11 @@ class _SmallScreenContent extends StatefulWidget {
 class _SmallScreenContentState extends State<_SmallScreenContent> {
   @override
   Widget build(BuildContext context) {
-    // return _MainContent(name: widget.name, onMessageSend: widget.onMessageSend);
-    return Container();
+    return _MainContent(
+      isDesktop: false,
+      name: widget.name,
+      onMessageSend: widget.onMessageSend,
+    );
   }
 }
 
@@ -166,15 +172,6 @@ class _LeftPanel extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Container(
-            padding: const EdgeInsets.all(4.0),
-            decoration:
-                const BoxDecoration(color: UIColors.darkGrey, shape: BoxShape.circle),
-            child: const CircleImage(
-              imageAsset: 'assets/img/avatar.jpg',
-              radius: 70,
-            ),
-          ),
           NavigationPanel(
             onMenuItemSelected: (position) {
               final context = parsePosition(position).currentContext;
@@ -196,11 +193,13 @@ class _LeftPanel extends StatelessWidget {
 
 class _MainContent extends StatefulWidget {
   const _MainContent({
+    required this.isDesktop,
     required this.name,
     required this.onMessageSend,
     Key? key,
   }) : super(key: key);
 
+  final bool isDesktop;
   final String name;
   final ValueChanged<InputForm> onMessageSend;
 
@@ -224,10 +223,20 @@ class _MainContentState extends State<_MainContent> {
               Home(
                 key: homeKey,
                 name: widget.name,
+                onContactClicked: () {
+                  final context = contactKey.currentContext;
+                  if (context != null) {
+                    Scrollable.ensureVisible(
+                      context,
+                      duration: animationDuration,
+                    );
+                  }
+                },
               ),
               const HorizontalDivider(),
               Features(
                 key: featuresKey,
+                isDesktop: widget.isDesktop,
               ),
               const HorizontalDivider(),
               Portfolio(
@@ -241,6 +250,7 @@ class _MainContentState extends State<_MainContent> {
               const HorizontalDivider(),
               Contact(
                 key: contactKey,
+                isDesktop: widget.isDesktop,
                 info: Repository.info,
                 onMessageSend: widget.onMessageSend,
               ),

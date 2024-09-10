@@ -16,7 +16,7 @@ class NavigationPanel extends StatefulWidget {
 
 enum NavigationMenu {
   home(name: 'Home', icon: 'assets/img/home.png'),
-  features(name: 'Features', icon: 'assets/img/home.png'),
+  features(name: 'Features', icon: 'assets/img/features.png'),
   portfolio(name: 'Portfolio', icon: 'assets/img/home.png'),
   resume(name: 'Resume', icon: 'assets/img/home.png'),
   clients(name: 'Clients', icon: 'assets/img/home.png'),
@@ -58,32 +58,24 @@ class _NavigationPanelState extends State<NavigationPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InkWell(
-            onTap: () {},
-            onHover: (value) {
-              setState(() {
-                isHovered = value;
-              });
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(7.0),
-                  color: isHovered ? const Color(0x15000000) : Colors.transparent),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: NavigationMenu.values
-                    .mapIndexed(
-                      (menuItem, index) => IconLabel(
-                        position: index,
-                        selectedPosition: selectedPosition,
-                        assetName: menuItem.icon,
-                        text: menuItem.name,
-                        onPressed: onMenuItemSelect,
-                      ),
-                    )
-                    .toList(),
-              ),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7.0),
+                color: isHovered ? const Color(0x15000000) : Colors.transparent),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: NavigationMenu.values
+                  .mapIndexed(
+                    (menuItem, index) => IconLabel(
+                      position: index,
+                      selectedPosition: selectedPosition,
+                      assetName: menuItem.icon,
+                      text: menuItem.name,
+                      onPressed: onMenuItemSelect,
+                    ),
+                  )
+                  .toList(),
             ),
           )
         ],

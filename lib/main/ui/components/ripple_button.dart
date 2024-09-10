@@ -61,6 +61,7 @@ class _RippleButtonState extends State<RippleButton> {
               });
             },
             child: Text(
+              textAlign: TextAlign.center,
               widget.text.toUpperCase(),
               style: Theme.of(context).textTheme.labelLarge,
             ),

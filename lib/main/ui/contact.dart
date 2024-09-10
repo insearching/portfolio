@@ -9,11 +9,13 @@ import 'components/elevated_container.dart';
 
 class Contact extends StatefulWidget {
   const Contact({
+    required this.isDesktop,
     required this.info,
     required this.onMessageSend,
     super.key,
   });
 
+  final bool isDesktop;
   final PersonalInfo info;
   final ValueChanged<InputForm> onMessageSend;
 
@@ -33,17 +35,29 @@ class _ContactState extends State<Contact> {
             subtitle: 'Contact',
           ),
           const SizedBox(height: 32.0),
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(child: _ContactInfoContainer(info: widget.info)),
-                const SizedBox(width: 32.0),
-                Expanded(child: _ContactForm(
-                  onMessageSend: widget.onMessageSend,
-                ))
-              ],
-            ),
-          )
+          widget.isDesktop
+              ? IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      Expanded(child: _ContactInfoContainer(info: widget.info)),
+                      const SizedBox(width: 32.0),
+                      Expanded(
+                        child: _ContactForm(
+                          onMessageSend: widget.onMessageSend,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              : Column(
+                children: [
+                  _ContactInfoContainer(info: widget.info),
+                  const SizedBox(height: 32.0),
+                  _ContactForm(
+                    onMessageSend: widget.onMessageSend,
+                  )
+                ],
+              )
         ],
       ),
     );
@@ -118,7 +132,7 @@ class InputForm {
 }
 
 class _ContactForm extends StatefulWidget {
-  _ContactForm({
+  const _ContactForm({
     required this.onMessageSend,
     Key? key,
   }) : super(key: key);

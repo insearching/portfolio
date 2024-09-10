@@ -5,9 +5,14 @@ import 'package:portfolio/main/ui/components/circle_image.dart';
 import '../ui/components/ripple_button.dart';
 
 class Home extends StatefulWidget {
-  const Home({required this.name, Key? key}) : super(key: key);
+  const Home({
+    required this.name,
+    required this.onContactClicked,
+    Key? key,
+  }) : super(key: key);
 
   final String name;
+  final VoidCallback onContactClicked;
 
   @override
   State<Home> createState() => _HomeState();
@@ -26,11 +31,17 @@ class _HomeState extends State<Home> {
           Text(
             widget.name,
             style: Theme.of(context).textTheme.displayLarge,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16.0),
           _PositionLabel(),
           const SizedBox(height: 24.0),
-          const RippleButton(text: 'Contact me'),
+          RippleButton(
+            text: 'Contact me',
+            onTap: () {
+              widget.onContactClicked();
+            },
+          ),
         ],
       ),
     );
@@ -118,26 +129,31 @@ class _PositionLabel extends StatelessWidget {
       'Senior Android developer',
       'Senior Flutter developer'
     ];
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'I am a ',
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
-        AnimatedTextKit(
-          repeatForever: true,
-          animatedTexts: positions
-              .map(
-                (position) => TypewriterAnimatedText(
-                  position,
-                  textStyle: Theme.of(context).textTheme.titleSmall,
-                  speed: const Duration(milliseconds: 70),
-                ),
-              )
-              .toList(),
-        ),
-      ],
+    return SizedBox(
+      height: 150.0,
+      child: Wrap(
+        // mainAxisAlignment: MainAxisAlignment.center,
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Text(
+            'I am a ',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          AnimatedTextKit(
+            repeatForever: true,
+            animatedTexts: positions
+                .map(
+                  (position) => TypewriterAnimatedText(
+                    position,
+                    textStyle: Theme.of(context).textTheme.titleSmall,
+                    speed: const Duration(milliseconds: 70),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
 }

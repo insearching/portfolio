@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 import 'package:portfolio/main/ui/components/skill_progress_bar.dart';
 import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/utils/measure_size.dart';
 
 class ResumeTabs extends StatefulWidget {
   const ResumeTabs({
@@ -24,40 +25,46 @@ class ResumeTabsState extends State<ResumeTabs> with SingleTickerProviderStateMi
     _tabController = TabController(length: 3, vsync: this);
   }
 
+  double? mTabWidth;
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: SizedBox(
-        height: 400,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 100,
-              child: TabBar(
-                indicatorColor: Colors.transparent,
-                controller: _tabController,
-                tabs: const [
-                  Tab(
-                    child: RippleButton(text: 'Education'),
-                  ),
-                  Tab(
-                    child: RippleButton(text: 'Professional Skills'),
-                  ),
-                  Tab(
-                    child: RippleButton(text: 'Experience'),
-                  ),
-                ],
+    return MeasureSize(
+      onChange: (Size size) {
+        setState(() {
+          mTabWidth = size.width / 3;
+        });
+      },
+      child: DefaultTabController(
+        length: 3,
+        child: SizedBox(
+          height: 400,
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 100,
+                child: TabBar(
+                  indicatorColor: Colors.transparent,
+                  controller: _tabController,
+                  tabs: [
+                    SizedBox(width: mTabWidth, child: const RippleButton(text: 'Education')),
+                    SizedBox(width: mTabWidth, child: const RippleButton(text: 'Professional Skills')),
+                    SizedBox(width: mTabWidth, child: const RippleButton(text: 'Experience')),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  const Center(child: Text('Tab 1 Content')),
-                  GridView.count(
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    const Center(child: Text('Tab 1 Content')),
+                    GridView.count(
+                      childAspectRatio: 4.0,
                       shrinkWrap: true,
-                      crossAxisCount: 2,
+                      primary: false,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                      crossAxisCount: 3,
                       children: widget.skills
                           .map(
                             (skill) => SkillProgressBar(
@@ -67,12 +74,14 @@ class ResumeTabsState extends State<ResumeTabs> with SingleTickerProviderStateMi
                               endColor: Colors.red,
                             ),
                           )
-                          .toList()),
-                  const Center(child: Text('Tab 3 Content')),
-                ],
+                          .toList(),
+                    ),
+                    const Center(child: Text('Tab 3 Content')),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
