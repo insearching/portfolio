@@ -1,36 +1,38 @@
 import 'package:flutter/cupertino.dart';
-import 'package:portfolio/main/ui/components/elevated_container.dart';
+import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/ui/components/image_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Socials extends StatelessWidget {
-  const Socials({super.key});
+class Socials extends StatefulWidget {
+  const Socials({
+    required this.socials,
+    super.key,
+  });
 
+  final List<SocialInfo> socials;
+
+  @override
+  State<Socials> createState() => _SocialsState();
+}
+
+class _SocialsState extends State<Socials> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        ImageButton(
-          icon: 'assets/img/facebook.png',
-          onTap: () => launchUrl(
-            Uri.parse('https://www.facebook.com/insearching1234'),
-          ),
-        ),
-        const SizedBox(width: 8.0),
-        ImageButton(
-          icon: 'assets/img/linkedin.png',
-          onTap: () => launchUrl(
-            Uri.parse('https://www.linkedin.com/in/serhii-hrabas/'),
-          ),
-        ),
-        const SizedBox(width: 8.0),
-        ImageButton(
-          icon: 'assets/img/twitter.png',
-          onTap: () => launchUrl(
-            Uri.parse('https://twitter.com/HrabasSerhii'),
-          ),
-        ),
-      ],
+      children:
+      widget.socials.map(
+            (social) =>
+            Padding(
+              padding: const EdgeInsets.symmetric (horizontal: 8.0),
+              child: ImageButton(
+                icon: social.icon,
+                onTap: () =>
+                    launchUrl(
+                      Uri.parse(social.url),
+                    ),
+              ),
+            ),
+      ).toList(),
     );
   }
 }

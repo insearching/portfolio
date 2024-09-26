@@ -25,7 +25,7 @@ class PortfolioApplication extends StatelessWidget {
         name: userName,
         onMessageSend: (text) {
           //todo add callback
-        },
+        }
       ),
     );
   }

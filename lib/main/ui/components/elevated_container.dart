@@ -65,18 +65,53 @@ class _ElevatedContainerState extends State<ElevatedContainer> {
           ),
         ],
       ),
-      child: InkWell(
-        onTap: () {
-          widget.onTap?.call();
-        },
-        onHover: (value) {
-          setState(() {
-            _isElevated = value;
-            widget.onElevatedChanged?.call(value);
-          });
-        },
-        child: _isElevated ? widget.child : widget.child,
-      ),
+      child: widget.onTap != null
+          ? _PressedWidget(
+              onTap: widget.onTap!,
+              onElevatedChanged: ((elevated) =>
+                  {_isElevated = elevated, widget.onElevatedChanged?.call(elevated)}),
+              child: widget.child,
+            )
+          : InkWell(
+              onHover: (value) {
+                setState(() {
+                  _isElevated = value;
+                  widget.onElevatedChanged?.call(value);
+                });
+              },
+              child: widget.child,
+            ),
+    );
+  }
+}
+
+class _PressedWidget extends StatefulWidget {
+  const _PressedWidget({
+    required this.child,
+    required this.onTap,
+    this.onElevatedChanged,
+    Key? key,
+  }) : super(key: key);
+
+  final Widget child;
+  final VoidCallback onTap;
+  final ValueChanged<bool>? onElevatedChanged;
+
+  @override
+  State<_PressedWidget> createState() => _PressedWidgetState();
+}
+
+class _PressedWidgetState extends State<_PressedWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: widget.onTap,
+      onHover: (value) {
+        setState(() {
+          widget.onElevatedChanged?.call(value);
+        });
+      },
+      child: widget.child,
     );
   }
 }

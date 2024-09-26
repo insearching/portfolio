@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/ui/contact.dart';
 import 'package:portfolio/main/ui/features.dart';
 import 'package:portfolio/main/ui/home.dart';
+import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/navigation_panel.dart';
 import 'package:portfolio/main/ui/portfolio.dart';
 import 'package:portfolio/main/ui/resume.dart';
@@ -52,7 +54,7 @@ class MainPage extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final ValueChanged<InputForm> onMessageSend;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -64,43 +66,46 @@ class _MainPageState extends State<MainPage> {
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 1000;
 
-    return Scaffold(
-      appBar: isDesktop
-          ? null
-          : AppBar(
-              backgroundColor: UIColors.backgroundColor,
-              leading: Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const Icon(
-                      Icons.menu,
-                      size: 25,
-                      color: UIColors.lightGrey,
-                    ),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
+    return BlocProvider(
+      create: (BuildContext context) => MainBloc(),
+      child: Scaffold(
+        appBar: isDesktop
+            ? null
+            : AppBar(
+                backgroundColor: UIColors.backgroundColor,
+                leading: Builder(
+                  builder: (context) {
+                    return IconButton(
+                      icon: const Icon(
+                        Icons.menu,
+                        size: 25,
+                        color: UIColors.lightGrey,
+                      ),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-      body: Container(
-        height: size.height,
-        width: size.width,
-        color: UIColors.backgroundColor,
-        child: isDesktop
-            ? _LargeScreenContent(
-                name: widget.name,
-                onMessageSend: widget.onMessageSend,
-              )
-            : _SmallScreenContent(
-                name: widget.name,
-                onMessageSend: widget.onMessageSend,
-              ),
-      ),
-      drawer: const Drawer(
-        backgroundColor: UIColors.backgroundColor,
-        child: _LeftPanel(),
+        body: Container(
+          height: size.height,
+          width: size.width,
+          color: UIColors.backgroundColor,
+          child: isDesktop
+              ? _LargeScreenContent(
+                  name: widget.name,
+                  onMessageSend: widget.onMessageSend
+                )
+              : _SmallScreenContent(
+                  name: widget.name,
+                  onMessageSend: widget.onMessageSend,
+                ),
+        ),
+        drawer: const Drawer(
+          backgroundColor: UIColors.backgroundColor,
+          child: _LeftPanel(),
+        ),
       ),
     );
   }
@@ -114,7 +119,7 @@ class _LargeScreenContent extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final ValueChanged<InputForm> onMessageSend;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
   State<_LargeScreenContent> createState() => _LargeScreenContentState();
@@ -145,7 +150,7 @@ class _SmallScreenContent extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final ValueChanged<InputForm> onMessageSend;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
   State<_SmallScreenContent> createState() => _SmallScreenContentState();
@@ -162,9 +167,16 @@ class _SmallScreenContentState extends State<_SmallScreenContent> {
   }
 }
 
-class _LeftPanel extends StatelessWidget {
-  const _LeftPanel({Key? key}) : super(key: key);
+class _LeftPanel extends StatefulWidget {
+  const _LeftPanel({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  State<_LeftPanel> createState() => _LeftPanelState();
+}
+
+class _LeftPanelState extends State<_LeftPanel> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -184,7 +196,7 @@ class _LeftPanel extends StatelessWidget {
             },
           ),
           const HorizontalDivider(),
-          const Socials(),
+          Socials(socials: Repository.info.socials),
         ],
       ),
     );
@@ -201,7 +213,7 @@ class _MainContent extends StatefulWidget {
 
   final bool isDesktop;
   final String name;
-  final ValueChanged<InputForm> onMessageSend;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
   State<_MainContent> createState() => _MainContentState();

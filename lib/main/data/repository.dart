@@ -1,6 +1,7 @@
 import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/ui/socials.dart';
 
 class Repository {
   static const List<Project> projects = [
@@ -104,13 +105,11 @@ class Repository {
   static const info = PersonalInfo(
     image: 'assets/img/development.jpg',
     title: 'Serhii Hrabas',
-    description: 'Chief Operating Officer \n'
-        'I am available for freelance work. Connect with me via and call in to my account.\n'
-        'Phone: +01234567890\n'
+    description: 'Senior Android developer \n'
+        'I am available for freelance work. Connect with me via email or socials.\n'
         'Email: kerboserhii@gmail.com\n'
-        'FIND WITH ME\n',
-    phone: 'phone',
+        'Connect with me\n',
     email: 'kerboserhii@gmail.com',
-    socials: [''],
+    socials: SocialInfo.values,
   );
 }

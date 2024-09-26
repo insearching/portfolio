@@ -5,12 +5,14 @@ import 'package:portfolio/utils/colors.dart';
 class InputState {
   InputState({
     required this.text,
+    this.errorText,
     this.maxLines = 1,
     this.textInputType = TextInputType.text,
     this.onTextChanged,
   });
 
   final String text;
+  final String? errorText;
   final int maxLines;
   final TextInputType textInputType;
   final ValueChanged<String>? onTextChanged;
@@ -55,6 +57,9 @@ class InputFieldState extends State<InputField> {
                 fillColor: UIColors.black,
               ),
               maxLines: widget.state.maxLines,
+              validator: (value) {
+                return widget.state.errorText;
+              },
               style: const TextStyle(
                 fontSize: 18.0,
                 color: UIColors.lightGrey,
