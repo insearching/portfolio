@@ -12,39 +12,33 @@ import 'package:portfolio/main/ui/resume.dart';
 import 'package:portfolio/main/ui/socials.dart';
 import 'package:portfolio/utils/colors.dart';
 
-final homeKey = GlobalKey();
-final featuresKey = GlobalKey();
-final portfolioKey = GlobalKey();
-final resumeKey = GlobalKey();
-final clientsKey = GlobalKey();
-final pricingKey = GlobalKey();
-final blogKey = GlobalKey();
-final contactKey = GlobalKey();
-
 const animationDuration = Duration(milliseconds: 500);
 
-GlobalKey parsePosition(int position) {
-  switch (position) {
-    case 0:
-      return homeKey;
-    case 1:
-      return featuresKey;
-    case 2:
-      return portfolioKey;
-    case 3:
-      return resumeKey;
-    case 4:
-      return clientsKey;
-    case 5:
-      return pricingKey;
-    case 6:
-      return blogKey;
-    case 7:
-      return contactKey;
-    default:
-      return homeKey;
+enum TagKey {
+  home(position: 0),
+  features(position: 1),
+  portfolio(position: 2),
+  resume(position: 3),
+  contact(position: 7);
+
+  final int position;
+
+  const TagKey({
+    required this.position,
+  });
+
+  static TagKey keyByPosition(int position) {
+    return TagKey.values.firstWhere((key) => key.position == position);
   }
 }
+
+final keys = {
+  TagKey.home: GlobalKey(),
+  TagKey.features: GlobalKey(),
+  TagKey.portfolio: GlobalKey(),
+  TagKey.resume: GlobalKey(),
+  TagKey.contact: GlobalKey()
+};
 
 class MainPage extends StatefulWidget {
   const MainPage({
@@ -94,9 +88,7 @@ class _MainPageState extends State<MainPage> {
           color: UIColors.backgroundColor,
           child: isDesktop
               ? _LargeScreenContent(
-                  name: widget.name,
-                  onMessageSend: widget.onMessageSend
-                )
+                  name: widget.name, onMessageSend: widget.onMessageSend)
               : _SmallScreenContent(
                   name: widget.name,
                   onMessageSend: widget.onMessageSend,
@@ -186,7 +178,7 @@ class _LeftPanelState extends State<_LeftPanel> {
         children: [
           NavigationPanel(
             onMenuItemSelected: (position) {
-              final context = parsePosition(position).currentContext;
+              final context = keys[TagKey.keyByPosition(position)]?.currentContext;
               if (context != null) {
                 Scrollable.ensureVisible(
                   context,
@@ -233,10 +225,10 @@ class _MainContentState extends State<_MainContent> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Home(
-                key: homeKey,
+                key: keys[TagKey.home],
                 name: widget.name,
                 onContactClicked: () {
-                  final context = contactKey.currentContext;
+                  final context = keys[TagKey.contact]?.currentContext;
                   if (context != null) {
                     Scrollable.ensureVisible(
                       context,
@@ -247,21 +239,21 @@ class _MainContentState extends State<_MainContent> {
               ),
               const HorizontalDivider(),
               Features(
-                key: featuresKey,
+                key: keys[TagKey.features],
                 isDesktop: widget.isDesktop,
               ),
               const HorizontalDivider(),
               Portfolio(
-                key: portfolioKey,
+                key: keys[TagKey.portfolio],
                 projects: Repository.projects,
               ),
               const HorizontalDivider(),
               Resume(
-                key: resumeKey,
+                key: keys[TagKey.resume],
               ),
               const HorizontalDivider(),
               Contact(
-                key: contactKey,
+                key: keys[TagKey.contact],
                 isDesktop: widget.isDesktop,
                 info: Repository.info,
                 onMessageSend: widget.onMessageSend,
