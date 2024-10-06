@@ -49,6 +49,7 @@ class InputFieldState extends State<InputField> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 labelText: widget.state.text,
+                errorText: widget.state.errorText,
                 labelStyle: const TextStyle(
                   fontSize: 18.0,
                   color: UIColors.lightGrey,
@@ -57,9 +58,6 @@ class InputFieldState extends State<InputField> {
                 fillColor: UIColors.black,
               ),
               maxLines: widget.state.maxLines,
-              validator: (value) {
-                return widget.state.errorText;
-              },
               style: const TextStyle(
                 fontSize: 18.0,
                 color: UIColors.lightGrey,

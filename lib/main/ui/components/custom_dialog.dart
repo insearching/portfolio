@@ -65,7 +65,7 @@ class CustomDialog extends StatelessWidget {
                     if (mLink != null) ...[
                       const SizedBox(height: 36),
                       RippleButton(
-                        text: 'Open in Google Play',
+                        text: 'Check for more details',
                         onTap: () => launchUrlString(mLink),
                       ),
                     ]

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/ui/contact.dart';
@@ -14,30 +15,12 @@ import 'package:portfolio/utils/colors.dart';
 
 const animationDuration = Duration(milliseconds: 500);
 
-enum TagKey {
-  home(position: 0),
-  features(position: 1),
-  portfolio(position: 2),
-  resume(position: 3),
-  contact(position: 7);
-
-  final int position;
-
-  const TagKey({
-    required this.position,
-  });
-
-  static TagKey keyByPosition(int position) {
-    return TagKey.values.firstWhere((key) => key.position == position);
-  }
-}
-
 final keys = {
-  TagKey.home: GlobalKey(),
-  TagKey.features: GlobalKey(),
-  TagKey.portfolio: GlobalKey(),
-  TagKey.resume: GlobalKey(),
-  TagKey.contact: GlobalKey()
+  NavigationMenu.home: GlobalKey(),
+  NavigationMenu.features: GlobalKey(),
+  NavigationMenu.portfolio: GlobalKey(),
+  NavigationMenu.resume: GlobalKey(),
+  NavigationMenu.contact: GlobalKey()
 };
 
 class MainPage extends StatefulWidget {
@@ -178,14 +161,15 @@ class _LeftPanelState extends State<_LeftPanel> {
         children: [
           NavigationPanel(
             onMenuItemSelected: (position) {
-              final context = keys[TagKey.keyByPosition(position)]?.currentContext;
-              if (context != null) {
-                Scrollable.ensureVisible(
-                  context,
-                  duration: animationDuration,
-                );
-              }
-            },
+              final tagKey = NavigationMenu.keyByPosition(position);
+              if (tagKey == null) return;
+              final context = keys[tagKey]?.currentContext;
+              if (context == null) return;
+              Scrollable.ensureVisible(
+                context,
+                duration: animationDuration,
+              );
+                        },
           ),
           const HorizontalDivider(),
           Socials(socials: Repository.info.socials),
@@ -225,10 +209,10 @@ class _MainContentState extends State<_MainContent> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Home(
-                key: keys[TagKey.home],
+                key: keys[NavigationMenu.home],
                 name: widget.name,
                 onContactClicked: () {
-                  final context = keys[TagKey.contact]?.currentContext;
+                  final context = keys[NavigationMenu.contact]?.currentContext;
                   if (context != null) {
                     Scrollable.ensureVisible(
                       context,
@@ -239,21 +223,22 @@ class _MainContentState extends State<_MainContent> {
               ),
               const HorizontalDivider(),
               Features(
-                key: keys[TagKey.features],
+                key: keys[NavigationMenu.features],
                 isDesktop: widget.isDesktop,
               ),
               const HorizontalDivider(),
               Portfolio(
-                key: keys[TagKey.portfolio],
+                key: keys[NavigationMenu.portfolio],
                 projects: Repository.projects,
               ),
               const HorizontalDivider(),
               Resume(
-                key: keys[TagKey.resume],
+                key: keys[NavigationMenu.resume],
+                skills: Repository.skills,
               ),
               const HorizontalDivider(),
               Contact(
-                key: keys[TagKey.contact],
+                key: keys[NavigationMenu.contact],
                 isDesktop: widget.isDesktop,
                 info: Repository.info,
                 onMessageSend: widget.onMessageSend,

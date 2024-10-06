@@ -9,7 +9,7 @@ class MainBloc extends Bloc<FormEvent, ContactFormState> {
       final List<InputFormError> errors = _isFormValid(event);
       if (errors.isNotEmpty) {
         debugPrint("Form contains errors ${errors.join(", ")}");
-        emit(FormError(errors, event)); // Emit error state with list of errors
+        emit(FormError(errors: errors)); // Emit error state with list of errors
       } else {
         try {
           emit(FormLoading());
@@ -18,14 +18,16 @@ class MainBloc extends Bloc<FormEvent, ContactFormState> {
           emit(FormSuccess());
         } catch (e) {
           debugPrint('error while sending email');
-          emit(FormError([InputFormError.FailedToSendEmail], event));
+          emit(FormError(errors: [InputFormError.FailedToSendEmail]));
         }
       }
     });
   }
 
   Future<void> _sendEmail(SubmitFormEvent form) async {
-    final Uri url = Uri.parse('mailto:${Repository.info.email}?subject=${form.subject}&body=${form.message}\n${form.email}');
+    final Uri url = Uri.parse(
+        'mailto:${Repository.info.email}?subject=${form.subject}'
+            '&body=${form.message}\n\n${form.email}\nPhone:${form.phone}');
     if (!await launchUrl(url)) {
       throw Exception('Could not launch $url');
     }
@@ -97,11 +99,10 @@ class FormSuccess extends ContactFormState {}
 
 class FormError extends ContactFormState {
   final List<InputFormError> errors;
-  final SubmitFormEvent form;
 
-  FormError(this.errors, this.form);
+  FormError({required this.errors});
 
-  String getErrorMessage(InputFormError error) {
+  String? getErrorMessage(InputFormError? error) {
     switch (error) {
       case InputFormError.EmptyName:
         return "Please input name";
@@ -119,6 +120,8 @@ class FormError extends ContactFormState {
         return "Not a valid email";
       case InputFormError.FailedToSendEmail:
         return "Failed to send email, please try again...";
+      case null:
+        return null;
     }
   }
 }
