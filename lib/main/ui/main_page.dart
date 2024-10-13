@@ -234,6 +234,7 @@ class _MainContentState extends State<_MainContent> {
               const HorizontalDivider(),
               Resume(
                 key: keys[NavigationMenu.resume],
+                educations: Repository.educationInfo,
                 skills: Repository.skills,
               ),
               const HorizontalDivider(),

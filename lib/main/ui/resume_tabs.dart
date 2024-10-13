@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/ui/components/education_container.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/skill_progress_bar.dart';
 import 'package:portfolio/main/data/skill.dart';
@@ -6,10 +8,12 @@ import 'package:portfolio/utils/colors.dart';
 
 class ResumeTabs extends StatefulWidget {
   const ResumeTabs({
+    required this.educations,
     required this.skills,
     Key? key,
   }) : super(key: key);
 
+  final List<Education> educations;
   final List<Skill> skills;
 
   @override
@@ -32,7 +36,7 @@ class ResumeTabsState extends State<ResumeTabs> with SingleTickerProviderStateMi
     return DefaultTabController(
       length: 3,
       child: SizedBox(
-        height: 500,
+        height: 900,
         child: Column(
           children: <Widget>[
             ElevatedContainer(
@@ -80,28 +84,11 @@ class ResumeTabsState extends State<ResumeTabs> with SingleTickerProviderStateMi
             ),
             Expanded(
               child: TabBarView(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: [
-                  const Center(child: Text('Coming soon')),
+                  _Education(educations: widget.educations),
                   _ProfessionalSkills(skills: widget.skills),
-                  // GridView.count(
-                  //   childAspectRatio: 4.0,
-                  //   shrinkWrap: true,
-                  //   primary: false,
-                  //   crossAxisSpacing: 10,
-                  //   mainAxisSpacing: 10,
-                  //   crossAxisCount: 3,
-                  //   children: widget.skills
-                  //       .map(
-                  //         (skill) => SkillProgressBar(
-                  //           title: skill.title,
-                  //           progress: skill.value,
-                  //           startColor: Colors.purpleAccent,
-                  //           endColor: Colors.red,
-                  //         ),
-                  //       )
-                  //       .toList(),
-                  // ),
                   const Center(child: Text('Coming soon')),
                 ],
               ),
@@ -116,6 +103,58 @@ class ResumeTabsState extends State<ResumeTabs> with SingleTickerProviderStateMi
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+}
+
+class _Education extends StatefulWidget {
+  const _Education({
+    required this.educations,
+    Key? key,
+  }) : super(key: key);
+
+  final List<Education> educations;
+
+  @override
+  State<_Education> createState() => _EducationState();
+}
+
+class _EducationState extends State<_Education> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 24.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: widget.educations
+                  .where((education) => education.type == EducationType.college)
+                  .map(
+                    (education) => EducationContainer(
+                  education: education,
+                ),
+              ).toList(),
+            ),
+          ),
+          const SizedBox(width: 24.0),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: widget.educations
+                  .where((education) => education.type == EducationType.certification)
+                  .map(
+                    (education) => EducationContainer(
+                      education: education,
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

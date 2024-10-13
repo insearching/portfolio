@@ -67,6 +67,9 @@ flutter:
     - assets/img/flutter.png
     - assets/img/home.png
     - assets/img/features.png
+    - assets/img/portfolio.png
+    - assets/img/resume.png
+    - assets/img/contact.png
     - assets/img/facebook.png
     - assets/img/linkedin.png
     - assets/img/twitter.png

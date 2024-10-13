@@ -1,3 +1,4 @@
+import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/skill.dart';
@@ -44,7 +45,7 @@ class Repository {
       role: 'Senior Android developer',
       description: 'Android SDK library for Insurances company. Created project from '
           'scratch starting from architecture decision up to discussing some of the '
-          'basics of integrated SDK. Implemented all BL and design and made'
+          'basics of integrated SDK. Implemented all BL and design and made '
           'SDK fully configurable from outside.',
       link: 'https://play.google.com/store/apps/details?id=ch.oekk2.dip',
     ),
@@ -139,4 +140,34 @@ class Repository {
     email: 'kerboserhii@gmail.com',
     socials: SocialInfo.values,
   );
+
+  static const List<Education> educationInfo = [
+    Education(
+      title: 'Bachelor\'s degree in Software engineering.',
+      description: 'Ternopil State Ivan Pul\'uj Technical University',
+      type: EducationType.college,
+      text: 'A solid foundation in computer science and software development with a focus '
+          'on programming languages, algorithms, data structures, object-oriented design (OOD), '
+          'software design, and engineering principles. This education provided expertise '
+          'in building scalable, efficient, and well-structured software solutions, '
+          'equipping the learner with the skills to tackle real-world development challenges.',),
+    Education(
+      title: 'Master\'s degree in Software engineering.',
+      description: 'Ternopil State Ivan Pul\'uj Technical University',
+      type: EducationType.college,
+      text: 'Advanced studies with a strong focus on research and innovation in software '
+          'development, system architecture, and engineering methodologies. Key areas of '
+          'research included optimization of algorithms, data structures, and scalable '
+          'system design. The program fostered a deep understanding of emerging '
+          'technologies and problem-solving through hands-on projects and academic '
+          'research, preparing for leadership roles in both research and complex '
+          'software development environments.',),
+    Education(
+      title: 'Software Architecture & Design of Modern Large Scale Systems',
+      description: 'Top Developer Academy LLC',
+      type: EducationType.certification,
+      link: 'https://www.udemy.com/certificate/UC-b6267e86-54cd-4e56-a085-fdc3824e6b0e/',
+      imageUrl: 'https://udemy-certificate.s3.amazonaws.com/image/UC-b6267e86-54cd-4e56-a085-fdc3824e6b0e.jpg?v=1726160655000',
+    ),
+  ];
 }
