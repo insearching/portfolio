@@ -28,7 +28,7 @@ jobs:
 
       # Build Flutter web
       - name: Build Flutter Web
-        run: flutter build web
+        run: flutter build web --web-renderer html
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
