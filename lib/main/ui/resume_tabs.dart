@@ -39,47 +39,53 @@ class ResumeTabsState extends State<ResumeTabs> with SingleTickerProviderStateMi
         height: 900,
         child: Column(
           children: <Widget>[
-            ElevatedContainer(
-              child: TabBar(
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                indicatorColor: Colors.transparent,
-                // indicator: BoxDecoration(
-                //   borderRadius: BorderRadius.circular(5.0),
-                //   gradient: const LinearGradient(
-                //     colors: [
-                //       UIColors.backgroundColorDark,
-                //       UIColors.backgroundColorDark,
-                //       UIColors.backgroundColorDark,
-                //       UIColors.backgroundColorDark,
-                //       UIColors.backgroundColorLight,
-                //     ],
-                //     begin: Alignment.bottomRight,
-                //     end: Alignment.topLeft,
-                //   ),
-                //   boxShadow: const [
-                //     BoxShadow(
-                //       color: Color(0xFF313135),
-                //       offset: Offset(-4, -4),
-                //       blurRadius: 10,
-                //     ),
-                //     BoxShadow(
-                //       color: Color(0xDE161515),
-                //       offset: Offset(4, 4),
-                //       blurRadius: 10,
-                //     ),
-                //   ],
-                // ),
-                controller: _tabController,
-                labelColor: UIColors.accent,
-                unselectedLabelColor: Colors.grey,
-                indicatorWeight: 4,
-                dividerHeight: 0,
-                dividerColor: Colors.transparent,
-                tabs: const [
-                  Tab(text: 'Education'),
-                  Tab(text: 'Professional Skills'),
-                  Tab(text: 'Experience'),
-                ],
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedContainer(
+                child: TabBar(
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  indicatorColor: Colors.transparent,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.center,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  // indicator: BoxDecoration(
+                  //   borderRadius: BorderRadius.circular(5.0),
+                  //   gradient: const LinearGradient(
+                  //     colors: [
+                  //       UIColors.backgroundColorDark,
+                  //       UIColors.backgroundColorDark,
+                  //       UIColors.backgroundColorDark,
+                  //       UIColors.backgroundColorDark,
+                  //       UIColors.backgroundColorLight,
+                  //     ],
+                  //     begin: Alignment.bottomRight,
+                  //     end: Alignment.topLeft,
+                  //   ),
+                  //   boxShadow: const [
+                  //     BoxShadow(
+                  //       color: Color(0xFF313135),
+                  //       offset: Offset(-4, -4),
+                  //       blurRadius: 10,
+                  //     ),
+                  //     BoxShadow(
+                  //       color: Color(0xDE161515),
+                  //       offset: Offset(4, 4),
+                  //       blurRadius: 10,
+                  //     ),
+                  //   ],
+                  // ),
+                  controller: _tabController,
+                  labelColor: UIColors.accent,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorWeight: 4,
+                  dividerHeight: 0,
+                  dividerColor: Colors.transparent,
+                  tabs: const [
+                    Tab(text: 'Education'),
+                    Tab(text: 'Professional Skills'),
+                    Tab(text: 'Experience'),
+                  ],
+                ),
               ),
             ),
             Expanded(
@@ -121,38 +127,39 @@ class _Education extends StatefulWidget {
 class _EducationState extends State<_Education> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 24.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: widget.educations
-                  .where((education) => education.type == EducationType.college)
-                  .map(
-                    (education) => EducationContainer(
-                  education: education,
-                ),
-              ).toList(),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: widget.educations
+                    .where((education) => education.type == EducationType.college)
+                    .map(
+                      (education) => EducationContainer(
+                    education: education,
+                  ),
+                ).toList(),
+              ),
             ),
-          ),
-          const SizedBox(width: 24.0),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: widget.educations
-                  .where((education) => education.type == EducationType.certification)
-                  .map(
-                    (education) => EducationContainer(
-                      education: education,
-                    ),
-                  )
-                  .toList(),
+            const SizedBox(width: 24.0),
+            Expanded(
+              child: Column(
+                children: widget.educations
+                    .where((education) => education.type == EducationType.certification)
+                    .map(
+                      (education) => EducationContainer(
+                        education: education,
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
