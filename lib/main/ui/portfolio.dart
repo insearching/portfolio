@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/ui/components/container_title.dart';
 import 'package:portfolio/main/ui/components/custom_dialog.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 
-import '../data/project.dart';
-
 class Portfolio extends StatefulWidget {
   const Portfolio({
     required this.projects,
+    required this.isDesktop,
+    required this.isTablet,
     super.key,
   });
 
   final List<Project> projects;
+  final bool isDesktop;
+  final bool isTablet;
 
   @override
   State<Portfolio> createState() => _PortfolioState();
@@ -29,7 +32,7 @@ class _PortfolioState extends State<Portfolio> {
           const SizedBox(height: 32.0),
           GridView.count(
               shrinkWrap: true,
-              crossAxisCount: 3,
+              crossAxisCount: widget.isDesktop ? 3 : widget.isTablet ? 2 : 1,
               children: widget.projects
                   .map(
                     (project) => _PortfolioContainer(

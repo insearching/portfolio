@@ -42,6 +42,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 1000;
+    final isTablet = size.width > 600;
 
     return BlocProvider(
       create: (BuildContext context) => MainBloc(),
@@ -72,10 +73,15 @@ class _MainPageState extends State<MainPage> {
           child: isDesktop
               ? _LargeScreenContent(
                   name: widget.name, onMessageSend: widget.onMessageSend)
-              : _SmallScreenContent(
-                  name: widget.name,
-                  onMessageSend: widget.onMessageSend,
-                ),
+              : isTablet
+                  ? _MediumScreenContent(
+                      name: widget.name,
+                      onMessageSend: widget.onMessageSend,
+                    )
+                  : _SmallScreenContent(
+                      name: widget.name,
+                      onMessageSend: widget.onMessageSend,
+                    ),
         ),
         drawer: const Drawer(
           backgroundColor: UIColors.backgroundColor,
@@ -109,10 +115,37 @@ class _LargeScreenContentState extends State<_LargeScreenContent> {
         const VerticalDivider(width: 1.0, color: UIColors.black),
         _MainContent(
           isDesktop: true,
+          isTablet: false,
           name: widget.name,
           onMessageSend: widget.onMessageSend,
         )
       ],
+    );
+  }
+}
+
+class _MediumScreenContent extends StatefulWidget {
+  const _MediumScreenContent({
+    required this.name,
+    required this.onMessageSend,
+    Key? key,
+  }) : super(key: key);
+
+  final String name;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
+
+  @override
+  State<_MediumScreenContent> createState() => _MediumScreenContentState();
+}
+
+class _MediumScreenContentState extends State<_MediumScreenContent> {
+  @override
+  Widget build(BuildContext context) {
+    return _MainContent(
+      isDesktop: false,
+      isTablet: true,
+      name: widget.name,
+      onMessageSend: widget.onMessageSend,
     );
   }
 }
@@ -136,6 +169,7 @@ class _SmallScreenContentState extends State<_SmallScreenContent> {
   Widget build(BuildContext context) {
     return _MainContent(
       isDesktop: false,
+      isTablet: false,
       name: widget.name,
       onMessageSend: widget.onMessageSend,
     );
@@ -169,7 +203,7 @@ class _LeftPanelState extends State<_LeftPanel> {
                 context,
                 duration: animationDuration,
               );
-                        },
+            },
           ),
           const HorizontalDivider(),
           Socials(socials: Repository.info.socials),
@@ -182,12 +216,14 @@ class _LeftPanelState extends State<_LeftPanel> {
 class _MainContent extends StatefulWidget {
   const _MainContent({
     required this.isDesktop,
+    required this.isTablet,
     required this.name,
     required this.onMessageSend,
     Key? key,
   }) : super(key: key);
 
   final bool isDesktop;
+  final bool isTablet;
   final String name;
   final ValueChanged<SubmitFormEvent> onMessageSend;
 
@@ -225,11 +261,14 @@ class _MainContentState extends State<_MainContent> {
               Features(
                 key: keys[NavigationMenu.features],
                 isDesktop: widget.isDesktop,
+                isTablet: widget.isTablet,
               ),
               const HorizontalDivider(),
               Portfolio(
                 key: keys[NavigationMenu.portfolio],
                 projects: Repository.projects,
+                isDesktop: widget.isDesktop,
+                isTablet: widget.isTablet,
               ),
               const HorizontalDivider(),
               Resume(
