@@ -70,7 +70,8 @@ class Repository {
     Project(
       image: 'assets/img/daimler-app.png',
       title: 'Daimler app',
-      role: 'The Daimler Mercedes PRO B2B project is a digital platform focused on '
+      role: 'Senior Android developer',
+      description: 'The Daimler Mercedes PRO B2B project is a digital platform focused on '
           'optimizing fleet management for businesses. It provides real-time vehicle tracking, '
           'predictive maintenance, fuel monitoring, and driver behavior analysis, '
           'helping companies reduce downtime, cut costs, and improve overall efficiency. '
@@ -80,7 +81,6 @@ class Repository {
           'them to access vehicle data, receive notifications, and manage operations on '
           'the go. It enhances connectivity and enables real-time monitoring, making fleet '
           'management more accessible and efficient.',
-      description: 'Senior Android developer',
     ),
     Project(
       image: 'assets/img/minimed.jpg',
