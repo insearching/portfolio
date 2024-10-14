@@ -29,47 +29,57 @@ class Repository {
       image: 'assets/img/sbb-app.jpg',
       title: 'Kontrolle app for SBB trains',
       role: 'Senior Android developer',
-      description: 'As a Senior Android Developer, the role involved contributing to the '
-          'development of the SBB controller app for one of Switzerland\'s largest '
-  'transportation companies. This app allows transport personnel to efficiently '
-  'validate and control tickets and passes across trains, buses, and boats. '
-  'Responsibilities included ensuring the app\'s performance, reliability, and seamless '
-          'user experience by working with modern Android technologies and frameworks '
-          'to build a scalable solution. The project demanded a strong understanding of '
-          'Android architecture and real-time data processing to support the critical '
-          'operations of Swiss Federal Railways (SBB).',
+      description: 'The SBB Controller Android app is designed for validating and managing '
+          'tickets and passes for various modes of transport, including trains, buses, '
+          'and boats in Switzerland. It enables conductors and ticket inspectors to'
+          ' quickly and efficiently verify passenger tickets, ensuring compliance '
+          'and enhancing the travel experience.',
     ),
     Project(
       image: 'assets/img/sumex.png',
       title: 'Sumex Insurance app',
       role: 'Senior Android developer',
-      description: 'Android SDK library for Insurances company. Created project from '
-          'scratch starting from architecture decision up to discussing some of the '
-          'basics of integrated SDK. Implemented all BL and design and made '
-          'SDK fully configurable from outside.',
+      description: 'The Android SDK library for an insurance company is designed to be '
+          'easily configurable through a configuration file and can be installed from '
+          'the Maven repository. Its main feature is the ability to scan insurance '
+          'documents and upload them to a configured API server, streamlining the '
+          'management of policies, claims, and user data for other apps.',
       link: 'https://play.google.com/store/apps/details?id=ch.oekk2.dip',
     ),
     Project(
         image: 'assets/img/medically-home.png',
         title: 'Medically Home',
         role: 'Senior Flutter developer',
-        description: 'Medically Home app for treating patients online. Allows to '
-            'communicate patients with doctor and nurses via online '
-            'appointments, track vital signs with the help of BLE devices and '
-            'schedule series of appointments for a laboratory tests.'),
+        description: 'Medically Home is a healthcare technology company that provides '
+            'solutions to enable patients to receive hospital-level care in the comfort '
+            'of their homes. By leveraging a combination of advanced technology, clinical '
+            'protocols, and a distributed care team model, Medically Home allows '
+            'healthcare systems to extend care beyond traditional hospital settings.'),
     Project(
       image: 'assets/img/cashplus.jpg',
       title: 'Cashplus. Banking App',
       role: 'Senior Android developer',
-      description: 'Fintech project. Banking application for UK users. '
-          'Banking app which allows to open a business or personal bank '
-          'account in a minutes.',
+      description: 'The Cashplus Android app allows users to manage their prepaid cards '
+          'and banking services. Users can view account balances, track transactions, '
+          'transfer money, and pay bills. It provides secure login with biometric options, '
+          'delivers a smooth and responsive interface, and integrates with APIs for '
+          'real-time data. The app is designed for reliable performance across different '
+          'devices while ensuring user data privacy and security.',
       link: 'https://play.google.com/store/apps/details?id=co.uk.mycashplus.maapp',
     ),
     Project(
       image: 'assets/img/daimler-app.png',
       title: 'Daimler app',
-      role: 'Senior Android developer',
+      role: 'The Daimler Mercedes PRO B2B project is a digital platform focused on '
+          'optimizing fleet management for businesses. It provides real-time vehicle tracking, '
+          'predictive maintenance, fuel monitoring, and driver behavior analysis, '
+          'helping companies reduce downtime, cut costs, and improve overall efficiency. '
+          'The platform ensures compliance with safety standards and offers fleet managers '
+          'valuable insights for making data-driven decisions. The Android app plays a crucial '
+          'role by acting as a mobile interface for fleet managers and drivers, allowing '
+          'them to access vehicle data, receive notifications, and manage operations on '
+          'the go. It enhances connectivity and enables real-time monitoring, making fleet '
+          'management more accessible and efficient.',
       description: 'Senior Android developer',
     ),
     Project(
@@ -125,9 +135,11 @@ class Repository {
     Skill.hard("REST", 70),
     Skill.hard("BLE", 50),
 
-    Skill.soft("English", 70),
-    Skill.soft("Spanish", 20),
+    Skill.soft("English", 75),
+    Skill.soft("Spanish", 23),
     Skill.soft("Communication", 80),
+    Skill.soft("Problem Solving", 76),
+    Skill.soft("Time management", 73),
   ];
 
   static const info = PersonalInfo(
