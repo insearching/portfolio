@@ -30,7 +30,7 @@ jobs:
 
       # (Optional) Upload the build artifacts for later use (e.g., deployment)
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
          name: flutter-web-build
          path: build/web  # Path where Flutter outputs the web build
