@@ -29,10 +29,12 @@ jobs:
       # Build Flutter web
       - name: Build Flutter Web
         run: flutter build web --web-renderer html
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: serhii-hrabas-potrfolio
-        env:
-          FIREBASE_CLI_EXPERIMENTS: webframeworks
+      - name: Deploy on Firebase
+        run: firebase deploy --token ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+#      - uses: FirebaseExtended/action-hosting-deploy@v0
+#        with:
+#          repoToken: ${{ secrets.GITHUB_TOKEN }}
+#          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+#          projectId: serhii-hrabas-potrfolio
+#        env:
+#          FIREBASE_CLI_EXPERIMENTS: webframeworks
