@@ -37,6 +37,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   url_launcher: ^6.3.1
   flutter_bloc: ^8.1.6
+  cached_network_image: ^3.2.0
 
 dev_dependencies:
   flutter_test:
@@ -70,9 +71,9 @@ flutter:
     - assets/img/portfolio.png
     - assets/img/resume.png
     - assets/img/contact.png
-    - assets/img/facebook.png
     - assets/img/linkedin.png
-    - assets/img/twitter.png
+    - assets/img/github.png
+    - assets/img/medium.png
     - assets/img/sbb-app.jpg
     - assets/img/sumex.png
     - assets/img/medically-home.png
@@ -84,6 +85,13 @@ flutter:
     - assets/img/development.jpg
     - assets/img/loro-sst.jpeg
     - assets/img/loro-retail.jpeg
+
+    - assets/certificates/coursera_kotlin.jpeg
+    - assets/certificates/java_data_structures.jpg
+    - assets/certificates/jetpack_compose.jpg
+    - assets/certificates/kotlin_coroutines.jpg
+    - assets/certificates/mastering_system_design_interview.jpg
+    - assets/certificates/software_architecture.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

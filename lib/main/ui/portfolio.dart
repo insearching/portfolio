@@ -5,17 +5,17 @@ import 'package:portfolio/main/ui/components/custom_dialog.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 
+import '../data/device_type.dart';
+
 class Portfolio extends StatefulWidget {
   const Portfolio({
     required this.projects,
-    required this.isDesktop,
-    required this.isTablet,
+    required this.deviceType,
     super.key,
   });
 
   final List<Project> projects;
-  final bool isDesktop;
-  final bool isTablet;
+  final DeviceType deviceType;
 
   @override
   State<Portfolio> createState() => _PortfolioState();
@@ -28,11 +28,17 @@ class _PortfolioState extends State<Portfolio> {
       padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
       child: Column(
         children: [
-          const ContainerTitle(title: 'My portfolio', subtitle: 'Visit my portfolio and leave your feedback'),
+          const ContainerTitle(
+              title: 'My portfolio',
+              subtitle: 'Visit my portfolio and leave your feedback'),
           const SizedBox(height: 32.0),
           GridView.count(
               shrinkWrap: true,
-              crossAxisCount: widget.isDesktop ? 3 : widget.isTablet ? 2 : 1,
+              crossAxisCount: widget.deviceType == DeviceType.desktop
+                  ? 3
+                  : widget.deviceType == DeviceType.tablet
+                      ? 2
+                      : 1,
               children: widget.projects
                   .map(
                     (project) => _PortfolioContainer(
@@ -47,15 +53,14 @@ class _PortfolioState extends State<Portfolio> {
                       ),
                     ),
                   )
-                  .toList()
-              ),
+                  .toList()),
         ],
       ),
     );
   }
 
-  _showDataDialog(
-      String image, String title, String subtitle, String description, String? link) {
+  _showDataDialog(String image, String title, String subtitle,
+      String description, String? link) {
     showDialog(
       context: context,
       builder: (context) {

@@ -8,19 +8,20 @@ import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/socials.dart';
 import 'package:collection/collection.dart';
 
+import '../data/device_type.dart';
 import 'components/elevated_container.dart';
 
 class Contact extends StatefulWidget {
   const Contact({
-    required this.isDesktop,
     required this.info,
     required this.onMessageSend,
+    required this.deviceType,
     super.key,
   });
 
-  final bool isDesktop;
   final PersonalInfo info;
   final ValueChanged<SubmitFormEvent> onMessageSend;
+  final DeviceType deviceType;
 
   @override
   State<Contact> createState() => _ContactState();
@@ -38,7 +39,7 @@ class _ContactState extends State<Contact> {
             subtitle: 'Contact',
           ),
           const SizedBox(height: 32.0),
-          widget.isDesktop
+          widget.deviceType == DeviceType.desktop
               ? IntrinsicHeight(
                   child: Row(
                     children: [
@@ -178,7 +179,8 @@ class _ContactFormState extends State<_ContactForm> {
                                 errorText: state is FormError
                                     ? state.getErrorMessage(
                                         state.errors.firstWhereOrNull(
-                                          (error) => error == InputFormError.EmptyName,
+                                          (error) =>
+                                              error == InputFormError.EmptyName,
                                         ),
                                       )
                                     : null,
@@ -194,8 +196,12 @@ class _ContactFormState extends State<_ContactForm> {
                               state: InputState(
                                 text: 'Your phone',
                                 errorText: state is FormError
-                                    ? state.getErrorMessage(state.errors.firstWhereOrNull(
-                                        (error) => error == InputFormError.EmptyPhone || error == InputFormError.NotValidPhone))
+                                    ? state.getErrorMessage(state.errors
+                                        .firstWhereOrNull((error) =>
+                                            error ==
+                                                InputFormError.EmptyPhone ||
+                                            error ==
+                                                InputFormError.NotValidPhone))
                                     : null,
                                 textInputType: TextInputType.phone,
                                 onTextChanged: (text) {
@@ -210,8 +216,10 @@ class _ContactFormState extends State<_ContactForm> {
                         state: InputState(
                           text: 'Your email',
                           errorText: state is FormError
-                              ? state.getErrorMessage(state.errors.firstWhereOrNull(
-                                  (error) => error == InputFormError.EmptyEmail || error == InputFormError.NotValidEmail))
+                              ? state.getErrorMessage(state.errors
+                                  .firstWhereOrNull((error) =>
+                                      error == InputFormError.EmptyEmail ||
+                                      error == InputFormError.NotValidEmail))
                               : null,
                           onTextChanged: (text) {
                             form.email = text;
@@ -222,8 +230,9 @@ class _ContactFormState extends State<_ContactForm> {
                         state: InputState(
                           text: 'Your subject',
                           errorText: state is FormError
-                              ? state.getErrorMessage(state.errors.firstWhereOrNull(
-                                  (error) => error == InputFormError.EmptySubject))
+                              ? state.getErrorMessage(state.errors
+                                  .firstWhereOrNull((error) =>
+                                      error == InputFormError.EmptySubject))
                               : null,
                           onTextChanged: (text) {
                             form.subject = text;
@@ -234,8 +243,9 @@ class _ContactFormState extends State<_ContactForm> {
                         state: InputState(
                           text: 'Your message',
                           errorText: state is FormError
-                              ? state.getErrorMessage(state.errors.firstWhereOrNull(
-                                  (error) => error == InputFormError.EmptyMessage))
+                              ? state.getErrorMessage(state.errors
+                                  .firstWhereOrNull((error) =>
+                                      error == InputFormError.EmptyMessage))
                               : null,
                           maxLines: 10,
                           onTextChanged: (text) {

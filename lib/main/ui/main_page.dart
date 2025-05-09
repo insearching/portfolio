@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/data/device_type.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/data/repository.dart';
@@ -114,8 +115,7 @@ class _LargeScreenContentState extends State<_LargeScreenContent> {
         const _LeftPanel(),
         const VerticalDivider(width: 1.0, color: UIColors.black),
         _MainContent(
-          isDesktop: true,
-          isTablet: false,
+          deviceType: DeviceType.desktop,
           name: widget.name,
           onMessageSend: widget.onMessageSend,
         )
@@ -142,8 +142,7 @@ class _MediumScreenContentState extends State<_MediumScreenContent> {
   @override
   Widget build(BuildContext context) {
     return _MainContent(
-      isDesktop: false,
-      isTablet: true,
+      deviceType: DeviceType.tablet,
       name: widget.name,
       onMessageSend: widget.onMessageSend,
     );
@@ -168,8 +167,7 @@ class _SmallScreenContentState extends State<_SmallScreenContent> {
   @override
   Widget build(BuildContext context) {
     return _MainContent(
-      isDesktop: false,
-      isTablet: false,
+      deviceType: DeviceType.phone,
       name: widget.name,
       onMessageSend: widget.onMessageSend,
     );
@@ -206,7 +204,9 @@ class _LeftPanelState extends State<_LeftPanel> {
             },
           ),
           const HorizontalDivider(),
-          Socials(socials: Repository.info.socials),
+          Socials(
+              socials: Repository.info.socials
+          ),
         ],
       ),
     );
@@ -215,15 +215,13 @@ class _LeftPanelState extends State<_LeftPanel> {
 
 class _MainContent extends StatefulWidget {
   const _MainContent({
-    required this.isDesktop,
-    required this.isTablet,
+    required this.deviceType,
     required this.name,
     required this.onMessageSend,
     Key? key,
   }) : super(key: key);
 
-  final bool isDesktop;
-  final bool isTablet;
+  final DeviceType deviceType;
   final String name;
   final ValueChanged<SubmitFormEvent> onMessageSend;
 
@@ -260,28 +258,29 @@ class _MainContentState extends State<_MainContent> {
               const HorizontalDivider(),
               Features(
                 key: keys[NavigationMenu.features],
-                isDesktop: widget.isDesktop,
-                isTablet: widget.isTablet,
+                responsibilities: Repository.responsibilities,
+                deviceType: widget.deviceType
               ),
               const HorizontalDivider(),
               Portfolio(
                 key: keys[NavigationMenu.portfolio],
                 projects: Repository.projects,
-                isDesktop: widget.isDesktop,
-                isTablet: widget.isTablet,
+                deviceType: widget.deviceType
               ),
               const HorizontalDivider(),
               Resume(
                 key: keys[NavigationMenu.resume],
                 educations: Repository.educationInfo,
                 skills: Repository.skills,
+                posts: Repository.posts,
+                deviceType: widget.deviceType,
               ),
               const HorizontalDivider(),
               Contact(
                 key: keys[NavigationMenu.contact],
-                isDesktop: widget.isDesktop,
                 info: Repository.info,
                 onMessageSend: widget.onMessageSend,
+                deviceType: widget.deviceType
               ),
             ],
           ),

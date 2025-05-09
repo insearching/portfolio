@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/skill.dart';
 import 'package:portfolio/main/ui/components/container_title.dart';
 import 'package:portfolio/main/ui/resume_tabs.dart';
+
+import '../data/device_type.dart';
 
 class Resume extends StatefulWidget {
   const Resume({
     required this.educations,
     required this.skills,
+    required this.posts,
+    required this.deviceType,
     super.key,
   });
 
   final List<Education> educations;
   final List<Skill> skills;
+  final List<Post> posts;
+  final DeviceType deviceType;
 
   @override
   State<Resume> createState() => _ResumeState();
@@ -30,6 +37,8 @@ class _ResumeState extends State<Resume> {
           ResumeTabs(
             educations: widget.educations,
             skills: widget.skills,
+            posts: widget.posts,
+            deviceType: widget.deviceType,
           )
         ],
       ),

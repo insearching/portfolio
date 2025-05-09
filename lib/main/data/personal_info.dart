@@ -16,8 +16,8 @@ class PersonalInfo {
 
 enum SocialInfo {
   linkedin(url: 'https://www.linkedin.com/in/serhii-hrabas/', icon: 'assets/img/linkedin.png'),
-  facebook(url: 'https://www.facebook.com/insearching1234', icon: 'assets/img/facebook.png'),
-  twitter(url: 'https://twitter.com/HrabasSerhii', icon: 'assets/img/twitter.png');
+  github(url: 'https://github.com/insearching', icon: 'assets/img/github.png'),
+  medium(url: 'https://medium.com/@graser1305', icon: 'assets/img/medium.png');
 
   final String url;
   final String icon;
