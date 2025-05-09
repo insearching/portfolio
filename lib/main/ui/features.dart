@@ -35,7 +35,6 @@ class _FeaturesState extends State<Features> {
               ? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                spacing: 16.0,
                 children: widget.responsibilities
                     .map(
                       (responsibility) => Expanded(
