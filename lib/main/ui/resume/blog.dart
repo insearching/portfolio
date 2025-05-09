@@ -47,34 +47,43 @@ class _BlogWidgetState extends State<BlogWidget> {
   }
 
   Widget _buildPostCard(Post post) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth < 600 ? 8.0 : 32.0;
+    final imageHeight = screenWidth < 600 ? 120.0 : 220.0;
+    final cardMaxHeight = screenWidth < 600 ? 250.0 : 350.0;
+    final cardPadding = EdgeInsets.all(screenWidth < 600 ? 12.0 : 24.0);
+
     return ConstrainedBox(
-      constraints: const BoxConstraints(
-        maxHeight: 350,
+      constraints: BoxConstraints(
+        maxHeight: cardMaxHeight,
       ),
       child: ElevatedContainer(
         onTap: () => launchUrlString(post.link),
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 post.title,
                 style: Theme.of(context).textTheme.bodyLarge,
                 softWrap: true,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               Text(
                 post.description,
                 style: Theme.of(context).textTheme.bodyMedium,
                 softWrap: true,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: CachedNetworkImage(
                   imageUrl: post.imageLink,
-                  height: 220,
+                  height: imageHeight,
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => const Center(child: CircularProgressIndicator()),

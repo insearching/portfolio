@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/utils/theme.dart';
+import 'package:provider/provider.dart';
 
+import 'main/data/device_info.dart';
+import 'main/data/device_type.dart';
 import 'main/ui/components/app_error_widget.dart';
 import 'main/ui/main_page.dart';
 
@@ -9,24 +12,59 @@ const String userName = 'Serhii Hrabas';
 
 void main() {
   if (kReleaseMode) ErrorWidget.builder = (_) => const AppErrorWidget();
-  runApp(const PortfolioApplication());
+  runApp(const RootProvider());
+}
+
+DeviceType _getDeviceType(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  if (size.width > 1000) return DeviceType.desktop;
+  if (size.width > 600) return DeviceType.tablet;
+  return DeviceType.phone;
+}
+
+class RootProvider extends StatelessWidget {
+  const RootProvider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final deviceType = _getDeviceType(context);
+
+        final isSmallDevice = deviceType == DeviceType.phone;
+        final theme =
+            isSmallDevice ? CustomTheme.phoneTheme : CustomTheme.desktopTheme;
+
+        return Provider<DeviceInfo>(
+          create: (_) => DeviceInfo(deviceType),
+          child: PortfolioApplication(
+            theme: theme,
+          ),
+        );
+      },
+    );
+  }
 }
 
 class PortfolioApplication extends StatelessWidget {
-  const PortfolioApplication({Key? key}) : super(key: key);
+  const PortfolioApplication({
+    required this.theme,
+    Key? key,
+  }) : super(key: key);
+
+  final ThemeData theme;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: userName,
-      theme: CustomTheme.mainTheme,
+      theme: theme,
       home: MainPage(
-        name: userName,
-        onMessageSend: (text) {
-          //todo add callback
-        }
-      ),
+          name: userName,
+          onMessageSend: (text) {
+            //todo add callback
+          }),
     );
   }
 }

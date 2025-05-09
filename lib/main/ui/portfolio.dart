@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/data/device_info.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/ui/components/container_title.dart';
 import 'package:portfolio/main/ui/components/custom_dialog.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 import '../data/device_type.dart';
 
 class Portfolio extends StatefulWidget {
   const Portfolio({
     required this.projects,
-    required this.deviceType,
     super.key,
   });
 
   final List<Project> projects;
-  final DeviceType deviceType;
 
   @override
   State<Portfolio> createState() => _PortfolioState();
@@ -24,19 +24,22 @@ class Portfolio extends StatefulWidget {
 class _PortfolioState extends State<Portfolio> {
   @override
   Widget build(BuildContext context) {
+    final deviceType = context.read<DeviceInfo>().deviceType;
+    final isPhone = deviceType == DeviceType.phone;
     return Padding(
-      padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
+      padding: EdgeInsets.only(top: isPhone ? 16.0 : 64.0, bottom: 64.0),
       child: Column(
         children: [
-          const ContainerTitle(
-              title: 'My portfolio',
-              subtitle: 'Visit my portfolio and leave your feedback'),
+          Text(
+            'My portfolio',
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
           const SizedBox(height: 32.0),
           GridView.count(
               shrinkWrap: true,
-              crossAxisCount: widget.deviceType == DeviceType.desktop
+              crossAxisCount: deviceType == DeviceType.desktop
                   ? 3
-                  : widget.deviceType == DeviceType.tablet
+                  : deviceType == DeviceType.tablet
                       ? 2
                       : 1,
               children: widget.projects
@@ -97,6 +100,8 @@ class _PortfolioContainerState extends State<_PortfolioContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceType = context.read<DeviceInfo>().deviceType;
+    final isDesktop = deviceType == DeviceType.desktop;
     return ElevatedContainer(
       onTap: widget.onTap,
       onElevatedChanged: (value) {
@@ -119,7 +124,6 @@ class _PortfolioContainerState extends State<_PortfolioContainer> {
                 ),
               ),
             ),
-            const SizedBox(height: 32.0),
             Center(
               child: Text(
                 widget.title,
@@ -128,20 +132,21 @@ class _PortfolioContainerState extends State<_PortfolioContainer> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Opacity(
-              opacity: _isArrowVisible ? 1.0 : 0.0,
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 24.0),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 40.0,
-                    color: UIColors.accent,
-                  ),
-                ],
+            if (isDesktop)
+              Opacity(
+                opacity: _isArrowVisible ? 1.0 : 0.0,
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 24.0),
+                    Icon(
+                      Icons.arrow_forward,
+                      size: 40.0,
+                      color: UIColors.accent,
+                    ),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       ),

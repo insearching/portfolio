@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/data/device_info.dart';
 import 'package:portfolio/main/data/device_type.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/ui/components/education_container.dart';
@@ -6,12 +8,10 @@ import 'package:portfolio/main/ui/components/education_container.dart';
 class EducationWidget extends StatefulWidget {
   const EducationWidget({
     required this.educations,
-    required this.deviceType,
     Key? key,
   }) : super(key: key);
 
   final List<Education> educations;
-  final DeviceType deviceType;
 
   @override
   State<EducationWidget> createState() => _EducationWidgetState();
@@ -20,7 +20,8 @@ class EducationWidget extends StatefulWidget {
 class _EducationWidgetState extends State<EducationWidget> {
   @override
   Widget build(BuildContext context) {
-    if (widget.deviceType == DeviceType.phone) {
+    final deviceType = context.read<DeviceInfo>().deviceType;
+    if (deviceType == DeviceType.phone) {
       return SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

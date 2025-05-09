@@ -23,48 +23,45 @@ class _EducationContainerState extends State<EducationContainer> {
     final String? link = widget.education.link;
     final String? imageUrl = widget.education.imageUrl;
 
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      child: ElevatedContainer(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+    return ElevatedContainer(
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              widget.education.title,
+              style: Theme.of(context).textTheme.bodyLarge,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              widget.education.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+              softWrap: true,
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 16.0),
+            const HorizontalDivider(),
+            const SizedBox(height: 24.0),
+            if (text != null) ...[
               Text(
-                widget.education.title,
-                style: Theme.of(context).textTheme.bodyLarge,
-                softWrap: true,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                widget.education.description,
+                text,
                 style: Theme.of(context).textTheme.bodyMedium,
                 softWrap: true,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 16.0),
-              const HorizontalDivider(),
-              const SizedBox(height: 24.0),
-              if (text != null) ...[
-                Text(
-                  text,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  softWrap: true,
-                )
-              ],
-              if (imageUrl != null) ...[
-                InkWell(
-                  onTap: link != null ? () => launchUrlString(link) : null,
-                  child: Image(
-                    image: AssetImage(imageUrl),
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                  ),
-                )
-              ],
+              )
             ],
-          ),
+            if (imageUrl != null) ...[
+              InkWell(
+                onTap: link != null ? () => launchUrlString(link) : null,
+                child: Image(
+                  image: AssetImage(imageUrl),
+                  fit: BoxFit.fill,
+                  width: double.infinity,
+                ),
+              )
+            ],
+          ],
         ),
       ),
     );

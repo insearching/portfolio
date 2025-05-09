@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/device_type.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
@@ -14,14 +13,12 @@ class ResumeTabs extends StatefulWidget {
     required this.educations,
     required this.skills,
     required this.posts,
-    required this.deviceType,
     Key? key,
   }) : super(key: key);
 
   final List<Education> educations;
   final List<Skill> skills;
   final List<Post> posts;
-  final DeviceType deviceType;
 
   @override
   ResumeTabsState createState() => ResumeTabsState();
@@ -77,8 +74,7 @@ class ResumeTabsState extends State<ResumeTabs>
                 controller: _tabController,
                 children: [
                   EducationWidget(
-                    educations: widget.educations,
-                    deviceType: widget.deviceType,
+                    educations: widget.educations
                   ),
                   ProfessionalSkillsWidget(skills: widget.skills),
                   BlogWidget(posts: widget.posts)

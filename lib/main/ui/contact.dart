@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/data/device_info.dart';
 import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/ui/components/container_title.dart';
 import 'package:portfolio/main/ui/components/input_field.dart';
@@ -15,13 +16,11 @@ class Contact extends StatefulWidget {
   const Contact({
     required this.info,
     required this.onMessageSend,
-    required this.deviceType,
     super.key,
   });
 
   final PersonalInfo info;
   final ValueChanged<SubmitFormEvent> onMessageSend;
-  final DeviceType deviceType;
 
   @override
   State<Contact> createState() => _ContactState();
@@ -30,6 +29,7 @@ class Contact extends StatefulWidget {
 class _ContactState extends State<Contact> {
   @override
   Widget build(BuildContext context) {
+    final deviceType = context.read<DeviceInfo>().deviceType;
     return Padding(
       padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
       child: Column(
@@ -39,7 +39,7 @@ class _ContactState extends State<Contact> {
             subtitle: 'Contact',
           ),
           const SizedBox(height: 32.0),
-          widget.deviceType == DeviceType.desktop
+          deviceType == DeviceType.desktop
               ? IntrinsicHeight(
                   child: Row(
                     children: [

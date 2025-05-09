@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/data/device_info.dart';
 import 'package:portfolio/main/data/device_type.dart';
 import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/ui/components/container_title.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class Feature {}
 
 class Features extends StatefulWidget {
   const Features({
     required this.responsibilities,
-    required this.deviceType,
     Key? key,
   }) : super(key: key);
 
   final List<Responsibility> responsibilities;
-  final DeviceType deviceType;
 
   @override
   State<Features> createState() => _FeaturesState();
@@ -24,14 +24,18 @@ class Features extends StatefulWidget {
 class _FeaturesState extends State<Features> {
   @override
   Widget build(BuildContext context) {
+    final deviceType = context.read<DeviceInfo>().deviceType;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const ContainerTitle(title: 'What I Do', subtitle: 'Features'),
+          Text(
+            'What I Do',
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
           const SizedBox(height: 24.0),
-          widget.deviceType.isLargeScreen
+          deviceType.isLargeScreen
               ? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
