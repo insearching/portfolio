@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/responsive_layout.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_scaffold.dart';
+import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/theme.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +15,12 @@ import 'main/ui/components/app_error_widget.dart';
 const String userName = 'Serhii Hrabas';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: UIColors.backgroundColor, // Set your desired color
+      statusBarIconBrightness: Brightness.light, // For white icons
+    ),
+  );
   ErrorWidget.builder = (_) => const AppErrorWidget();
   runApp(const RootProvider());
 }
