@@ -51,3 +51,25 @@ jobs:
           projectId: serhii-hrabas-potrfolio
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+
+#      # Decode and set up Firebase service account credentials
+#      - name: Set up Firebase Authentication
+#        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > $HOME/firebase-key.json
+#        env:
+#          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+#
+#        # Deploy to Firebase Hosting
+#      - name: Deploy on Firebase
+#        run: firebase deploy --only hosting
+#        env:
+#           GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json
+
+      # Optional: Use FirebaseExtended Action with service account
+      # - uses: FirebaseExtended/action-hosting-deploy@v0
+      #   with:
+      #     repoToken: ${{ secrets.GITHUB_TOKEN }}
+      #     firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      #     channelId: live
+      #     projectId: serhii-hrabas-potrfolio
+      #   env:
+      #     FIREBASE_CLI_EXPERIMENTS: webframeworks

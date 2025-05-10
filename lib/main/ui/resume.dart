@@ -4,7 +4,6 @@ import 'package:portfolio/main/data/device_type.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/skill.dart';
-import 'package:portfolio/main/ui/components/container_title.dart';
 import 'package:portfolio/main/ui/resume_tabs.dart';
 import 'package:provider/provider.dart';
 
@@ -39,10 +38,9 @@ class _ResumeState extends State<Resume> {
           ),
           const SizedBox(height: 24.0),
           ResumeTabs(
-            educations: widget.educations,
-            skills: widget.skills,
-            posts: widget.posts
-          )
+              educations: widget.educations,
+              skills: widget.skills,
+              posts: widget.posts)
         ],
       ),
     );

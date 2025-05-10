@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/components/circle_image.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 
-class Home extends StatefulWidget {
-  const Home({
+class MobileHome extends StatefulWidget {
+  const MobileHome({
     required this.name,
     required this.onContactClicked,
     Key? key,
@@ -14,16 +14,16 @@ class Home extends StatefulWidget {
   final VoidCallback onContactClicked;
 
   @override
-  State<Home> createState() => _HomeState();
+  State<MobileHome> createState() => _MobileHomeState();
 }
 
-class _HomeState extends State<Home> {
+class _MobileHomeState extends State<MobileHome> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
+      padding: const EdgeInsets.only(top: 16.0, bottom: 32.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _Avatar(),
           const SizedBox(height: 16.0),

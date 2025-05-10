@@ -1,18 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/main/data/device_info.dart';
 import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/socials.dart';
 
-import '../data/device_type.dart';
-import 'components/elevated_container.dart';
-
-class Contact extends StatefulWidget {
-  const Contact({
+class DesktopContact extends StatelessWidget {
+  const DesktopContact({
     required this.info,
     required this.onMessageSend,
     super.key,
@@ -22,13 +19,7 @@ class Contact extends StatefulWidget {
   final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
-  State<Contact> createState() => _ContactState();
-}
-
-class _ContactState extends State<Contact> {
-  @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
     return Padding(
       padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
       child: Column(
@@ -38,29 +29,19 @@ class _ContactState extends State<Contact> {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 32.0),
-          deviceType == DeviceType.desktop
-              ? IntrinsicHeight(
-                  child: Row(
-                    children: [
-                      Expanded(child: _ContactInfoContainer(info: widget.info)),
-                      const SizedBox(width: 32.0),
-                      Expanded(
-                        child: _ContactForm(
-                          onMessageSend: widget.onMessageSend,
-                        ),
-                      )
-                    ],
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(child: _ContactInfoContainer(info: info)),
+                const SizedBox(width: 32.0),
+                Expanded(
+                  child: _ContactForm(
+                    onMessageSend: onMessageSend,
                   ),
                 )
-              : Column(
-                  children: [
-                    _ContactInfoContainer(info: widget.info),
-                    const SizedBox(height: 32.0),
-                    _ContactForm(
-                      onMessageSend: widget.onMessageSend,
-                    )
-                  ],
-                )
+              ],
+            ),
+          )
         ],
       ),
     );

@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
+import 'package:portfolio/main/ui/responsive/mobile/mobile_scaffold.dart';
+import 'package:portfolio/main/ui/responsive/responsive_layout.dart';
+import 'package:portfolio/main/ui/responsive/tablet/tablet_scaffold.dart';
 import 'package:portfolio/utils/theme.dart';
 import 'package:provider/provider.dart';
 
 import 'main/data/device_info.dart';
 import 'main/data/device_type.dart';
 import 'main/ui/components/app_error_widget.dart';
-import 'main/ui/main_page.dart';
 
 const String userName = 'Serhii Hrabas';
 
@@ -58,13 +61,25 @@ class PortfolioApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: userName,
-      theme: theme,
-      home: MainPage(
-          name: userName,
-          onMessageSend: (text) {
-            //todo add callback
-          }),
-    );
+        title: userName,
+        theme: theme,
+        home: ResponsiveLayout(
+          mobileScaffold: const MobileScaffold(name: userName),
+          tabletScaffold: TabletScaffold(
+            name: userName,
+            onMessageSend: (form) {},
+          ),
+          desktopScaffold: DesktopScaffold(
+            name: userName,
+            onMessageSend: (form) {},
+          ),
+        )
+        // home: MainPage(
+        //   name: userName,
+        //   onMessageSend: (text) {
+        //     //todo add callback
+        //   },
+        // ),
+        );
   }
 }

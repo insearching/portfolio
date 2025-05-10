@@ -4,7 +4,7 @@ import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-class EducationContainer extends StatefulWidget {
+class EducationContainer extends StatelessWidget {
   const EducationContainer({
     required this.education,
     Key? key,
@@ -13,15 +13,10 @@ class EducationContainer extends StatefulWidget {
   final Education education;
 
   @override
-  State<EducationContainer> createState() => _EducationContainerState();
-}
-
-class _EducationContainerState extends State<EducationContainer> {
-  @override
   Widget build(BuildContext context) {
-    final String? text = widget.education.text;
-    final String? link = widget.education.link;
-    final String? imageUrl = widget.education.imageUrl;
+    final String? text = education.text;
+    final String? link = education.link;
+    final String? imageUrl = education.imageUrl;
 
     return ElevatedContainer(
       child: Padding(
@@ -30,13 +25,13 @@ class _EducationContainerState extends State<EducationContainer> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              widget.education.title,
+              education.title,
               style: Theme.of(context).textTheme.bodyLarge,
               softWrap: true,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
-              widget.education.description,
+              education.description,
               style: Theme.of(context).textTheme.bodyMedium,
               softWrap: true,
               overflow: TextOverflow.ellipsis,

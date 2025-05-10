@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/data/device_info.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/utils/collections.dart';
 import 'package:portfolio/utils/colors.dart';
+import 'package:provider/provider.dart';
 
 class NavigationPanel extends StatefulWidget {
   const NavigationPanel({
@@ -20,12 +22,14 @@ class _NavigationPanelState extends State<NavigationPanel> {
 
   @override
   Widget build(BuildContext context) {
+    final isSmallDevice = context.read<DeviceInfo>().deviceType.isSmallDevice;
+
     onMenuItemSelect(position) {
       widget.onMenuItemSelected(position);
     }
 
     return Padding(
-      padding: const EdgeInsets.all(40.0),
+      padding: EdgeInsets.all(isSmallDevice ? 16.0 : 40.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -33,7 +37,8 @@ class _NavigationPanelState extends State<NavigationPanel> {
             duration: const Duration(milliseconds: 300),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(7.0),
-                color: isHovered ? const Color(0x15000000) : Colors.transparent),
+                color:
+                    isHovered ? const Color(0x15000000) : Colors.transparent),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: NavigationMenu.values
