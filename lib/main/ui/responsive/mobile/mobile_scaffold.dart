@@ -3,6 +3,8 @@ import 'package:portfolio/main/ui/left_panel.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/utils/colors.dart';
 
+import 'mobile_content.dart';
+
 class MobileScaffold extends StatefulWidget {
   const MobileScaffold({
     required this.name,
@@ -46,16 +48,10 @@ class _MobileScaffoldState extends State<MobileScaffold> {
           },
         ),
       ),
-      body: Container(
-          color: UIColors.backgroundColor,
-          child: const Text("Content will be here")),
-      // body: Container(
-      //   color: UIColors.backgroundColor,
-      //   child: MobileContent(
-      //     name: widget.name,
-      //     onMessageSend: widget.onMessageSend,
-      //   ),
-      // ),
+      body: MobileContent(
+        name: widget.name,
+        onMessageSend: widget.onMessageSend,
+      ),
       drawer: const Drawer(
         backgroundColor: UIColors.backgroundColor,
         width: 250.0,
