@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_scaffold.dart';
@@ -14,7 +13,7 @@ import 'main/ui/components/app_error_widget.dart';
 const String userName = 'Serhii Hrabas';
 
 void main() {
-  if (kReleaseMode) ErrorWidget.builder = (_) => const AppErrorWidget();
+  ErrorWidget.builder = (_) => const AppErrorWidget();
   runApp(const RootProvider());
 }
 
@@ -61,25 +60,22 @@ class PortfolioApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: userName,
-        theme: theme,
-        home: ResponsiveLayout(
-          mobileScaffold: const MobileScaffold(name: userName),
-          tabletScaffold: TabletScaffold(
-            name: userName,
-            onMessageSend: (form) {},
-          ),
-          desktopScaffold: DesktopScaffold(
-            name: userName,
-            onMessageSend: (form) {},
-          ),
-        )
-        // home: MainPage(
-        //   name: userName,
-        //   onMessageSend: (text) {
-        //     //todo add callback
-        //   },
-        // ),
-        );
+      title: userName,
+      theme: theme,
+      home: ResponsiveLayout(
+        mobileScaffold: MobileScaffold(
+          name: userName,
+          onMessageSend: (form) {},
+        ),
+        tabletScaffold: TabletScaffold(
+          name: userName,
+          onMessageSend: (form) {},
+        ),
+        desktopScaffold: DesktopScaffold(
+          name: userName,
+          onMessageSend: (form) {},
+        ),
+      ),
+    );
   }
 }

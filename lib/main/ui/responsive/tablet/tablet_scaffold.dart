@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/left_panel.dart';
+import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_content.dart';
 import 'package:portfolio/utils/colors.dart';
 
@@ -11,7 +12,7 @@ class TabletScaffold extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final dynamic onMessageSend;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
   State<TabletScaffold> createState() => _TabletScaffoldState();

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/device_info.dart';
-import 'package:portfolio/main/data/device_type.dart';
 import 'package:portfolio/main/data/responsibility.dart';
-import 'package:portfolio/main/ui/components/container_title.dart';
-import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/feature_content.dart';
-import 'package:portfolio/utils/colors.dart';
 import 'package:provider/provider.dart';
 
 class Features extends StatefulWidget {
@@ -36,19 +32,19 @@ class _FeaturesState extends State<Features> {
           const SizedBox(height: 24.0),
           deviceType.isLargeScreen
               ? Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: widget.responsibilities
-                    .map(
-                      (responsibility) => Expanded(
-                        child: FeatureContainer(
-                          responsibility: responsibility,
-                          isPhone: false,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: widget.responsibilities
+                      .map(
+                        (responsibility) => Expanded(
+                          child: FeatureContainer(
+                            responsibility: responsibility,
+                            isPhone: false,
+                          ),
                         ),
-                      ),
-                    )
-                    .toList(),
-              )
+                      )
+                      .toList(),
+                )
               : IntrinsicHeight(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

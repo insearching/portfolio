@@ -19,13 +19,12 @@ class BlogWidget extends StatefulWidget {
 class _BlogWidgetState extends State<BlogWidget> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isDesktop = constraints.maxWidth > 800;
-        
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: isDesktop 
+    return LayoutBuilder(builder: (context, constraints) {
+      final isDesktop = constraints.maxWidth > 800;
+
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: isDesktop
             ? GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
@@ -34,16 +33,18 @@ class _BlogWidgetState extends State<BlogWidget> {
                   childAspectRatio: 0.8,
                 ),
                 itemCount: widget.posts.length,
-                itemBuilder: (context, index) => _buildPostCard(widget.posts[index]),
+                itemBuilder: (context, index) =>
+                    _buildPostCard(widget.posts[index]),
               )
             : ListView.separated(
                 itemCount: widget.posts.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16.0),
-                itemBuilder: (context, index) => _buildPostCard(widget.posts[index]),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 16.0),
+                itemBuilder: (context, index) =>
+                    _buildPostCard(widget.posts[index]),
               ),
-        );
-      }
-    );
+      );
+    });
   }
 
   Widget _buildPostCard(Post post) {
@@ -51,7 +52,6 @@ class _BlogWidgetState extends State<BlogWidget> {
     final horizontalPadding = screenWidth < 600 ? 8.0 : 32.0;
     final imageHeight = screenWidth < 600 ? 120.0 : 220.0;
     final cardMaxHeight = screenWidth < 600 ? 250.0 : 350.0;
-    final cardPadding = EdgeInsets.all(screenWidth < 600 ? 12.0 : 24.0);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -86,8 +86,10 @@ class _BlogWidgetState extends State<BlogWidget> {
                   height: imageHeight,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => const Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => const Icon(Icons.error, size: 150),
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error, size: 150),
                 ),
               ),
             ],

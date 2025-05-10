@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/left_panel.dart';
-import 'package:portfolio/main/ui/responsive/mobile/mobile_content.dart';
+import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class MobileScaffold extends StatefulWidget {
-  const MobileScaffold({Key? key, required this.name}) : super(key: key);
+  const MobileScaffold({
+    required this.name,
+    required this.onMessageSend,
+    Key? key,
+  }) : super(key: key);
 
   final String name;
+  final ValueChanged<SubmitFormEvent> onMessageSend;
 
   @override
   State<MobileScaffold> createState() => _MobileScaffoldState();
@@ -42,12 +47,15 @@ class _MobileScaffoldState extends State<MobileScaffold> {
         ),
       ),
       body: Container(
-        color: UIColors.backgroundColor,
-        child: MobileContent(
-          name: widget.name,
-          onMessageSend: (text) => {},
-        ),
-      ),
+          color: UIColors.backgroundColor,
+          child: const Text("Content will be here")),
+      // body: Container(
+      //   color: UIColors.backgroundColor,
+      //   child: MobileContent(
+      //     name: widget.name,
+      //     onMessageSend: widget.onMessageSend,
+      //   ),
+      // ),
       drawer: const Drawer(
         backgroundColor: UIColors.backgroundColor,
         width: 250.0,
