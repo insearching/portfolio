@@ -7,8 +7,8 @@ import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/main_page.dart';
-import 'package:portfolio/main/ui/portfolio.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_contact.dart';
+import 'package:portfolio/main/ui/responsive/desktop/desktop_portfolio.dart';
 import 'package:portfolio/main/ui/resume.dart';
 import 'package:portfolio/utils/colors.dart';
 
@@ -61,7 +61,7 @@ class _DesktopContentState extends State<DesktopContent> {
                   responsibilities: Repository.responsibilities,
                 ),
                 const HorizontalDivider(),
-                Portfolio(
+                DesktopPortfolio(
                   key: keys[NavigationMenu.portfolio],
                   projects: Repository.projects,
                 ),

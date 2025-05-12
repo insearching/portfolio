@@ -55,7 +55,36 @@ class Repository {
           'I’m proactive, detail-oriented, and always curious about new tools '
           'and techniques that can make apps better. Whether I’m leading a new '
           'project or jumping in to help polish the last 10%, I bring the same '
-          'energy and care to every line of code.',
+          'energy and care to every line of code. By the way, this portfolio was'
+          'create with Flutter as well.',
+    ),
+    Responsibility(
+      icon: 'assets/img/kmp.png',
+      title: 'KMP development',
+      description: 'I’ve been focused on building cross-platform apps and '
+          'recently shifted my attention to Kotlin Multiplatform (KMP). '
+          'What excites me about KMP is its ability to share core business '
+          'logic across Android, iOS, and even backend platforms—while still '
+          'allowing for platform-specific UI and native performance. It offers '
+          'the flexibility and power I value as a developer, especially when '
+          'building scalable and maintainable solutions.\n\n'
+          'Currently, I\'m working on a personal pet project that parses RSS '
+          'feeds using KMP. This project has been a great opportunity to deepen '
+          'my understanding of shared code architecture, asynchronous data '
+          'handling with coroutines, and modular app design. I\'m really enjoying'
+          'the challenge and am eager to leverage this knowledge in a real production'
+          'environment.\n\n'
+          'In my previous cross-platform work, I built several Flutter '
+          'applications where I handled everything from setting up architecture '
+          'to optimizing animations and performance. That experience taught me '
+          'the importance of clean architecture, solid state management, and '
+          'writing testable, maintainable code—skills I now bring into my work '
+          'with KMP.\n\n'
+          'I’m proactive, detail-oriented, and always looking to explore tools '
+          'and practices that improve development efficiency and product'
+          'quality. Whether I’m starting a new feature or helping refine the '
+          'final polish, I bring the same care and commitment to every line '
+          'of code.',
     )
   ];
   static const List<Project> projects = [
@@ -233,8 +262,7 @@ class Repository {
       title: 'Kotlin for Java Developers',
       description: 'Jetbrains',
       type: EducationType.certification,
-      link:
-          'https://coursera.org/verify/SS7W8VWU974B',
+      link: 'https://coursera.org/verify/SS7W8VWU974B',
       imageUrl: 'assets/certificates/coursera_kotlin.jpeg',
     ),
     Education(
@@ -242,7 +270,7 @@ class Repository {
       description: 'Scott Barrett',
       type: EducationType.certification,
       link:
-      'https://www.udemy.com/certificate/UC-1e9be320-0ebd-459f-b1a5-79575071d3fb/',
+          'https://www.udemy.com/certificate/UC-1e9be320-0ebd-459f-b1a5-79575071d3fb/',
       imageUrl: 'assets/certificates/java_data_structures.jpg',
     ),
     Education(
@@ -250,7 +278,7 @@ class Repository {
       description: 'Lukas Lechner',
       type: EducationType.certification,
       link:
-      'https://www.udemy.com/certificate/UC-402b01ca-893f-45fb-b7de-cfce5b71e977/',
+          'https://www.udemy.com/certificate/UC-402b01ca-893f-45fb-b7de-cfce5b71e977/',
       imageUrl: 'assets/certificates/kotlin_coroutines.jpg',
     ),
     Education(
@@ -258,46 +286,55 @@ class Repository {
       description: 'Sundog Education',
       type: EducationType.certification,
       link:
-      'https://www.udemy.com/certificate/UC-83f2362d-56eb-4d62-b063-0176417cb3c5/',
-      imageUrl:
-      'assets/certificates/mastering_system_design_interview.jpg',
+          'https://www.udemy.com/certificate/UC-83f2362d-56eb-4d62-b063-0176417cb3c5/',
+      imageUrl: 'assets/certificates/mastering_system_design_interview.jpg',
     ),
     Education(
       title: 'Software Architecture & Design of Modern Large Scale Systems',
       description: 'Top Developer Academy LLC',
       type: EducationType.certification,
       link:
-      'https://www.udemy.com/certificate/UC-b6267e86-54cd-4e56-a085-fdc3824e6b0e/',
-      imageUrl:
-      'assets/certificates/software_architecture.jpg',
+          'https://www.udemy.com/certificate/UC-b6267e86-54cd-4e56-a085-fdc3824e6b0e/',
+      imageUrl: 'assets/certificates/software_architecture.jpg',
     ),
   ];
 
   static const List<Post> posts = [
     Post(
       title: 'Creating a Cupertino-Style Switch in Jetpack Compose',
-      description: 'When designing apps for Android, it\'s sometimes necessary to replicate iOS UI components for a seamless cross platform...',
-      imageLink: 'https://miro.medium.com/v2/resize:fit:1392/format:webp/0*8_8fgmB_uqCur6UN.jpg',
-      link: 'https://medium.com/@graser1305/creating-a-cupertino-style-switch-in-jetpack-compose-521621814a60',
+      description:
+          'When designing apps for Android, it\'s sometimes necessary to replicate iOS UI components for a seamless cross platform...',
+      imageLink:
+          'https://miro.medium.com/v2/resize:fit:1392/format:webp/0*8_8fgmB_uqCur6UN.jpg',
+      link:
+          'https://medium.com/@graser1305/creating-a-cupertino-style-switch-in-jetpack-compose-521621814a60',
     ),
     Post(
       title: 'Custom Kotlinx Serializer: Handling JSON Like a Pro',
-      description: 'Handling JSON in Kotlin is usually straightforward with kotlinx.serialization. But what happens when the JSON data you...',
-      imageLink: 'https://miro.medium.com/v2/resize:fit:1400/format:webp/1*xDFfab8Phjxculprdq0efA.jpeg',
-      link: 'https://medium.com/@graser1305/custom-kotlinx-serializer-handling-json-like-a-pro-c8165d121546',
+      description:
+          'Handling JSON in Kotlin is usually straightforward with kotlinx.serialization. But what happens when the JSON data you...',
+      imageLink:
+          'https://miro.medium.com/v2/resize:fit:1400/format:webp/1*xDFfab8Phjxculprdq0efA.jpeg',
+      link:
+          'https://medium.com/@graser1305/custom-kotlinx-serializer-handling-json-like-a-pro-c8165d121546',
     ),
     Post(
       title: 'How to Observe Real Internet Connectivity in Android',
-      description: 'Hey there, fellow Android developer! 👨‍💻 Let\'s talk about something that\'s often overlooked yet super important: real...',
-      imageLink: 'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6DXUbYFYP2NSPUQI',
-      link: 'https://medium.com/@graser1305/how-to-observe-real-internet-connectivity-in-android-fb6ebd2e3e00',
+      description:
+          'Hey there, fellow Android developer! 👨‍💻 Let\'s talk about something that\'s often overlooked yet super important: real...',
+      imageLink:
+          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6DXUbYFYP2NSPUQI',
+      link:
+          'https://medium.com/@graser1305/how-to-observe-real-internet-connectivity-in-android-fb6ebd2e3e00',
     ),
     Post(
       title: 'Creating Interactive HTML Content in Jetpack Compose',
-      description: 'Displaying HTML content in Android Compose, particularly with clickable links, might seem challenging at first. However, with...',
-      imageLink: 'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*U0mJ2ny6PFjPKM77',
-      link: 'https://medium.com/@graser1305/creating-interactive-html-content-in-jetpack-compose-7f7e929152f3',
+      description:
+          'Displaying HTML content in Android Compose, particularly with clickable links, might seem challenging at first. However, with...',
+      imageLink:
+          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*U0mJ2ny6PFjPKM77',
+      link:
+          'https://medium.com/@graser1305/creating-interactive-html-content-in-jetpack-compose-7f7e929152f3',
     ),
   ];
-
 }

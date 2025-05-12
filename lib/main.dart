@@ -40,7 +40,6 @@ class RootProvider extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final deviceType = _getDeviceType(context);
-
         final isSmallDevice = deviceType == DeviceType.phone;
         final theme =
             isSmallDevice ? CustomTheme.phoneTheme : CustomTheme.desktopTheme;

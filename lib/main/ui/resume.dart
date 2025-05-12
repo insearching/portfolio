@@ -38,9 +38,10 @@ class _ResumeState extends State<Resume> {
           ),
           const SizedBox(height: 24.0),
           ResumeTabs(
-              educations: widget.educations,
-              skills: widget.skills,
-              posts: widget.posts)
+            educations: widget.educations,
+            skills: widget.skills,
+            posts: widget.posts,
+          )
         ],
       ),
     );

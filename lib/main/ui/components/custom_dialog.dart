@@ -45,6 +45,8 @@ class CustomDialog extends StatelessWidget {
                 child: Image.asset(
                   image,
                   height: 400,
+                  width: 400,
+                  fit: BoxFit.fitWidth,
                 ),
               ),
               const SizedBox(width: 50),
@@ -52,7 +54,8 @@ class CustomDialog extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+                    Text(subtitle,
+                        style: Theme.of(context).textTheme.bodyMedium),
                     const SizedBox(height: 24),
                     Text(title, style: Theme.of(context).textTheme.bodyLarge),
                     const SizedBox(height: 24),

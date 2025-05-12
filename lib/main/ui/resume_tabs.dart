@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/post.dart';
-import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/data/skill.dart';
-import 'package:portfolio/main/ui/resume/blog.dart';
+import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/resume/education.dart';
 import 'package:portfolio/main/ui/resume/professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
+
+import 'responsive/desktop/desktop_blog.dart';
 
 class ResumeTabs extends StatefulWidget {
   const ResumeTabs({
@@ -49,7 +50,7 @@ class ResumeTabsState extends State<ResumeTabs>
               child: ElevatedContainer(
                 child: TabBar(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 0),
                   indicatorColor: Colors.transparent,
                   isScrollable: true,
                   tabAlignment: TabAlignment.center,
@@ -73,12 +74,9 @@ class ResumeTabsState extends State<ResumeTabs>
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: [
-                  EducationWidget(
-                    educations: widget.educations
-                  ),
+                  EducationWidget(educations: widget.educations),
                   ProfessionalSkillsWidget(skills: widget.skills),
-                  BlogWidget(posts: widget.posts)
-                  // const Center(child: Text('Coming soon')),
+                  DesktopBlogWidget(posts: widget.posts)
                 ],
               ),
             ),

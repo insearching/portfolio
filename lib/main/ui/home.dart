@@ -131,7 +131,8 @@ class _PositionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     const List<String> positions = [
       'Senior Android developer',
-      'Senior Flutter developer'
+      'Flutter developer',
+      'KMP developer'
     ];
     return SizedBox(
       height: 130.0,

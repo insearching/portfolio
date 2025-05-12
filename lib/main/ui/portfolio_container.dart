@@ -34,11 +34,12 @@ class _PortfolioContainerState extends State<PortfolioContainer> {
         });
       },
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+            Flexible(
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4.0),
@@ -48,7 +49,7 @@ class _PortfolioContainerState extends State<PortfolioContainer> {
                 ),
               ),
             ),
-            const SizedBox(height: 24.0),
+            const SizedBox(height: 16.0),
             Center(
               child: Text(
                 widget.title,
@@ -57,6 +58,7 @@ class _PortfolioContainerState extends State<PortfolioContainer> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            const SizedBox(height: 16.0),
             if (widget.showArrow)
               Opacity(
                 opacity: _isArrowVisible ? 1.0 : 0.0,

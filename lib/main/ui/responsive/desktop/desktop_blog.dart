@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/ui/blog_container.dart';
 
-class TabletBlogWidget extends StatefulWidget {
-  const TabletBlogWidget({
+class DesktopBlogWidget extends StatefulWidget {
+  const DesktopBlogWidget({
     required this.posts,
     Key? key,
   }) : super(key: key);
@@ -11,19 +11,19 @@ class TabletBlogWidget extends StatefulWidget {
   final List<Post> posts;
 
   @override
-  State<TabletBlogWidget> createState() => _TabletBlogWidgetState();
+  State<DesktopBlogWidget> createState() => _DesktopBlogWidgetState();
 }
 
-class _TabletBlogWidgetState extends State<TabletBlogWidget> {
+class _DesktopBlogWidgetState extends State<DesktopBlogWidget> {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Padding(
-          padding: const EdgeInsets.only(top: 16.0),
+          padding: const EdgeInsets.all(16.0),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+              crossAxisCount: 3,
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
             ),
