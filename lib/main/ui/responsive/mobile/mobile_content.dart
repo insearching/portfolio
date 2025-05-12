@@ -3,11 +3,11 @@ import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/contact.dart';
+import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/main_page.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_features.dart';
-import 'package:portfolio/main/ui/responsive/mobile/mobile_home.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_portfoilio.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_resume.dart';
 import 'package:portfolio/utils/colors.dart';
@@ -40,18 +40,22 @@ class _MobileContentState extends State<MobileContent> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MobileHome(
-                key: keys[NavigationMenu.home],
-                name: widget.name,
-                onContactClicked: () {
-                  final context = keys[NavigationMenu.contact]?.currentContext;
-                  if (context != null) {
-                    Scrollable.ensureVisible(
-                      context,
-                      duration: animationDuration,
-                    );
-                  }
-                },
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 32.0),
+                child: Home(
+                  key: keys[NavigationMenu.home],
+                  name: widget.name,
+                  onContactClicked: () {
+                    final context =
+                        keys[NavigationMenu.contact]?.currentContext;
+                    if (context != null) {
+                      Scrollable.ensureVisible(
+                        context,
+                        duration: animationDuration,
+                      );
+                    }
+                  },
+                ),
               ),
               const HorizontalDivider(),
               MobileFeatures(

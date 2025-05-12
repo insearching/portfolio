@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/components/circle_image.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 
+import 'components/position_label.dart';
+
 class Home extends StatefulWidget {
   const Home({
     required this.name,
@@ -20,28 +22,25 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _Avatar(),
-          const SizedBox(height: 16.0),
-          Text(
-            widget.name,
-            style: Theme.of(context).textTheme.displayLarge,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 16.0),
-          _PositionLabel(),
-          RippleButton(
-            text: 'Contact me',
-            onTap: () {
-              widget.onContactClicked();
-            },
-          ),
-        ],
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _Avatar(),
+        const SizedBox(height: 16.0),
+        Text(
+          widget.name,
+          style: Theme.of(context).textTheme.displayLarge,
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 16.0),
+        const PositionLabel(),
+        RippleButton(
+          text: 'Contact me',
+          onTap: () {
+            widget.onContactClicked();
+          },
+        ),
+      ],
     );
   }
 }

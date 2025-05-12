@@ -41,19 +41,22 @@ class _DesktopContentState extends State<DesktopContent> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Home(
-                  key: keys[NavigationMenu.home],
-                  name: widget.name,
-                  onContactClicked: () {
-                    final context =
-                        keys[NavigationMenu.contact]?.currentContext;
-                    if (context != null) {
-                      Scrollable.ensureVisible(
-                        context,
-                        duration: animationDuration,
-                      );
-                    }
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
+                  child: Home(
+                    key: keys[NavigationMenu.home],
+                    name: widget.name,
+                    onContactClicked: () {
+                      final context =
+                          keys[NavigationMenu.contact]?.currentContext;
+                      if (context != null) {
+                        Scrollable.ensureVisible(
+                          context,
+                          duration: animationDuration,
+                        );
+                      }
+                    },
+                  ),
                 ),
                 const HorizontalDivider(),
                 Features(
