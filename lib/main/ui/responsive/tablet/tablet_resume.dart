@@ -8,23 +8,20 @@ import 'package:portfolio/main/ui/responsive/tablet/tablet_education.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
 
-class TabletResume extends StatefulWidget {
+class TabletResume extends StatelessWidget {
   const TabletResume({
     required this.educations,
     required this.skills,
     required this.posts,
+    required this.tabs,
     super.key,
   });
 
   final List<Education> educations;
   final List<Skill> skills;
   final List<Post> posts;
+  final List<String> tabs;
 
-  @override
-  State<TabletResume> createState() => _TabletResumeState();
-}
-
-class _TabletResumeState extends State<TabletResume> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -37,9 +34,11 @@ class _TabletResumeState extends State<TabletResume> {
           ),
           const SizedBox(height: 24.0),
           _ResumeTabs(
-              educations: widget.educations,
-              skills: widget.skills,
-              posts: widget.posts)
+            educations: educations,
+            skills: skills,
+            posts: posts,
+            tabs: tabs,
+          )
         ],
       ),
     );
@@ -51,12 +50,14 @@ class _ResumeTabs extends StatefulWidget {
     required this.educations,
     required this.skills,
     required this.posts,
+    required this.tabs,
     Key? key,
   }) : super(key: key);
 
   final List<Education> educations;
   final List<Skill> skills;
   final List<Post> posts;
+  final List<String> tabs;
 
   @override
   _ResumeTabsState createState() => _ResumeTabsState();
@@ -69,7 +70,7 @@ class _ResumeTabsState extends State<_ResumeTabs>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: widget.tabs.length, vsync: this);
   }
 
   double? mTabWidth;
@@ -98,11 +99,7 @@ class _ResumeTabsState extends State<_ResumeTabs>
                   indicatorWeight: 4,
                   dividerHeight: 0,
                   dividerColor: Colors.transparent,
-                  tabs: const [
-                    Tab(text: 'Education'),
-                    Tab(text: 'Professional Skills'),
-                    Tab(text: 'Blog'),
-                  ],
+                  tabs: widget.tabs.map((title) => Tab(text: title)).toList(),
                 ),
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
@@ -47,14 +48,28 @@ class EducationContainer extends StatelessWidget {
               )
             ],
             if (imageUrl != null) ...[
-              InkWell(
-                onTap: link != null ? () => launchUrlString(link) : null,
-                child: Image(
-                  image: AssetImage(imageUrl),
-                  fit: BoxFit.fill,
-                  width: double.infinity,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: InkWell(
+                  onTap: link != null ? () => launchUrlString(link) : null,
+                  child: CachedNetworkImage(
+                    imageUrl: imageUrl,
+                    fit: BoxFit.fitHeight,
+                    placeholder: (context, url) =>
+                        const Center(child: CircularProgressIndicator()),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error, size: 150),
+                  ),
                 ),
-              )
+              ),
+              // InkWell(
+              //   onTap: link != null ? () => launchUrlString(link) : null,
+              //   child: Image(
+              //     image: AssetImage(imageUrl),
+              //     fit: BoxFit.fill,
+              //     width: double.infinity,
+              //   ),
+              // )
             ],
           ],
         ),

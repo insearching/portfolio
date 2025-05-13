@@ -299,6 +299,8 @@ class Repository {
     ),
   ];
 
+  static const List<String> tabs = ['Education', 'Professional Skills'];
+
   static const List<Post> posts = [
     Post(
       title: 'Creating a Cupertino-Style Switch in Jetpack Compose',

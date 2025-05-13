@@ -6,11 +6,12 @@ import 'package:portfolio/main/ui/contact.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
-import 'package:portfolio/main/ui/main_page.dart';
+import 'package:portfolio/main/ui/responsive/mobile/mobile_blog.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_features.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_portfoilio.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_resume.dart';
 import 'package:portfolio/utils/colors.dart';
+import 'package:portfolio/utils/constants.dart';
 
 class MobileContent extends StatefulWidget {
   const MobileContent({
@@ -58,6 +59,11 @@ class _MobileContentState extends State<MobileContent> {
                 ),
               ),
               const HorizontalDivider(),
+              MobileBlogWidget(
+                key: keys[NavigationMenu.blog],
+                posts: Repository.posts,
+              ),
+              const HorizontalDivider(),
               MobileFeatures(
                 key: keys[NavigationMenu.features],
                 responsibilities: Repository.responsibilities,
@@ -73,6 +79,7 @@ class _MobileContentState extends State<MobileContent> {
                 educations: Repository.educationInfo,
                 skills: Repository.skills,
                 posts: Repository.posts,
+                tabs: Repository.tabs,
               ),
               const HorizontalDivider(),
               Contact(

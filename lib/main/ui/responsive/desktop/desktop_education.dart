@@ -17,6 +17,7 @@ class DesktopEducationWidget extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: 16.0,
         mainAxisSpacing: 16.0,
+        childAspectRatio: 0.96,
       ),
       itemCount: educations.length,
       itemBuilder: (context, index) => EducationContainer(

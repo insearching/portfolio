@@ -28,6 +28,8 @@ class _FeatureContainerState extends State<FeatureContainer> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
                   widget.responsibility.icon,
@@ -39,6 +41,7 @@ class _FeatureContainerState extends State<FeatureContainer> {
                 Text(
                   widget.responsibility.title,
                   style: Theme.of(context).textTheme.bodyLarge,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -73,17 +76,17 @@ class _FeatureBodyState extends State<_FeatureBody> {
   Widget build(BuildContext context) {
     return widget.isScrollable
         ? Flexible(
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Text(
-          widget.body,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ),
-    )
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Text(
+                widget.body,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          )
         : Text(
-      widget.body,
-      style: Theme.of(context).textTheme.bodyMedium,
-    );
+            widget.body,
+            style: Theme.of(context).textTheme.bodyMedium,
+          );
   }
 }

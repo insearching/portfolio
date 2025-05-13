@@ -17,11 +17,18 @@ class DesktopBlogWidget extends StatefulWidget {
 class _DesktopBlogWidgetState extends State<DesktopBlogWidget> {
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: GridView.builder(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32.0),
+      child: Column(
+        children: [
+          Text(
+            'Blog',
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
+          const SizedBox(height: 32.0),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 16.0,
@@ -34,8 +41,8 @@ class _DesktopBlogWidgetState extends State<DesktopBlogWidget> {
               imageHeight: 220.0,
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

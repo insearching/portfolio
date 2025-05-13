@@ -3,9 +3,9 @@ import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/keys.dart';
-import 'package:portfolio/main/ui/main_page.dart';
 import 'package:portfolio/main/ui/navigation_panel.dart';
 import 'package:portfolio/main/ui/socials.dart';
+import 'package:portfolio/utils/constants.dart';
 
 class LeftPanel extends StatelessWidget {
   const LeftPanel({

@@ -6,11 +6,12 @@ import 'package:portfolio/main/ui/features.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
-import 'package:portfolio/main/ui/main_page.dart';
+import 'package:portfolio/main/ui/responsive/desktop/desktop_blog.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_contact.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_portfolio.dart';
-import 'package:portfolio/main/ui/resume.dart';
+import 'package:portfolio/main/ui/responsive/desktop/desktop_resume.dart';
 import 'package:portfolio/utils/colors.dart';
+import 'package:portfolio/utils/constants.dart';
 
 class DesktopContent extends StatefulWidget {
   const DesktopContent({
@@ -59,6 +60,11 @@ class _DesktopContentState extends State<DesktopContent> {
                   ),
                 ),
                 const HorizontalDivider(),
+                DesktopBlogWidget(
+                  key: keys[NavigationMenu.blog],
+                  posts: Repository.posts,
+                ),
+                const HorizontalDivider(),
                 Features(
                   key: keys[NavigationMenu.features],
                   responsibilities: Repository.responsibilities,
@@ -69,16 +75,19 @@ class _DesktopContentState extends State<DesktopContent> {
                   projects: Repository.projects,
                 ),
                 const HorizontalDivider(),
-                Resume(
-                    key: keys[NavigationMenu.resume],
-                    educations: Repository.educationInfo,
-                    skills: Repository.skills,
-                    posts: Repository.posts),
+                DesktopResume(
+                  key: keys[NavigationMenu.resume],
+                  educations: Repository.educationInfo,
+                  skills: Repository.skills,
+                  posts: Repository.posts,
+                  tabs: Repository.tabs,
+                ),
                 const HorizontalDivider(),
                 DesktopContact(
-                    key: keys[NavigationMenu.contact],
-                    info: Repository.info,
-                    onMessageSend: widget.onMessageSend),
+                  key: keys[NavigationMenu.contact],
+                  info: Repository.info,
+                  onMessageSend: widget.onMessageSend,
+                ),
               ],
             ),
           ),

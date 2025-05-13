@@ -3,36 +3,73 @@ import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/skill.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
-import 'package:portfolio/main/ui/resume/education.dart';
+import 'package:portfolio/main/ui/responsive/desktop/desktop_education.dart';
 import 'package:portfolio/main/ui/resume/professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
 
-import 'responsive/desktop/desktop_blog.dart';
-
-class ResumeTabs extends StatefulWidget {
-  const ResumeTabs({
+class DesktopResume extends StatelessWidget {
+  const DesktopResume({
     required this.educations,
     required this.skills,
     required this.posts,
+    super.key,
+    required this.tabs,
+  });
+
+  final List<Education> educations;
+  final List<Skill> skills;
+  final List<Post> posts;
+  final List<String> tabs;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
+      child: Column(
+        children: [
+          Text(
+            'My Resume',
+            style: Theme.of(context).textTheme.displayLarge,
+          ),
+          const SizedBox(height: 24.0),
+          _ResumeTabs(
+            educations: educations,
+            skills: skills,
+            posts: posts,
+            tabs: tabs,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _ResumeTabs extends StatefulWidget {
+  const _ResumeTabs({
+    required this.educations,
+    required this.skills,
+    required this.posts,
+    required this.tabs,
     Key? key,
   }) : super(key: key);
 
   final List<Education> educations;
   final List<Skill> skills;
   final List<Post> posts;
+  final List<String> tabs;
 
   @override
-  ResumeTabsState createState() => ResumeTabsState();
+  _ResumeTabsState createState() => _ResumeTabsState();
 }
 
-class ResumeTabsState extends State<ResumeTabs>
+class _ResumeTabsState extends State<_ResumeTabs>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: widget.tabs.length, vsync: this);
   }
 
   double? mTabWidth;
@@ -61,11 +98,7 @@ class ResumeTabsState extends State<ResumeTabs>
                   indicatorWeight: 4,
                   dividerHeight: 0,
                   dividerColor: Colors.transparent,
-                  tabs: const [
-                    Tab(text: 'Education'),
-                    Tab(text: 'Professional Skills'),
-                    Tab(text: 'Blog'),
-                  ],
+                  tabs: widget.tabs.map((title) => Tab(text: title)).toList(),
                 ),
               ),
             ),
@@ -74,9 +107,8 @@ class ResumeTabsState extends State<ResumeTabs>
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: [
-                  EducationWidget(educations: widget.educations),
-                  ProfessionalSkillsWidget(skills: widget.skills),
-                  DesktopBlogWidget(posts: widget.posts)
+                  DesktopEducationWidget(educations: widget.educations),
+                  ProfessionalSkillsWidget(skills: widget.skills)
                 ],
               ),
             ),

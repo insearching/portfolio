@@ -39,6 +39,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   cached_network_image: ^3.2.0
   provider: ^6.1.5
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +70,7 @@ flutter:
     - assets/img/flutter.png
     - assets/img/kmp.png
     - assets/img/home.png
+    - assets/img/blog.png
     - assets/img/features.png
     - assets/img/portfolio.png
     - assets/img/resume.png

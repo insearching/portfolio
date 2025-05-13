@@ -19,18 +19,26 @@ class _MobileBlogWidgetState extends State<MobileBlogWidget> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: widget.posts.length,
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: BlogContainer(
-            post: widget.posts[index],
-            horizontalPadding: 16.0,
-            imageHeight: 220.0,
+      child: Column(
+        children: [
+          Text(
+            'Blog',
+            style: Theme.of(context).textTheme.displayLarge,
           ),
-        ),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: widget.posts.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: BlogContainer(
+                post: widget.posts[index],
+                horizontalPadding: 16.0,
+                imageHeight: 220.0,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

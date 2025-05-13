@@ -3,6 +3,7 @@ import 'package:portfolio/main/data/navigation_menu.dart';
 
 final keys = {
   NavigationMenu.home: GlobalKey(),
+  NavigationMenu.blog: GlobalKey(),
   NavigationMenu.features: GlobalKey(),
   NavigationMenu.portfolio: GlobalKey(),
   NavigationMenu.resume: GlobalKey(),
