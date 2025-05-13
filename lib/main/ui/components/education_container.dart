@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
@@ -17,7 +16,7 @@ class EducationContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final String? text = education.text;
     final String? link = education.link;
-    final String? imageUrl = education.imageUrl;
+    final String? imagePath = education.imageUrl;
 
     return ElevatedContainer(
       child: Padding(
@@ -47,29 +46,32 @@ class EducationContainer extends StatelessWidget {
                 softWrap: true,
               )
             ],
-            if (imageUrl != null) ...[
+            if (imagePath != null) ...[
+              // ClipRRect(
+              //   borderRadius: BorderRadius.circular(8.0),
+              //   child: InkWell(
+              //     onTap: link != null ? () => launchUrlString(link) : null,
+              //     child: CachedNetworkImage(
+              //       imageUrl: imageUrl,
+              //       fit: BoxFit.fitHeight,
+              //       placeholder: (context, url) =>
+              //           const Center(child: CircularProgressIndicator()),
+              //       errorWidget: (context, url, error) =>
+              //           const Icon(Icons.error, size: 150),
+              //     ),
+              //   ),
+              // ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
                 child: InkWell(
                   onTap: link != null ? () => launchUrlString(link) : null,
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrl,
-                    fit: BoxFit.fitHeight,
-                    placeholder: (context, url) =>
-                        const Center(child: CircularProgressIndicator()),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error, size: 150),
+                  child: Image(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit.fill,
+                    width: double.infinity,
                   ),
                 ),
-              ),
-              // InkWell(
-              //   onTap: link != null ? () => launchUrlString(link) : null,
-              //   child: Image(
-              //     image: AssetImage(imageUrl),
-              //     fit: BoxFit.fill,
-              //     width: double.infinity,
-              //   ),
-              // )
+              )
             ],
           ],
         ),
