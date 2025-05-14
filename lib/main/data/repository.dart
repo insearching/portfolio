@@ -303,6 +303,16 @@ class Repository {
 
   static const List<Post> posts = [
     Post(
+      title:
+          '🎧 Building a Custom Android Media Player in Kotlin: Play, Pause, Rewind, Fast-Forward & More',
+      description:
+          'Creating a custom audio player in Android doesn’t have to be overwhelming. Whether you’re working on a podcast app, a voice note recorder, or an educational tool, understanding how to manage Android’s MediaPlayer with a modern Kotlin approach can give your app a professional edge.',
+      imageLink:
+          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*ARy4znrXOQNB9aZB',
+      link:
+          'https://medium.com/@graser1305/building-a-custom-android-media-player-in-kotlin-play-pause-rewind-fast-forward-more-e7eb1c0bd95e',
+    ),
+    Post(
       title: 'Creating a Cupertino-Style Switch in Jetpack Compose',
       description:
           'When designing apps for Android, it\'s sometimes necessary to replicate iOS UI components for a seamless cross platform...',
