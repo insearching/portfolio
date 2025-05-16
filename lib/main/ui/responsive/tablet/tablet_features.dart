@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/ui/feature_content.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 
-class TabletFeatures extends StatefulWidget {
+class TabletFeatures extends StatelessWidget {
   const TabletFeatures({
-    required this.responsibilities,
+    required this.state,
     Key? key,
   }) : super(key: key);
 
-  final List<Responsibility> responsibilities;
+  final PersonalInfoState state;
 
-  @override
-  State<TabletFeatures> createState() => _TabletFeaturesState();
-}
-
-class _TabletFeaturesState extends State<TabletFeatures> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -35,9 +31,13 @@ class _TabletFeaturesState extends State<TabletFeatures> {
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
             ),
-            itemCount: widget.responsibilities.length,
+            itemCount: state.positions.length,
             itemBuilder: (context, index) => FeatureContainer(
-              responsibility: widget.responsibilities[index],
+              responsibility: Responsibility(
+                icon: state.positions[index].icon,
+                title: state.positions[index].title,
+                description: state.positions[index].description,
+              ),
               isPhone: false,
             ),
           )

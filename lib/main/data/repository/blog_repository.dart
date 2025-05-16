@@ -1,7 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:portfolio/main/data/post.dart';
 
-const String postsCollectionName = 'posts';
+const String _collectionName = 'posts';
 
 class BlogRepository {
   BlogRepository({
@@ -11,7 +11,7 @@ class BlogRepository {
   final DatabaseReference databaseReference;
 
   Future<void> addPost(Post post) async {
-    final postsCollection = databaseReference.child(postsCollectionName);
+    final postsCollection = databaseReference.child(_collectionName);
 
     try {
       await postsCollection.push().set({
@@ -27,28 +27,27 @@ class BlogRepository {
   }
 
   Future<List<Post>> readPosts() async {
-    final postsCollection = databaseReference.child(postsCollectionName);
+    final postsCollection = databaseReference.child(_collectionName);
     final event = await postsCollection.once();
 
     if (event.snapshot.value == null) return [];
 
     try {
-      final Map<dynamic, dynamic> rawData =
-          event.snapshot.value as Map<dynamic, dynamic>;
+      final List<dynamic> rawData = event.snapshot.value as List<dynamic>;
       final List<Post> posts = [];
 
-      rawData.forEach(
-        (key, value) {
-          if (value is Map) {
-            posts.add(Post(
+      for (var value in rawData) {
+        if (value is Map) {
+          posts.add(
+            Post(
               title: value['title']?.toString() ?? '',
               description: value['description']?.toString() ?? '',
               imageLink: value['imageLink']?.toString() ?? '',
               link: value['link']?.toString() ?? '',
-            ));
-          }
-        },
-      );
+            ),
+          );
+        }
+      }
 
       return posts;
     } catch (e) {

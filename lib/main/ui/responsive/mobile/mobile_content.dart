@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart';
+import 'package:portfolio/main/data/repository/position_repository.dart';
 import 'package:portfolio/main/service_locator.dart';
 import 'package:portfolio/main/ui/blog/blog_bloc.dart';
 import 'package:portfolio/main/ui/blog/blog_event.dart';
@@ -12,6 +13,9 @@ import 'package:portfolio/main/ui/contact.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_bloc.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_blog.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_features.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_portfolio.dart';
@@ -85,9 +89,20 @@ class _MobileContentState extends State<MobileContent> {
                 ),
               ),
               const HorizontalDivider(),
-              MobileFeatures(
-                key: keys[NavigationMenu.features],
-                responsibilities: Repository.responsibilities,
+              BlocProvider(
+                create: (context) => PersonalInfoBloc(
+                    positionRepo: locator<PositionRepository>())
+                  ..add(
+                    GetPositions(),
+                  ),
+                child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
+                  builder: (context, state) {
+                    return MobileFeatures(
+                      key: keys[NavigationMenu.features],
+                      state: state,
+                    );
+                  },
+                ),
               ),
               const HorizontalDivider(),
               MobilePortfolio(
@@ -99,7 +114,6 @@ class _MobileContentState extends State<MobileContent> {
                 key: keys[NavigationMenu.resume],
                 educations: Repository.educationInfo,
                 skills: Repository.skills,
-                posts: Repository.posts,
                 tabs: Repository.tabs,
               ),
               const HorizontalDivider(),

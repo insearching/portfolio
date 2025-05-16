@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/education.dart';
-import 'package:portfolio/main/data/post.dart';
-import 'package:portfolio/main/data/repository/blog_repository.dart';
 import 'package:portfolio/main/data/skill.dart';
-import 'package:portfolio/main/service_locator.dart';
-import 'package:portfolio/main/ui/blog/blog_bloc.dart';
-import 'package:portfolio/main/ui/blog/blog_event.dart';
-import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
-import 'package:portfolio/main/ui/responsive/tablet/tablet_blog.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_education.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
@@ -18,14 +10,12 @@ class TabletResume extends StatelessWidget {
   const TabletResume({
     required this.educations,
     required this.skills,
-    required this.posts,
     required this.tabs,
     super.key,
   });
 
   final List<Education> educations;
   final List<Skill> skills;
-  final List<Post> posts;
   final List<String> tabs;
 
   @override
@@ -42,7 +32,6 @@ class TabletResume extends StatelessWidget {
           _ResumeTabs(
             educations: educations,
             skills: skills,
-            posts: posts,
             tabs: tabs,
           )
         ],
@@ -55,14 +44,12 @@ class _ResumeTabs extends StatefulWidget {
   const _ResumeTabs({
     required this.educations,
     required this.skills,
-    required this.posts,
     required this.tabs,
     Key? key,
   }) : super(key: key);
 
   final List<Education> educations;
   final List<Skill> skills;
-  final List<Post> posts;
   final List<String> tabs;
 
   @override
@@ -116,20 +103,6 @@ class _ResumeTabsState extends State<_ResumeTabs>
                 children: [
                   TabletEducationWidget(educations: widget.educations),
                   TabletProfessionalSkillsWidget(skills: widget.skills),
-                  BlocProvider(
-                    create: (context) =>
-                        BlogBloc(blogRepository: locator<BlogRepository>())
-                          ..add(
-                            GetPosts(),
-                          ),
-                    child: BlocBuilder<BlogBloc, BlogState>(
-                      builder: (context, state) {
-                        return TabletBlogWidget(
-                          blogState: state,
-                        );
-                      },
-                    ),
-                  ),
                 ],
               ),
             ),

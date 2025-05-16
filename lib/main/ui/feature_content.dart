@@ -3,7 +3,7 @@ import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 
-class FeatureContainer extends StatefulWidget {
+class FeatureContainer extends StatelessWidget {
   const FeatureContainer({
     required this.responsibility,
     required this.isPhone,
@@ -13,11 +13,6 @@ class FeatureContainer extends StatefulWidget {
   final Responsibility responsibility;
   final bool isPhone;
 
-  @override
-  State<FeatureContainer> createState() => _FeatureContainerState();
-}
-
-class _FeatureContainerState extends State<FeatureContainer> {
   @override
   Widget build(BuildContext context) {
     return ElevatedContainer(
@@ -32,14 +27,14 @@ class _FeatureContainerState extends State<FeatureContainer> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
-                  widget.responsibility.icon,
+                  responsibility.icon,
                   color: UIColors.accent,
                   height: 32.0,
                   fit: BoxFit.fitHeight,
                 ),
                 const SizedBox(width: 16.0),
                 Text(
-                  widget.responsibility.title,
+                  responsibility.title,
                   style: Theme.of(context).textTheme.bodyLarge,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -47,8 +42,8 @@ class _FeatureContainerState extends State<FeatureContainer> {
             ),
             const SizedBox(height: 24.0),
             _FeatureBody(
-              body: widget.responsibility.description,
-              isScrollable: widget.isPhone,
+              body: responsibility.description,
+              isScrollable: isPhone,
             )
           ],
         ),

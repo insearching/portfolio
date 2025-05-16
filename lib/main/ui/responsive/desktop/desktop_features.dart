@@ -3,8 +3,8 @@ import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/ui/feature_content.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 
-class MobileFeatures extends StatelessWidget {
-  const MobileFeatures({
+class DesktopFeatures extends StatelessWidget {
+  const DesktopFeatures({
     required this.state,
     Key? key,
   }) : super(key: key);
@@ -23,9 +23,10 @@ class MobileFeatures extends StatelessWidget {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 24.0),
-          IntrinsicHeight(
-            child: Column(
+          if (state.status.isSuccess)
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: state.positions
                   .map(
                     (position) => Expanded(
@@ -35,13 +36,12 @@ class MobileFeatures extends StatelessWidget {
                           title: position.title,
                           description: position.description,
                         ),
-                        isPhone: true,
+                        isPhone: false,
                       ),
                     ),
                   )
                   .toList(),
-            ),
-          )
+            )
         ],
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/personal_info.dart';
-import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/data/skill.dart';
@@ -36,7 +35,7 @@ class Repository {
     Responsibility(
       icon: 'assets/img/flutter.png',
       title: 'Flutter development',
-      description: ' I’ve been focused on building cross-platform apps using '
+      description: 'I’ve been focused on building cross-platform apps using '
           'Flutter. What drew me to Flutter was the ability to create beautiful, '
           'high-performance applications from a single codebase—without '
           'compromising on user experience or responsiveness.'
@@ -300,53 +299,4 @@ class Repository {
   ];
 
   static const List<String> tabs = ['Education', 'Professional Skills'];
-
-  static const List<Post> posts = [
-    Post(
-      title:
-          '🎧 Building a Custom Android Media Player in Kotlin: Play, Pause, Rewind, Fast-Forward & More',
-      description:
-          'Creating a custom audio player in Android doesn’t have to be overwhelming. Whether you’re working on a podcast app, a voice note recorder, or an educational tool, understanding how to manage Android’s MediaPlayer with a modern Kotlin approach can give your app a professional edge.',
-      imageLink:
-          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*ARy4znrXOQNB9aZB',
-      link:
-          'https://medium.com/@graser1305/building-a-custom-android-media-player-in-kotlin-play-pause-rewind-fast-forward-more-e7eb1c0bd95e',
-    ),
-    Post(
-      title: 'Creating a Cupertino-Style Switch in Jetpack Compose',
-      description:
-          'When designing apps for Android, it\'s sometimes necessary to replicate iOS UI components for a seamless cross platform...',
-      imageLink:
-          'https://miro.medium.com/v2/resize:fit:1392/format:webp/0*8_8fgmB_uqCur6UN.jpg',
-      link:
-          'https://medium.com/@graser1305/creating-a-cupertino-style-switch-in-jetpack-compose-521621814a60',
-    ),
-    Post(
-      title: 'Custom Kotlinx Serializer: Handling JSON Like a Pro',
-      description:
-          'Handling JSON in Kotlin is usually straightforward with kotlinx.serialization. But what happens when the JSON data you...',
-      imageLink:
-          'https://miro.medium.com/v2/resize:fit:1400/format:webp/1*xDFfab8Phjxculprdq0efA.jpeg',
-      link:
-          'https://medium.com/@graser1305/custom-kotlinx-serializer-handling-json-like-a-pro-c8165d121546',
-    ),
-    Post(
-      title: 'How to Observe Real Internet Connectivity in Android',
-      description:
-          'Hey there, fellow Android developer! 👨‍💻 Let\'s talk about something that\'s often overlooked yet super important: real...',
-      imageLink:
-          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*6DXUbYFYP2NSPUQI',
-      link:
-          'https://medium.com/@graser1305/how-to-observe-real-internet-connectivity-in-android-fb6ebd2e3e00',
-    ),
-    Post(
-      title: 'Creating Interactive HTML Content in Jetpack Compose',
-      description:
-          'Displaying HTML content in Android Compose, particularly with clickable links, might seem challenging at first. However, with...',
-      imageLink:
-          'https://miro.medium.com/v2/resize:fit:1400/format:webp/0*U0mJ2ny6PFjPKM77',
-      link:
-          'https://medium.com/@graser1305/creating-interactive-html-content-in-jetpack-compose-7f7e929152f3',
-    ),
-  ];
 }

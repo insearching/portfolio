@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/education.dart';
-import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/skill.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_education.dart';
@@ -11,14 +10,12 @@ class MobileResume extends StatelessWidget {
   const MobileResume({
     required this.educations,
     required this.skills,
-    required this.posts,
     required this.tabs,
     super.key,
   });
 
   final List<Education> educations;
   final List<Skill> skills;
-  final List<Post> posts;
   final List<String> tabs;
 
   @override
@@ -35,7 +32,6 @@ class MobileResume extends StatelessWidget {
           _ResumeTabs(
             educations: educations,
             skills: skills,
-            posts: posts,
             tabs: tabs,
           )
         ],
@@ -48,14 +44,12 @@ class _ResumeTabs extends StatefulWidget {
   const _ResumeTabs({
     required this.educations,
     required this.skills,
-    required this.posts,
-    Key? key,
     required this.tabs,
+    Key? key,
   }) : super(key: key);
 
   final List<Education> educations;
   final List<Skill> skills;
-  final List<Post> posts;
   final List<String> tabs;
 
   @override

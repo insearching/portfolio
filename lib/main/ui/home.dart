@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/data/repository/position_repository.dart';
+import 'package:portfolio/main/service_locator.dart';
 import 'package:portfolio/main/ui/components/circle_image.dart';
+import 'package:portfolio/main/ui/components/position_label.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
-
-import 'components/position_label.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_bloc.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -32,7 +37,18 @@ class _HomeState extends State<Home> {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 16.0),
-        const PositionLabel(),
+        BlocProvider(
+          create: (context) =>
+              PersonalInfoBloc(positionRepo: locator<PositionRepository>())
+                ..add(
+                  GetPositions(),
+                ),
+          child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
+            builder: (context, state) {
+              return PositionLabel(state: state);
+            },
+          ),
+        ),
         RippleButton(
           text: 'Contact me',
           onTap: () {

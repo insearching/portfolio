@@ -3,17 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart';
+import 'package:portfolio/main/data/repository/position_repository.dart';
 import 'package:portfolio/main/service_locator.dart';
 import 'package:portfolio/main/ui/blog/blog_bloc.dart';
 import 'package:portfolio/main/ui/blog/blog_event.dart';
 import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
-import 'package:portfolio/main/ui/features.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_bloc.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
+import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_blog.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_contact.dart';
+import 'package:portfolio/main/ui/responsive/desktop/desktop_features.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_portfolio.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_resume.dart';
 import 'package:portfolio/utils/colors.dart';
@@ -82,9 +86,20 @@ class _DesktopContentState extends State<DesktopContent> {
                   ),
                 ),
                 const HorizontalDivider(),
-                Features(
-                  key: keys[NavigationMenu.features],
-                  responsibilities: Repository.responsibilities,
+                BlocProvider(
+                  create: (context) => PersonalInfoBloc(
+                      positionRepo: locator<PositionRepository>())
+                    ..add(
+                      GetPositions(),
+                    ),
+                  child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
+                    builder: (context, state) {
+                      return DesktopFeatures(
+                        key: keys[NavigationMenu.features],
+                        state: state,
+                      );
+                    },
+                  ),
                 ),
                 const HorizontalDivider(),
                 DesktopPortfolio(
@@ -96,7 +111,6 @@ class _DesktopContentState extends State<DesktopContent> {
                   key: keys[NavigationMenu.resume],
                   educations: Repository.educationInfo,
                   skills: Repository.skills,
-                  posts: Repository.posts,
                   tabs: Repository.tabs,
                 ),
                 const HorizontalDivider(),

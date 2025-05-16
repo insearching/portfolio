@@ -19,16 +19,16 @@ class DesktopBlogWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 32.0),
-          if (blogState.status == PostStatus.loading)
+          if (blogState.status.isLoading)
             const CircularProgressIndicator()
-          else if (blogState.status == PostStatus.error)
+          else if (blogState.status.isError)
             Center(
               child: Text(
                 'Error loading posts',
                 style: Theme.of(context).textTheme.displayLarge,
               ),
             )
-          else if (blogState.status == PostStatus.success)
+          else if (blogState.status.isSuccess)
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
