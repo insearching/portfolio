@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/data/repository/blog_repository.dart';
 import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/service_locator.dart';
+import 'package:portfolio/main/ui/blog/blog_bloc.dart';
+import 'package:portfolio/main/ui/blog/blog_event.dart';
+import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_blog.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_education.dart';
@@ -110,8 +116,20 @@ class _ResumeTabsState extends State<_ResumeTabs>
                 children: [
                   TabletEducationWidget(educations: widget.educations),
                   TabletProfessionalSkillsWidget(skills: widget.skills),
-                  TabletBlogWidget(posts: widget.posts)
-                  // const Center(child: Text('Coming soon')),
+                  BlocProvider(
+                    create: (context) =>
+                        BlogBloc(blogRepository: locator<BlogRepository>())
+                          ..add(
+                            GetPosts(),
+                          ),
+                    child: BlocBuilder<BlogBloc, BlogState>(
+                      builder: (context, state) {
+                        return TabletBlogWidget(
+                          blogState: state,
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),

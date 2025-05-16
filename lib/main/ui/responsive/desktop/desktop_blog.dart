@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/blog_container.dart';
 
-class DesktopBlogWidget extends StatefulWidget {
-  const DesktopBlogWidget({
-    required this.posts,
-    Key? key,
-  }) : super(key: key);
+class DesktopBlogWidget extends StatelessWidget {
+  const DesktopBlogWidget({required this.blogState, Key? key})
+      : super(key: key);
 
-  final List<Post> posts;
+  final BlogState blogState;
 
-  @override
-  State<DesktopBlogWidget> createState() => _DesktopBlogWidgetState();
-}
-
-class _DesktopBlogWidgetState extends State<DesktopBlogWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -26,21 +19,31 @@ class _DesktopBlogWidgetState extends State<DesktopBlogWidget> {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 32.0),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 16.0,
-              mainAxisSpacing: 16.0,
-            ),
-            itemCount: widget.posts.length,
-            itemBuilder: (context, index) => BlogContainer(
-              post: widget.posts[index],
-              horizontalPadding: 32.0,
-              imageHeight: 220.0,
-            ),
-          ),
+          if (blogState.status == PostStatus.loading)
+            const CircularProgressIndicator()
+          else if (blogState.status == PostStatus.error)
+            Center(
+              child: Text(
+                'Error loading posts',
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
+            )
+          else if (blogState.status == PostStatus.success)
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
+              ),
+              itemCount: blogState.posts.length,
+              itemBuilder: (context, index) => BlogContainer(
+                post: blogState.posts[index],
+                horizontalPadding: 32.0,
+                imageHeight: 220.0,
+              ),
+            )
         ],
       ),
     );

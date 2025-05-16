@@ -15,8 +15,11 @@ enum NavigationMenu {
   final String name;
   final String icon;
 
-  const NavigationMenu(
-      {required this.position, required this.name, required this.icon});
+  const NavigationMenu({
+    required this.position,
+    required this.name,
+    required this.icon,
+  });
 
   static NavigationMenu? keyByPosition(int position) {
     return NavigationMenu.values

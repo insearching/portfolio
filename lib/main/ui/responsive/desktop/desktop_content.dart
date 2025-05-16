@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/data/repository.dart';
+import 'package:portfolio/main/data/repository/blog_repository.dart';
+import 'package:portfolio/main/service_locator.dart';
+import 'package:portfolio/main/ui/blog/blog_bloc.dart';
+import 'package:portfolio/main/ui/blog/blog_event.dart';
+import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/features.dart';
 import 'package:portfolio/main/ui/home.dart';
@@ -60,9 +66,20 @@ class _DesktopContentState extends State<DesktopContent> {
                   ),
                 ),
                 const HorizontalDivider(),
-                DesktopBlogWidget(
-                  key: keys[NavigationMenu.blog],
-                  posts: Repository.posts,
+                BlocProvider(
+                  create: (context) =>
+                      BlogBloc(blogRepository: locator<BlogRepository>())
+                        ..add(
+                          GetPosts(),
+                        ),
+                  child: BlocBuilder<BlogBloc, BlogState>(
+                    builder: (context, state) {
+                      return DesktopBlogWidget(
+                        key: keys[NavigationMenu.blog],
+                        blogState: state,
+                      );
+                    },
+                  ),
                 ),
                 const HorizontalDivider(),
                 Features(

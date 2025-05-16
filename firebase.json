@@ -1,13 +1,1 @@
-{
-  "hosting": {
-    "source": ".",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "frameworksBackend": {
-      "region": "europe-west1"
-    }
-  }
-}
+{"hosting":{"source":".","ignore":["firebase.json","**/.*","**/node_modules/**"],"frameworksBackend":{"region":"europe-west1"}},"flutter":{"platforms":{"android":{"default":{"projectId":"serhii-hrabas","appId":"1:178608639812:android:e8aacdc1e658e2a474d111","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"serhii-hrabas","appId":"1:178608639812:ios:302b23c862cc4c1d74d111","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"macos":{"default":{"projectId":"serhii-hrabas","appId":"1:178608639812:ios:302b23c862cc4c1d74d111","uploadDebugSymbols":false,"fileOutput":"macos/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"serhii-hrabas","configurations":{"android":"1:178608639812:android:e8aacdc1e658e2a474d111","ios":"1:178608639812:ios:302b23c862cc4c1d74d111","macos":"1:178608639812:ios:302b23c862cc4c1d74d111","web":"1:178608639812:web:d4b98fa0ee1b9ab574d111"}}}}}}

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/data/repository.dart';
+import 'package:portfolio/main/data/repository/blog_repository.dart';
+import 'package:portfolio/main/service_locator.dart';
+import 'package:portfolio/main/ui/blog/blog_bloc.dart';
+import 'package:portfolio/main/ui/blog/blog_event.dart';
+import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/contact.dart';
 import 'package:portfolio/main/ui/home.dart';
@@ -8,7 +14,7 @@ import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_blog.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_features.dart';
-import 'package:portfolio/main/ui/responsive/mobile/mobile_portfoilio.dart';
+import 'package:portfolio/main/ui/responsive/mobile/mobile_portfolio.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_resume.dart';
 import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/constants.dart';
@@ -59,9 +65,24 @@ class _MobileContentState extends State<MobileContent> {
                 ),
               ),
               const HorizontalDivider(),
-              MobileBlogWidget(
-                key: keys[NavigationMenu.blog],
-                posts: Repository.posts,
+              // MobileBlogWidget(
+              //   key: keys[NavigationMenu.blog],
+              //   posts: Repository.posts,
+              // ),
+              BlocProvider(
+                create: (context) =>
+                    BlogBloc(blogRepository: locator<BlogRepository>())
+                      ..add(
+                        GetPosts(),
+                      ),
+                child: BlocBuilder<BlogBloc, BlogState>(
+                  builder: (context, state) {
+                    return MobileBlogWidget(
+                      key: keys[NavigationMenu.blog],
+                      blogState: state,
+                    );
+                  },
+                ),
               ),
               const HorizontalDivider(),
               MobileFeatures(

@@ -215,7 +215,7 @@ class Repository {
           'choose departing point, arrival point and amount of hours to rent so '
           'that his bike would be available for ride.',
       link:
-          'https://play.google.com/store/apps/details?id=com.unlimitedbiking.android&hl=en',
+          'https://play.google.com/store/apps/details?id=com.Unlimitedbiking&hl=uk',
     ),
   ];
 

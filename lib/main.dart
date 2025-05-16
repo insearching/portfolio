@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
@@ -8,13 +9,15 @@ import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/theme.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'main/data/device_info.dart';
 import 'main/data/device_type.dart';
+import 'main/service_locator.dart';
 import 'main/ui/components/app_error_widget.dart';
 
 const String userName = 'Serhii Hrabas';
 
-void main() {
+void main() async {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: UIColors.backgroundColor, // Set your desired color
@@ -22,6 +25,13 @@ void main() {
     ),
   );
   ErrorWidget.builder = (_) => const AppErrorWidget();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  setupLocator();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const RootProvider());
 }
 
@@ -63,7 +73,6 @@ class PortfolioApplication extends StatelessWidget {
 
   final ThemeData theme;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
