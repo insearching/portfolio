@@ -42,6 +42,9 @@ jobs:
       - name: Enable Firebase webframeworks experiment
         run: firebase experiments:enable webframeworks
 
+      - name: Login to Firebase
+        run: firebase login
+
       # Optional: Use FirebaseExtended Action with service account
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
