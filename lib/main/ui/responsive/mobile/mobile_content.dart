@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/bloc/contact_form_event.dart';
+import 'package:portfolio/main/bloc/portfolio_bloc.dart';
+import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
-import 'package:portfolio/main/data/repository.dart';
+import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart';
 import 'package:portfolio/main/data/repository/position_repository.dart';
 import 'package:portfolio/main/service_locator.dart';
@@ -12,7 +15,6 @@ import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/contact.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
-import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_bloc.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
@@ -20,7 +22,6 @@ import 'package:portfolio/main/ui/responsive/mobile/mobile_blog.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_features.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_portfolio.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_resume.dart';
-import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/constants.dart';
 
 class MobileContent extends StatefulWidget {
@@ -31,7 +32,7 @@ class MobileContent extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final ValueChanged<SubmitFormEvent> onMessageSend;
+  final ValueChanged<SubmitContactForm> onMessageSend;
 
   @override
   State<MobileContent> createState() => _MobileContentState();
@@ -42,7 +43,7 @@ class _MobileContentState extends State<MobileContent> {
   Widget build(BuildContext context) {
     final ScrollController controller = ScrollController();
     return Container(
-      color: UIColors.backgroundColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: SingleChildScrollView(
         controller: controller,
         physics: const AlwaysScrollableScrollPhysics(),
@@ -69,15 +70,11 @@ class _MobileContentState extends State<MobileContent> {
                 ),
               ),
               const HorizontalDivider(),
-              // MobileBlogWidget(
-              //   key: keys[NavigationMenu.blog],
-              //   posts: Repository.posts,
-              // ),
               BlocProvider(
                 create: (context) =>
                     BlogBloc(blogRepository: locator<BlogRepository>())
                       ..add(
-                        GetPosts(),
+                        const GetPosts(),
                       ),
                 child: BlocBuilder<BlogBloc, BlogState>(
                   builder: (context, state) {
@@ -93,7 +90,7 @@ class _MobileContentState extends State<MobileContent> {
                 create: (context) => PersonalInfoBloc(
                     positionRepo: locator<PositionRepository>())
                   ..add(
-                    GetPositions(),
+                    const GetPositions(),
                   ),
                 child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
                   builder: (context, state) {
@@ -105,22 +102,41 @@ class _MobileContentState extends State<MobileContent> {
                 ),
               ),
               const HorizontalDivider(),
-              MobilePortfolio(
-                key: keys[NavigationMenu.portfolio],
-                projects: Repository.projects,
+              BlocBuilder<PortfolioBloc, PortfolioState>(
+                builder: (context, state) {
+                  return MobilePortfolio(
+                    key: keys[NavigationMenu.portfolio],
+                    projects: state.projects,
+                  );
+                },
               ),
               const HorizontalDivider(),
-              MobileResume(
-                key: keys[NavigationMenu.resume],
-                educations: Repository.educationInfo,
-                skills: Repository.skills,
-                tabs: Repository.tabs,
+              BlocBuilder<PortfolioBloc, PortfolioState>(
+                builder: (context, state) {
+                  return MobileResume(
+                    key: keys[NavigationMenu.resume],
+                    educations: state.education,
+                    skills: state.skills,
+                    tabs: state.resumeTabs,
+                  );
+                },
               ),
               const HorizontalDivider(),
-              Contact(
-                key: keys[NavigationMenu.contact],
-                info: Repository.info,
-                onMessageSend: widget.onMessageSend,
+              BlocBuilder<PortfolioBloc, PortfolioState>(
+                builder: (context, state) {
+                  return Contact(
+                    key: keys[NavigationMenu.contact],
+                    info: state.personalInfo ??
+                        const PersonalInfo(
+                          image: '',
+                          title: '',
+                          description: '',
+                          email: '',
+                          socials: [],
+                        ),
+                    onMessageSend: widget.onMessageSend,
+                  );
+                },
               ),
             ],
           ),

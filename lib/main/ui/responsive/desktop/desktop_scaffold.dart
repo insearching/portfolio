@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/bloc/contact_form_event.dart';
 import 'package:portfolio/main/ui/left_panel.dart';
-import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_content.dart';
-import 'package:portfolio/utils/colors.dart';
 
 class DesktopScaffold extends StatelessWidget {
   const DesktopScaffold({
@@ -12,17 +11,20 @@ class DesktopScaffold extends StatelessWidget {
   }) : super(key: key);
 
   final String name;
-  final ValueChanged<SubmitFormEvent> onMessageSend;
+  final ValueChanged<SubmitContactForm> onMessageSend;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: UIColors.backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           children: [
             const LeftPanel(),
-            const VerticalDivider(width: 1.0, color: UIColors.black),
+            VerticalDivider(
+              width: 1.0,
+              color: Theme.of(context).dividerColor,
+            ),
             DesktopContent(
               name: name,
               onMessageSend: onMessageSend,

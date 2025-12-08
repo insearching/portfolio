@@ -41,26 +41,31 @@ class InputFieldState extends State<InputField> {
             child: TextFormField(
               decoration: InputDecoration(
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: UIColors.darkGrey, width: 2),
+                  borderSide: BorderSide(
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
+                    width: 2,
+                  ),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: UIColors.accent, width: 2),
+                  borderSide:
+                      const BorderSide(color: UIColors.accent, width: 2),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 labelText: widget.state.text,
                 errorText: widget.state.errorText,
-                labelStyle: const TextStyle(
+                labelStyle: TextStyle(
                   fontSize: 18.0,
-                  color: UIColors.lightGrey,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                fillColor: UIColors.black,
+                fillColor: Theme.of(context).colorScheme.surface,
               ),
               maxLines: widget.state.maxLines,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18.0,
-                color: UIColors.lightGrey,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               keyboardType: widget.state.textInputType,
               inputFormatters: <TextInputFormatter>[

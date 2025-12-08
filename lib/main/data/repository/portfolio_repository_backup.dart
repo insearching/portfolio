@@ -237,9 +237,9 @@ class Repository {
     title: 'Serhii Hrabas',
     description: 'Senior Android developer \n'
         'I am available for freelance work. Connect with me via email or socials.\n'
-        'Email: kerboserhii@gmail.com\n'
+        'Email: hrabas.serhii@gmail.com\n'
         'Connect with me\n',
-    email: 'kerboserhii@gmail.com',
+    email: 'hrabas.serhii@gmail.com',
     socials: SocialInfo.values,
   );
 

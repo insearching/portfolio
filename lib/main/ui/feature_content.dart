@@ -16,37 +16,35 @@ class FeatureContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedContainer(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  responsibility.icon,
-                  color: UIColors.accent,
-                  height: 32.0,
-                  fit: BoxFit.fitHeight,
-                ),
-                const SizedBox(width: 16.0),
-                Text(
-                  responsibility.title,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-            const SizedBox(height: 24.0),
-            _FeatureBody(
-              body: responsibility.description,
-              isScrollable: isPhone,
-            )
-          ],
-        ),
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                responsibility.icon,
+                color: UIColors.accent,
+                height: 32.0,
+                fit: BoxFit.fitHeight,
+              ),
+              const SizedBox(width: 16.0),
+              Text(
+                responsibility.title,
+                style: Theme.of(context).textTheme.bodyLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          const SizedBox(height: 24.0),
+          _FeatureBody(
+            body: responsibility.description,
+            isScrollable: isPhone,
+          )
+        ],
       ),
     );
   }

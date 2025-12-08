@@ -1,11 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/bloc/contact_form_bloc.dart';
+import 'package:portfolio/main/bloc/contact_form_event.dart';
+import 'package:portfolio/main/bloc/contact_form_state.dart';
 import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/data/repository/portfolio_repository.dart';
+import 'package:portfolio/main/service_locator.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
-import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/socials.dart';
 
 class DesktopContact extends StatelessWidget {
@@ -16,7 +20,7 @@ class DesktopContact extends StatelessWidget {
   });
 
   final PersonalInfo info;
-  final ValueChanged<SubmitFormEvent> onMessageSend;
+  final ValueChanged<SubmitContactForm> onMessageSend;
 
   @override
   Widget build(BuildContext context) {
@@ -64,36 +68,34 @@ class _ContactInfoContainerState extends State<_ContactInfoContainer> {
   @override
   Widget build(BuildContext context) {
     return ElevatedContainer(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.asset(
-                widget.info.image,
-              ),
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Image.asset(
+              widget.info.image,
             ),
-            const SizedBox(height: 32.0),
-            Text(
-              widget.info.title,
-              style: Theme.of(context).textTheme.bodyLarge,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 16.0),
-            Text(
-              widget.info.description,
-              style: Theme.of(context).textTheme.bodyMedium,
-              softWrap: true,
-              maxLines: 10,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 16.0),
-            Socials(socials: widget.info.socials)
-          ],
-        ),
+          ),
+          const SizedBox(height: 32.0),
+          Text(
+            widget.info.title,
+            style: Theme.of(context).textTheme.bodyLarge,
+            softWrap: true,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 16.0),
+          Text(
+            widget.info.description,
+            style: Theme.of(context).textTheme.bodyMedium,
+            softWrap: true,
+            maxLines: 10,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 16.0),
+          Socials(socials: widget.info.socials)
+        ],
       ),
     );
   }
@@ -121,19 +123,26 @@ class _ContactForm extends StatefulWidget {
     Key? key,
   }) : super(key: key);
 
-  final ValueChanged<SubmitFormEvent> onMessageSend;
+  final ValueChanged<SubmitContactForm> onMessageSend;
 
   @override
   State<_ContactForm> createState() => _ContactFormState();
 }
 
 class _ContactFormState extends State<_ContactForm> {
+  String name = "";
+  String phone = "";
+  String email = "";
+  String subject = "";
+  String message = "";
+
   @override
   Widget build(BuildContext context) {
-    final form = SubmitFormEvent();
     return BlocProvider(
-      create: (context) => MainBloc(),
-      child: BlocBuilder<MainBloc, ContactFormState>(
+      create: (context) => ContactFormBloc(
+        portfolioRepository: locator<PortfolioRepository>(),
+      ),
+      child: BlocBuilder<ContactFormBloc, ContactFormState>(
         // listener: (context, state) {
         //   if (state is FormSuccess) {
         //     ScaffoldMessenger.of(context).showSnackBar(
@@ -143,105 +152,111 @@ class _ContactFormState extends State<_ContactForm> {
         // },
         builder: (context, state) {
           return ElevatedContainer(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: InputField(
-                              state: InputState(
-                                text: 'Your name',
-                                errorText: state is FormError
-                                    ? state.getErrorMessage(
-                                        state.errors.firstWhereOrNull(
-                                          (error) =>
-                                              error == InputFormError.EmptyName,
-                                        ),
-                                      )
-                                    : null,
-                                onTextChanged: (text) {
-                                  form.name = text;
-                                },
-                              ),
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: InputField(
+                            state: InputState(
+                              text: 'Your name',
+                              errorText: state.status.isError
+                                  ? state.getErrorMessage(
+                                      state.errors.firstWhereOrNull(
+                                        (error) =>
+                                            error ==
+                                            FormValidationError.emptyName,
+                                      ),
+                                    )
+                                  : null,
+                              onTextChanged: (text) {
+                                name = text;
+                              },
                             ),
                           ),
-                          const SizedBox(width: 16.0),
-                          Expanded(
-                            child: InputField(
-                              state: InputState(
-                                text: 'Your phone',
-                                errorText: state is FormError
-                                    ? state.getErrorMessage(state.errors
-                                        .firstWhereOrNull((error) =>
-                                            error ==
-                                                InputFormError.EmptyPhone ||
-                                            error ==
-                                                InputFormError.NotValidPhone))
-                                    : null,
-                                textInputType: TextInputType.phone,
-                                onTextChanged: (text) {
-                                  form.phone = text;
-                                },
-                              ),
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: InputField(
+                            state: InputState(
+                              text: 'Your phone',
+                              errorText: state.status.isError
+                                  ? state.getErrorMessage(state.errors
+                                      .firstWhereOrNull((error) =>
+                                          error ==
+                                              FormValidationError.emptyPhone ||
+                                          error ==
+                                              FormValidationError.invalidPhone))
+                                  : null,
+                              textInputType: TextInputType.phone,
+                              onTextChanged: (text) {
+                                phone = text;
+                              },
                             ),
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    InputField(
+                      state: InputState(
+                        text: 'Your email',
+                        errorText: state.status.isError
+                            ? state.getErrorMessage(state.errors
+                                .firstWhereOrNull((error) =>
+                                    error == FormValidationError.emptyEmail ||
+                                    error == FormValidationError.invalidEmail))
+                            : null,
+                        onTextChanged: (text) {
+                          email = text;
+                        },
                       ),
-                      InputField(
-                        state: InputState(
-                          text: 'Your email',
-                          errorText: state is FormError
-                              ? state.getErrorMessage(state.errors
-                                  .firstWhereOrNull((error) =>
-                                      error == InputFormError.EmptyEmail ||
-                                      error == InputFormError.NotValidEmail))
-                              : null,
-                          onTextChanged: (text) {
-                            form.email = text;
-                          },
-                        ),
-                      ), //email
-                      InputField(
-                        state: InputState(
-                          text: 'Your subject',
-                          errorText: state is FormError
-                              ? state.getErrorMessage(state.errors
-                                  .firstWhereOrNull((error) =>
-                                      error == InputFormError.EmptySubject))
-                              : null,
-                          onTextChanged: (text) {
-                            form.subject = text;
-                          },
-                        ),
-                      ), //subject
-                      InputField(
-                        state: InputState(
-                          text: 'Your message',
-                          errorText: state is FormError
-                              ? state.getErrorMessage(state.errors
-                                  .firstWhereOrNull((error) =>
-                                      error == InputFormError.EmptyMessage))
-                              : null,
-                          maxLines: 10,
-                          onTextChanged: (text) {
-                            form.message = text;
-                          },
-                        ),
-                      ), //message
-                    ],
-                  ),
-                  RippleButton(
-                      text: 'Send message',
-                      onTap: () {
-                        context.read<MainBloc>().add(form);
-                      })
-                ],
-              ),
+                    ), //email
+                    InputField(
+                      state: InputState(
+                        text: 'Your subject',
+                        errorText: state.status.isError
+                            ? state.getErrorMessage(state.errors
+                                .firstWhereOrNull((error) =>
+                                    error == FormValidationError.emptySubject))
+                            : null,
+                        onTextChanged: (text) {
+                          subject = text;
+                        },
+                      ),
+                    ), //subject
+                    InputField(
+                      state: InputState(
+                        text: 'Your message',
+                        errorText: state.status.isError
+                            ? state.getErrorMessage(state.errors
+                                .firstWhereOrNull((error) =>
+                                    error == FormValidationError.emptyMessage))
+                            : null,
+                        maxLines: 10,
+                        onTextChanged: (text) {
+                          message = text;
+                        },
+                      ),
+                    ), //message
+                  ],
+                ),
+                RippleButton(
+                    text: 'Send message',
+                    onTap: () {
+                      final event = SubmitContactForm(
+                        name: name,
+                        phone: phone,
+                        email: email,
+                        subject: subject,
+                        message: message,
+                      );
+                      context.read<ContactFormBloc>().add(event);
+                    })
+              ],
             ),
           );
         },

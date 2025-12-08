@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/utils/colors.dart';
 
 class RippleButton extends StatefulWidget {
   const RippleButton({
@@ -31,21 +30,23 @@ class _RippleButtonState extends State<RippleButton> {
           ),
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
           decoration: BoxDecoration(
-            color: UIColors.backgroundColor,
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(5.0),
             boxShadow: _isElevated
                 ? [
-                    const BoxShadow(
-                      color: UIColors.black,
-                      offset: Offset(10, 15),
+                    BoxShadow(
+                      color:
+                          Theme.of(context).shadowColor.withValues(alpha: 0.3),
+                      offset: const Offset(10, 15),
                       blurRadius: 30,
                       spreadRadius: 1,
                     ),
                   ]
                 : [
-                    const BoxShadow(
-                      color: UIColors.black,
-                      offset: Offset(10, 10),
+                    BoxShadow(
+                      color:
+                          Theme.of(context).shadowColor.withValues(alpha: 0.2),
+                      offset: const Offset(10, 10),
                       blurRadius: 30,
                       spreadRadius: 1,
                     ),

@@ -1,12 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/bloc/portfolio_bloc.dart';
+import 'package:portfolio/main/bloc/portfolio_event.dart';
+import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/responsive_layout.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_scaffold.dart';
-import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/theme.dart';
+import 'package:portfolio/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -15,19 +19,11 @@ import 'main/data/device_type.dart';
 import 'main/service_locator.dart';
 import 'main/ui/components/app_error_widget.dart';
 
-const String userName = 'Serhii Hrabas';
-
 void main() async {
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: UIColors.backgroundColor, // Set your desired color
-      statusBarIconBrightness: Brightness.light, // For white icons
-    ),
-  );
   ErrorWidget.builder = (_) => const AppErrorWidget();
   WidgetsFlutterBinding.ensureInitialized();
 
-  setupLocator();
+  await setupLocator();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -47,50 +43,93 @@ class RootProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final deviceType = _getDeviceType(context);
-        final isSmallDevice = deviceType == DeviceType.phone;
-        final theme =
-            isSmallDevice ? CustomTheme.phoneTheme : CustomTheme.desktopTheme;
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final deviceType = _getDeviceType(context);
 
-        return Provider<DeviceInfo>(
-          create: (_) => DeviceInfo(deviceType),
-          child: PortfolioApplication(
-            theme: theme,
-          ),
-        );
-      },
+          return Provider<DeviceInfo>(
+            create: (_) => DeviceInfo(deviceType),
+            child: const PortfolioApplication(),
+          );
+        },
+      ),
     );
   }
 }
 
 class PortfolioApplication extends StatelessWidget {
   const PortfolioApplication({
-    required this.theme,
     Key? key,
   }) : super(key: key);
 
-  final ThemeData theme;
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: userName,
-      theme: theme,
-      home: ResponsiveLayout(
-        mobileScaffold: MobileScaffold(
-          name: userName,
-          onMessageSend: (form) {},
-        ),
-        tabletScaffold: TabletScaffold(
-          name: userName,
-          onMessageSend: (form) {},
-        ),
-        desktopScaffold: DesktopScaffold(
-          name: userName,
-          onMessageSend: (form) {},
-        ),
+    final deviceInfo = Provider.of<DeviceInfo>(context);
+    final isSmallDevice = deviceInfo.deviceType == DeviceType.phone;
+
+    // Create the PortfolioBloc and load data
+    return BlocProvider(
+      create: (context) => PortfolioBloc(
+        portfolioRepository: locator<PortfolioRepository>(),
+      )..add(const LoadPortfolioData()),
+      child: Builder(
+        builder: (context) {
+          // Get userName from the bloc state or use a default
+          final userName = context.select(
+                  (PortfolioBloc bloc) => bloc.state.personalInfo?.title) ??
+              'Portfolio';
+
+          return Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              // Select themes based on device type
+              final darkTheme = isSmallDevice
+                  ? PortfolioTheme.phoneDarkTheme
+                  : PortfolioTheme.desktopDarkTheme;
+              final lightTheme = isSmallDevice
+                  ? PortfolioTheme.phoneLightTheme
+                  : PortfolioTheme.desktopLightTheme;
+
+              final isDark = themeProvider.themeMode == ThemeMode.dark ||
+                  (themeProvider.themeMode == ThemeMode.system &&
+                      MediaQuery.platformBrightnessOf(context) ==
+                          Brightness.dark);
+
+              final currentTheme = isDark ? darkTheme : lightTheme;
+
+              return AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle(
+                  statusBarColor: currentTheme.scaffoldBackgroundColor,
+                  statusBarIconBrightness:
+                      isDark ? Brightness.light : Brightness.dark,
+                  statusBarBrightness:
+                      isDark ? Brightness.dark : Brightness.light,
+                ),
+                child: MaterialApp(
+                  title: userName,
+                  theme: lightTheme,
+                  darkTheme: darkTheme,
+                  themeMode: themeProvider.themeMode,
+                  home: ResponsiveLayout(
+                    mobileScaffold: MobileScaffold(
+                      name: userName,
+                      onMessageSend: (form) {},
+                    ),
+                    tabletScaffold: TabletScaffold(
+                      name: userName,
+                      onMessageSend: (form) {},
+                    ),
+                    desktopScaffold: DesktopScaffold(
+                      name: userName,
+                      onMessageSend: (form) {},
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

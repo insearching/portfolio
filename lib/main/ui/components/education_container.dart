@@ -19,62 +19,46 @@ class EducationContainer extends StatelessWidget {
     final String? imagePath = education.imageUrl;
 
     return ElevatedContainer(
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            education.title,
+            style: Theme.of(context).textTheme.bodyLarge,
+            softWrap: true,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            education.description,
+            style: Theme.of(context).textTheme.bodyMedium,
+            softWrap: true,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 16.0),
+          const HorizontalDivider(),
+          const SizedBox(height: 24.0),
+          if (text != null) ...[
             Text(
-              education.title,
-              style: Theme.of(context).textTheme.bodyLarge,
-              softWrap: true,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(
-              education.description,
+              text,
               style: Theme.of(context).textTheme.bodyMedium,
               softWrap: true,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 16.0),
-            const HorizontalDivider(),
-            const SizedBox(height: 24.0),
-            if (text != null) ...[
-              Text(
-                text,
-                style: Theme.of(context).textTheme.bodyMedium,
-                softWrap: true,
-              )
-            ],
-            if (imagePath != null) ...[
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(8.0),
-              //   child: InkWell(
-              //     onTap: link != null ? () => launchUrlString(link) : null,
-              //     child: CachedNetworkImage(
-              //       imageUrl: imageUrl,
-              //       fit: BoxFit.fitHeight,
-              //       placeholder: (context, url) =>
-              //           const Center(child: CircularProgressIndicator()),
-              //       errorWidget: (context, url, error) =>
-              //           const Icon(Icons.error, size: 150),
-              //     ),
-              //   ),
-              // ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: InkWell(
-                  onTap: link != null ? () => launchUrlString(link) : null,
-                  child: Image(
-                    image: AssetImage(imagePath),
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                  ),
-                ),
-              )
-            ],
+            )
           ],
-        ),
+          if (imagePath != null && imagePath.isNotEmpty) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: InkWell(
+                onTap: link != null ? () => launchUrlString(link) : null,
+                child: Image(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.fill,
+                  width: double.infinity,
+                ),
+              ),
+            )
+          ],
+        ],
       ),
     );
   }

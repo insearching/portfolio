@@ -1,58 +1,28 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:portfolio/main/data/local/dao/post_dao.dart';
 import 'package:portfolio/main/data/post.dart';
 
-const String _collectionName = 'posts';
-
+/// Repository for managing blog posts
+/// Provides business logic layer between UI and data access
 class BlogRepository {
   BlogRepository({
-    required this.databaseReference,
+    required this.postDao,
   });
 
-  final DatabaseReference databaseReference;
+  final PostDao postDao;
 
   Future<void> addPost(Post post) async {
-    final postsCollection = databaseReference.child(_collectionName);
-
     try {
-      await postsCollection.push().set({
-        'title': post.title,
-        'description': post.description,
-        'imageLink': post.imageLink,
-        'link': post.link,
-      });
-      print('Post added successfully');
+      await postDao.addPost(post);
     } catch (e) {
-      print('Error adding post: $e');
+      throw Exception('Failed to add post: $e');
     }
   }
 
   Future<List<Post>> readPosts() async {
-    final postsCollection = databaseReference.child(_collectionName);
-    final event = await postsCollection.once();
-
-    if (event.snapshot.value == null) return [];
-
     try {
-      final List<dynamic> rawData = event.snapshot.value as List<dynamic>;
-      final List<Post> posts = [];
-
-      for (var value in rawData) {
-        if (value is Map) {
-          posts.add(
-            Post(
-              title: value['title']?.toString() ?? '',
-              description: value['description']?.toString() ?? '',
-              imageLink: value['imageLink']?.toString() ?? '',
-              link: value['link']?.toString() ?? '',
-            ),
-          );
-        }
-      }
-
-      return posts;
+      return await postDao.readPosts();
     } catch (e) {
-      print('Error parsing posts: $e');
-      return [];
+      throw Exception('Failed to read posts: $e');
     }
   }
 }

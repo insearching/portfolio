@@ -5,6 +5,7 @@ import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_education.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
+import 'package:portfolio/utils/constants.dart';
 
 class MobileResume extends StatelessWidget {
   const MobileResume({
@@ -29,11 +30,12 @@ class MobileResume extends StatelessWidget {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 24.0),
-          _ResumeTabs(
-            educations: educations,
-            skills: skills,
-            tabs: tabs,
-          )
+          if (tabs.isNotEmpty)
+            _ResumeTabs(
+              educations: educations,
+              skills: skills,
+              tabs: tabs,
+            )
         ],
       ),
     );
@@ -70,43 +72,41 @@ class _ResumeTabsState extends State<_ResumeTabs>
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: SizedBox(
-        height: 900,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedContainer(
-                child: TabBar(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  indicatorColor: Colors.transparent,
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.center,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: _tabController,
-                  labelColor: UIColors.accent,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorWeight: 4,
-                  dividerHeight: 0,
-                  dividerColor: Colors.transparent,
-                  tabs: widget.tabs.map((title) => Tab(text: title)).toList(),
-                ),
-              ),
-            ),
-            Expanded(
-              child: TabBarView(
-                physics: const NeverScrollableScrollPhysics(),
+    return SizedBox(
+      height: resumeTabHeight,
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedContainer(
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 16.0, right: 16.0, bottom: 16.0),
+              child: TabBar(
+                indicatorColor: Colors.transparent,
+                isScrollable: true,
+                tabAlignment: TabAlignment.center,
+                physics: const AlwaysScrollableScrollPhysics(),
                 controller: _tabController,
-                children: [
-                  MobileEducationWidget(educations: widget.educations),
-                  MobileProfessionalSkillsWidget(skills: widget.skills)
-                ],
+                labelColor: UIColors.accent,
+                unselectedLabelColor: Colors.grey,
+                indicatorWeight: 4,
+                dividerHeight: 0,
+                dividerColor: Colors.transparent,
+                tabs: widget.tabs.map((title) => Tab(text: title)).toList(),
               ),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                MobileEducationWidget(educations: widget.educations),
+                MobileProfessionalSkillsWidget(skills: widget.skills)
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

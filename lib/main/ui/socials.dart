@@ -19,20 +19,17 @@ class _SocialsState extends State<Socials> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children:
-      widget.socials.map(
-            (social) =>
-            Padding(
-              padding: const EdgeInsets.symmetric (horizontal: 8.0),
-              child: ImageButton(
-                icon: social.icon,
-                onTap: () =>
-                    launchUrl(
-                      Uri.parse(social.url),
-                    ),
+      children: widget.socials
+          .map(
+            (social) => ImageButton(
+              icon: social.icon,
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              onTap: () => launchUrl(
+                Uri.parse(social.url),
               ),
             ),
-      ).toList(),
+          )
+          .toList(),
     );
   }
 }

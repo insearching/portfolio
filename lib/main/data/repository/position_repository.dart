@@ -1,42 +1,20 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:portfolio/main/data/local/dao/position_dao.dart';
 import 'package:portfolio/main/data/position.dart';
 
-const String _collectionName = 'positions';
-
+/// Repository for managing positions
+/// Provides business logic layer between UI and data access
 class PositionRepository {
   PositionRepository({
-    required this.databaseReference,
+    required this.positionDao,
   });
 
-  final DatabaseReference databaseReference;
+  final PositionDao positionDao;
 
   Future<List<Position>> readPositions() async {
-    final positionsCollection = databaseReference.child(_collectionName);
-    final event = await positionsCollection.once();
-
-    if (event.snapshot.value == null) return [];
-
     try {
-      final List<dynamic> rawData = event.snapshot.value as List<dynamic>;
-      final List<Position> positions = [];
-
-      for (var value in rawData) {
-        if (value is Map) {
-          positions.add(
-            Position(
-              title: value['title']?.toString() ?? '',
-              description: value['description']?.toString() ?? '',
-              position: value['position']?.toString() ?? '',
-              icon: value['icon']?.toString() ?? 'assets/img/android.png',
-            ),
-          );
-        }
-      }
-
-      return positions;
+      return await positionDao.readPositions();
     } catch (e) {
-      print('Error parsing positions: $e');
-      return [];
+      throw Exception('Failed to read positions: $e');
     }
   }
 }

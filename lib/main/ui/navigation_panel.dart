@@ -83,40 +83,44 @@ class _IconLabelState extends State<IconLabel> {
   @override
   Widget build(BuildContext context) {
     final int position = widget.position;
+    final defaultIconColor =
+        Theme.of(context).iconTheme.color ?? UIColors.lightGrey;
+
     return Column(
       children: [
         Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: InkWell(
-              onTap: () {
-                widget.onPressed(position);
-              },
-              onHover: (value) {
-                setState(() {
-                  isHovered = value;
-                });
-              },
-              child: Row(
-                children: [
-                  Image.asset(
-                    widget.assetName,
-                    color: isHovered ? UIColors.accent : UIColors.lightGrey,
-                    width: 20.0,
-                    height: 20.0,
-                  ),
-                  const SizedBox(width: 16.0),
-                  Text(
-                    widget.text.toUpperCase(),
-                    style: isHovered
-                        ? Theme.of(context)
-                            .textTheme
-                            .displayMedium
-                            ?.copyWith(color: UIColors.accent)
-                        : Theme.of(context).textTheme.displayMedium,
-                  )
-                ],
-              ),
-            )),
+          padding: const EdgeInsets.all(16.0),
+          child: InkWell(
+            onTap: () {
+              widget.onPressed(position);
+            },
+            onHover: (value) {
+              setState(() {
+                isHovered = value;
+              });
+            },
+            child: Row(
+              children: [
+                Image.asset(
+                  widget.assetName,
+                  color: isHovered ? UIColors.accent : defaultIconColor,
+                  width: 20.0,
+                  height: 20.0,
+                ),
+                const SizedBox(width: 16.0),
+                Text(
+                  widget.text.toUpperCase(),
+                  style: isHovered
+                      ? Theme.of(context)
+                          .textTheme
+                          .displayMedium
+                          ?.copyWith(color: UIColors.accent)
+                      : Theme.of(context).textTheme.displayMedium,
+                )
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
-import 'package:portfolio/utils/colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class CustomDialog extends StatelessWidget {
@@ -30,7 +29,7 @@ class CustomDialog extends StatelessWidget {
         ),
       ),
       contentPadding: const EdgeInsets.all(54.0),
-      backgroundColor: UIColors.backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       content: SingleChildScrollView(
         child: SizedBox(
           width: 1000,

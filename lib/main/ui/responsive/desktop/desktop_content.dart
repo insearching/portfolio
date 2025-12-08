@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/bloc/contact_form_event.dart';
+import 'package:portfolio/main/bloc/portfolio_bloc.dart';
+import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
-import 'package:portfolio/main/data/repository.dart';
+import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart';
 import 'package:portfolio/main/data/repository/position_repository.dart';
 import 'package:portfolio/main/service_locator.dart';
@@ -11,7 +14,6 @@ import 'package:portfolio/main/ui/blog/blog_state.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/keys.dart';
-import 'package:portfolio/main/ui/main_bloc.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_bloc.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
@@ -31,7 +33,7 @@ class DesktopContent extends StatefulWidget {
   }) : super(key: key);
 
   final String name;
-  final ValueChanged<SubmitFormEvent> onMessageSend;
+  final ValueChanged<SubmitContactForm> onMessageSend;
 
   @override
   State<DesktopContent> createState() => _DesktopContentState();
@@ -74,7 +76,7 @@ class _DesktopContentState extends State<DesktopContent> {
                   create: (context) =>
                       BlogBloc(blogRepository: locator<BlogRepository>())
                         ..add(
-                          GetPosts(),
+                          const GetPosts(),
                         ),
                   child: BlocBuilder<BlogBloc, BlogState>(
                     builder: (context, state) {
@@ -102,22 +104,41 @@ class _DesktopContentState extends State<DesktopContent> {
                   ),
                 ),
                 const HorizontalDivider(),
-                DesktopPortfolio(
-                  key: keys[NavigationMenu.portfolio],
-                  projects: Repository.projects,
+                BlocBuilder<PortfolioBloc, PortfolioState>(
+                  builder: (context, state) {
+                    return DesktopPortfolio(
+                      key: keys[NavigationMenu.portfolio],
+                      projects: state.projects,
+                    );
+                  },
                 ),
                 const HorizontalDivider(),
-                DesktopResume(
-                  key: keys[NavigationMenu.resume],
-                  educations: Repository.educationInfo,
-                  skills: Repository.skills,
-                  tabs: Repository.tabs,
+                BlocBuilder<PortfolioBloc, PortfolioState>(
+                  builder: (context, state) {
+                    return DesktopResume(
+                      key: keys[NavigationMenu.resume],
+                      educations: state.education,
+                      skills: state.skills,
+                      tabs: state.resumeTabs,
+                    );
+                  },
                 ),
                 const HorizontalDivider(),
-                DesktopContact(
-                  key: keys[NavigationMenu.contact],
-                  info: Repository.info,
-                  onMessageSend: widget.onMessageSend,
+                BlocBuilder<PortfolioBloc, PortfolioState>(
+                  builder: (context, state) {
+                    return DesktopContact(
+                      key: keys[NavigationMenu.contact],
+                      info: state.personalInfo ??
+                          const PersonalInfo(
+                            image: '',
+                            title: '',
+                            description: '',
+                            email: '',
+                            socials: [],
+                          ),
+                      onMessageSend: widget.onMessageSend,
+                    );
+                  },
                 ),
               ],
             ),

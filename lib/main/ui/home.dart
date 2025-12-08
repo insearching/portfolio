@@ -41,7 +41,7 @@ class _HomeState extends State<Home> {
           create: (context) =>
               PersonalInfoBloc(positionRepo: locator<PositionRepository>())
                 ..add(
-                  GetPositions(),
+                  const GetPositions(),
                 ),
           child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
             builder: (context, state) {

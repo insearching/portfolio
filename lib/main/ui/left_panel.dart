@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/bloc/portfolio_bloc.dart';
+import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
-import 'package:portfolio/main/data/repository.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
+import 'package:portfolio/main/ui/components/theme_toggle_button.dart';
 import 'package:portfolio/main/ui/keys.dart';
 import 'package:portfolio/main/ui/navigation_panel.dart';
 import 'package:portfolio/main/ui/socials.dart';
@@ -10,7 +13,10 @@ import 'package:portfolio/utils/constants.dart';
 class LeftPanel extends StatelessWidget {
   const LeftPanel({
     Key? key,
+    this.onMenuItemSelected,
   }) : super(key: key);
+
+  final VoidCallback? onMenuItemSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +25,9 @@ class LeftPanel extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          const SizedBox(height: 8.0),
+          const AnimatedThemeToggleButton(size: 24.0),
+          const SizedBox(height: 8.0),
           NavigationPanel(
             onMenuItemSelected: (position) {
               final tagKey = NavigationMenu.keyByPosition(position);
@@ -29,11 +38,18 @@ class LeftPanel extends StatelessWidget {
                 context,
                 duration: animationDuration,
               );
+              // Call the callback to close drawer on mobile
+              onMenuItemSelected?.call();
             },
           ),
           const HorizontalDivider(),
           const SizedBox(height: 24.0),
-          Socials(socials: Repository.info.socials),
+          BlocBuilder<PortfolioBloc, PortfolioState>(
+            builder: (context, state) {
+              final socials = state.personalInfo?.socials ?? [];
+              return Socials(socials: socials);
+            },
+          ),
         ],
       ),
     );
