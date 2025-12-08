@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "178608639812",
+    "firebase_url": "https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "serhii-hrabas",
+    "storage_bucket": "serhii-hrabas.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178608639812:android:e8aacdc1e658e2a474d111",
+        "android_client_info": {
+          "package_name": "com.insearching.portfolio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDODlUIwPfV9c1hX-m2iLF3A2yC5dam4FU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
