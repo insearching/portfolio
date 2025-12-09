@@ -22,7 +22,6 @@ import 'package:portfolio/main/ui/portfolio.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_blog.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_features.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_resume.dart';
-import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/constants.dart';
 
 class TabletContent extends StatefulWidget {
@@ -45,7 +44,7 @@ class _TabletContentState extends State<TabletContent> {
     final ScrollController controller = ScrollController();
     return Expanded(
       child: Container(
-        color: UIColors.backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SingleChildScrollView(
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),

@@ -4,13 +4,9 @@ import 'package:sqflite/sqflite.dart';
 /// Local data source for Positions
 /// Handles all SQLite database operations for positions caching
 abstract class PositionsLocalDataSource {
-  Future<void> cachePosition(Position position);
+  Future<void> savePositions(List<Position> positions);
 
-  Future<void> cachePositions(List<Position> positions);
-
-  Future<List<Position>> getCachedPositions();
-
-  Future<void> clearCache();
+  Future<List<Position>> getPositions();
 }
 
 class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
@@ -22,7 +18,7 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
   static const String _tableName = 'positions';
 
   @override
-  Future<void> cachePosition(Position position) async {
+  Future<void> savePosition(Position position) async {
     try {
       await database.insert(
         _tableName,
@@ -42,7 +38,7 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
   }
 
   @override
-  Future<void> cachePositions(List<Position> positions) async {
+  Future<void> savePositions(List<Position> positions) async {
     try {
       final batch = database.batch();
 
@@ -72,7 +68,7 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
   }
 
   @override
-  Future<List<Position>> getCachedPositions() async {
+  Future<List<Position>> getPositions() async {
     try {
       final List<Map<String, dynamic>> maps = await database.query(_tableName);
 

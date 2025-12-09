@@ -22,7 +22,6 @@ import 'package:portfolio/main/ui/responsive/desktop/desktop_contact.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_features.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_portfolio.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_resume.dart';
-import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/constants.dart';
 
 class DesktopContent extends StatefulWidget {
@@ -45,7 +44,7 @@ class _DesktopContentState extends State<DesktopContent> {
     final ScrollController controller = ScrollController();
     return Expanded(
       child: Container(
-        color: UIColors.backgroundColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: SingleChildScrollView(
           controller: controller,
           physics: const AlwaysScrollableScrollPhysics(),

@@ -1,10 +1,15 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
 import 'package:portfolio/main/data/database/database_helper.dart';
 import 'package:portfolio/main/data/local/dao/position_dao.dart';
 import 'package:portfolio/main/data/local/dao/post_dao.dart';
 import 'package:portfolio/main/data/local/positions_local_data_source.dart';
+import 'package:portfolio/main/data/local/positions_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/posts_local_data_source.dart';
+import 'package:portfolio/main/data/local/posts_local_data_source_web.dart';
+import 'package:portfolio/main/data/position.dart';
+import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/posts_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart';
@@ -21,10 +26,6 @@ Future<void> setupLocator() async {
     () => FirebaseDatabase.instance.ref(),
   );
 
-  // Register SQLite Database (Local)
-  final database = await DatabaseHelper.initDatabase();
-  locator.registerLazySingleton<Database>(() => database);
-
   // Register Remote Data Sources
   locator.registerLazySingleton<PostsRemoteDataSource>(
     () => PostsRemoteDataSourceImpl(
@@ -37,17 +38,35 @@ Future<void> setupLocator() async {
     ),
   );
 
-  // Register Local Data Sources
-  locator.registerLazySingleton<PostsLocalDataSource>(
-    () => PostsLocalDataSourceImpl(
-      database: locator<Database>(),
-    ),
-  );
-  locator.registerLazySingleton<PositionsLocalDataSource>(
-    () => PositionsLocalDataSourceImpl(
-      database: locator<Database>(),
-    ),
-  );
+  // Register Local Data Sources based on platform
+  if (kIsWeb) {
+    // Web platform: Use in-memory caching
+    locator.registerLazySingleton<PostsLocalDataSource>(
+      () => _PostsLocalDataSourceWebAdapter(
+        PostsLocalDataSourceWebImpl(),
+      ),
+    );
+    locator.registerLazySingleton<PositionsLocalDataSource>(
+      () => _PositionsLocalDataSourceWebAdapter(
+        PositionsLocalDataSourceWebImpl(),
+      ),
+    );
+  } else {
+    // Native platforms (mobile, desktop): Use SQLite
+    final database = await DatabaseHelper.initDatabase();
+    locator.registerLazySingleton<Database>(() => database);
+
+    locator.registerLazySingleton<PostsLocalDataSource>(
+      () => PostsLocalDataSourceImpl(
+        database: locator<Database>(),
+      ),
+    );
+    locator.registerLazySingleton<PositionsLocalDataSource>(
+      () => PositionsLocalDataSourceImpl(
+        database: locator<Database>(),
+      ),
+    );
+  }
 
   // Register DAOs (Data Access Objects)
   locator.registerLazySingleton<PostDao>(
@@ -78,4 +97,36 @@ Future<void> setupLocator() async {
       positionRepository: locator<PositionRepository>(),
     ),
   );
+}
+
+/// Adapter to make web implementation compatible with the PostsLocalDataSource interface
+class _PostsLocalDataSourceWebAdapter implements PostsLocalDataSource {
+  _PostsLocalDataSourceWebAdapter(this._webImpl);
+
+  final PostsLocalDataSourceWeb _webImpl;
+
+  @override
+  Future<void> cachePost(post) => _webImpl.cachePost(post);
+
+  @override
+  Future<void> cachePosts(posts) => _webImpl.cachePosts(posts);
+
+  @override
+  Future<List<Post>> getCachedPosts() => _webImpl.getCachedPosts();
+
+  @override
+  Future<void> clearCache() => _webImpl.clearCache();
+}
+
+/// Adapter to make web implementation compatible with the PositionsLocalDataSource interface
+class _PositionsLocalDataSourceWebAdapter implements PositionsLocalDataSource {
+  _PositionsLocalDataSourceWebAdapter(this._webImpl);
+
+  final PositionsLocalDataSourceWeb _webImpl;
+
+  @override
+  Future<void> savePositions(positions) => _webImpl.cachePositions(positions);
+
+  @override
+  Future<List<Position>> getPositions() => _webImpl.getCachedPositions();
 }

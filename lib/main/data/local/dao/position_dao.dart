@@ -25,7 +25,7 @@ class PositionDaoImpl implements PositionDao {
 
       // Cache the remote data
       if (remotePositions.isNotEmpty) {
-        await localDataSource.cachePositions(remotePositions);
+        await localDataSource.savePositions(remotePositions);
       }
 
       return remotePositions;
@@ -34,7 +34,7 @@ class PositionDaoImpl implements PositionDao {
 
       // Fallback to local cache if remote fails
       try {
-        final cachedPositions = await localDataSource.getCachedPositions();
+        final cachedPositions = await localDataSource.getPositions();
         print('Returned ${cachedPositions.length} positions from local cache');
         return cachedPositions;
       } catch (cacheError) {
