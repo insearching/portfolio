@@ -110,7 +110,7 @@ class PortfolioTheme {
     ),
 
     // AppBar theme
-    appBarTheme: const AppBarThemeData(
+    appBarTheme: const AppBarTheme(
       backgroundColor: UIColors.backgroundColor,
       iconTheme: IconThemeData(color: UIColors.lightGrey),
     ),

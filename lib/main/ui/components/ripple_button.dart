@@ -35,8 +35,7 @@ class _RippleButtonState extends State<RippleButton> {
             boxShadow: _isElevated
                 ? [
                     BoxShadow(
-                      color:
-                          Theme.of(context).shadowColor.withValues(alpha: 0.3),
+                      color: Theme.of(context).shadowColor.withOpacity(0.3),
                       offset: const Offset(10, 15),
                       blurRadius: 30,
                       spreadRadius: 1,
@@ -44,8 +43,7 @@ class _RippleButtonState extends State<RippleButton> {
                   ]
                 : [
                     BoxShadow(
-                      color:
-                          Theme.of(context).shadowColor.withValues(alpha: 0.2),
+                      color: Theme.of(context).shadowColor.withOpacity(0.2),
                       offset: const Offset(10, 10),
                       blurRadius: 30,
                       spreadRadius: 1,

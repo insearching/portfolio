@@ -56,8 +56,7 @@ class AnimatedThemeToggleButton extends StatelessWidget {
             padding: EdgeInsets.all(size / 3),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color:
-                  Theme.of(context).colorScheme.surface.withValues(alpha: 0.1),
+              color: Theme.of(context).colorScheme.surface.withOpacity(0.1),
             ),
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
@@ -108,7 +107,7 @@ class ThemeToggleSwitch extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withValues(alpha: 0.5),
+                      ?.withOpacity(0.5),
             ),
             const SizedBox(width: 8),
             Switch(
@@ -128,7 +127,7 @@ class ThemeToggleSwitch extends StatelessWidget {
                       .textTheme
                       .bodyMedium
                       ?.color
-                      ?.withValues(alpha: 0.5),
+                      ?.withOpacity(0.5),
             ),
           ],
         );
