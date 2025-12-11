@@ -5,7 +5,6 @@ import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_education.dart';
 import 'package:portfolio/main/ui/resume/professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
-import 'package:portfolio/utils/constants.dart';
 
 class DesktopResume extends StatelessWidget {
   const DesktopResume({
@@ -66,47 +65,42 @@ class _ResumeTabsState extends State<_ResumeTabs>
   void initState() {
     super.initState();
     _tabController = TabController(length: widget.tabs.length, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   double? mTabWidth;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: resumeTabHeight,
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedContainer(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-              child: TabBar(
-                indicatorColor: Colors.transparent,
-                isScrollable: true,
-                tabAlignment: TabAlignment.center,
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _tabController,
-                labelColor: UIColors.accent,
-                unselectedLabelColor: Colors.grey,
-                indicatorWeight: 4,
-                dividerHeight: 0,
-                dividerColor: Colors.transparent,
-                tabs: widget.tabs.map((title) => Tab(text: title)).toList(),
-              ),
-            ),
-          ),
-          Expanded(
-            child: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedContainer(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: TabBar(
+              indicatorColor: Colors.transparent,
+              isScrollable: true,
+              tabAlignment: TabAlignment.center,
+              physics: const AlwaysScrollableScrollPhysics(),
               controller: _tabController,
-              children: [
-                DesktopEducationWidget(educations: widget.educations),
-                ProfessionalSkillsWidget(skills: widget.skills)
-              ],
+              labelColor: UIColors.accent,
+              unselectedLabelColor: Colors.grey,
+              indicatorWeight: 4,
+              dividerHeight: 0,
+              dividerColor: Colors.transparent,
+              tabs: widget.tabs.map((title) => Tab(text: title)).toList(),
             ),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16.0),
+        if (_tabController.index == 0)
+          DesktopEducationWidget(educations: widget.educations)
+        else
+          ProfessionalSkillsWidget(skills: widget.skills),
+      ],
     );
   }
 

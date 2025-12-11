@@ -42,28 +42,24 @@ class EducationContainer extends StatelessWidget {
           const HorizontalDivider(),
           const SizedBox(height: 16.0),
           if (text != null) ...[
-            Flexible(
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodyMedium,
-                softWrap: true,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
+            Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium,
+              softWrap: true,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8.0),
           ],
           if (imagePath != null && imagePath.isNotEmpty) ...[
-            Flexible(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: InkWell(
-                  onTap: link != null ? () => launchUrlString(link) : null,
-                  child: Image(
-                    image: AssetImage(imagePath),
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                  ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: InkWell(
+                onTap: link != null ? () => launchUrlString(link) : null,
+                child: Image(
+                  image: AssetImage(imagePath),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
               ),
             )
