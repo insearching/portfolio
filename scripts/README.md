@@ -1,158 +1,197 @@
-# Version Management Scripts
+# Version Scripts
 
-This directory contains scripts for managing project versions from the centralized `versions.yaml`
-catalog.
+Optional helper scripts for working with project versions.
 
 ## 📁 Files
 
-- **`version_manager.py`** - Python script to read and sync versions
-- **`sync_versions.sh`** - Shell script to sync all version files at once
-- **`read-version.sh`** - Helper script for reading versions in shell scripts
+- **`get_version.py`** - Extract values from pubspec.yaml (optional)
+- **`sync_flutter_version.sh`** - Generate .flutter-version from a desired version (optional)
 
-## 🚀 Quick Start
+## 🎯 When You Need These Scripts
 
-```bash
-# View all versions
-python3 scripts/version_manager.py print
+**Short answer: Probably never!**
 
-# Sync everything
-./scripts/sync_versions.sh
+These are optional utilities. For normal development:
 
-# Get specific version
-python3 scripts/version_manager.py get sdk.flutter
-```
+- ✅ Edit `.flutter-version` directly (it's just a text file)
+- ✅ Edit `pubspec.yaml` directly (standard Flutter)
+- ✅ Use `flutter pub` commands for dependencies
 
-## 📖 Commands
+**Use these scripts only if you need to**:
 
-### version_manager.py
+- Extract versions programmatically in CI/CD
+- Read values from pubspec.yaml in custom scripts
+- Automate version management in complex workflows
 
-```bash
-# Print all versions
-python3 scripts/version_manager.py print
+## 🚀 Normal Workflow (No Scripts Needed)
 
-# Get a specific version
-python3 scripts/version_manager.py get <key.path>
-# Example: python3 scripts/version_manager.py get sdk.flutter
-
-# Get dependency version
-python3 scripts/version_manager.py dependency <package_name>
-# Example: python3 scripts/version_manager.py dependency flutter_bloc
-
-# Sync Flutter version to .flutter-version
-python3 scripts/version_manager.py sync-flutter
-
-# Sync versions to pubspec.yaml
-python3 scripts/version_manager.py sync-pubspec
-
-# Generate .env.versions file
-python3 scripts/version_manager.py generate-env
-```
-
-### sync_versions.sh
+### Update Flutter Version
 
 ```bash
-# Sync all files
-./scripts/sync_versions.sh
-
-# This will:
-# 1. Sync .flutter-version
-# 2. Sync pubspec.yaml
-# 3. Generate .env.versions
-# 4. Print summary
+# Just edit the file!
+echo "3.39.0" > .flutter-version
 ```
 
-## 🔧 Setup
+### Update App Version
+
+```bash
+# Just edit pubspec.yaml!
+vim pubspec.yaml  # Change version: 2.0.0+2
+```
+
+### Manage Dependencies
+
+```bash
+# Use Flutter's built-in commands!
+flutter pub add package_name
+flutter pub upgrade
+```
+
+## 📖 get_version.py (Optional)
+
+Extract values from `pubspec.yaml` programmatically.
+
+```bash
+# Get app version
+python3 scripts/get_version.py version
+# Output: 1.0.0+1
+
+# Get app name
+python3 scripts/get_version.py name
+# Output: portfolio
+
+# Get any value using dot notation
+python3 scripts/get_version.py dependencies.flutter_bloc
+# Output: ^8.1.6
+```
 
 ### Prerequisites
 
 ```bash
-# Install Python 3
-python3 --version
-
-# Install PyYAML
 pip3 install pyyaml
 ```
 
-### Make Scripts Executable
+### Examples
 
-```bash
-chmod +x scripts/sync_versions.sh
-chmod +x scripts/version_manager.py
-```
-
-## 💡 Examples
-
-### Example 1: Update Flutter Version
-
-```bash
-# 1. Edit versions.yaml
-# sdk:
-#   flutter: "3.39.0"
-
-# 2. Sync files
-./scripts/sync_versions.sh
-
-# 3. Commit
-git add versions.yaml .flutter-version pubspec.yaml
-git commit -m "chore: update Flutter to 3.39.0"
-```
-
-### Example 2: Add New Dependency
-
-```bash
-# 1. Add to versions.yaml
-# dependencies:
-#   new_package:
-#     version: "^1.0.0"
-
-# 2. Sync pubspec.yaml
-python3 scripts/version_manager.py sync-pubspec
-
-# 3. Install
-flutter pub get
-```
-
-### Example 3: Read Version in Shell Script
+**In a shell script:**
 
 ```bash
 #!/bin/bash
-FLUTTER_VERSION=$(python3 scripts/version_manager.py get sdk.flutter)
-echo "Using Flutter $FLUTTER_VERSION"
+APP_VERSION=$(python3 scripts/get_version.py version)
+echo "Building version $APP_VERSION"
 ```
 
-### Example 4: Use in GitHub Actions
+**In GitHub Actions:**
 
 ```yaml
-- name: Read Flutter version
-  id: versions
+- name: Get app version
   run: |
-    FLUTTER_VERSION=$(python3 scripts/version_manager.py get sdk.flutter)
-    echo "flutter=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
+    VERSION=$(python3 scripts/get_version.py version)
+    echo "App version: $VERSION"
+```
 
-- name: Setup Flutter
-  uses: subosito/flutter-action@v2
-  with:
-    flutter-version: ${{ steps.versions.outputs.flutter }}
+## 📝 sync_flutter_version.sh (Optional)
+
+**You probably don't need this!** Just edit `.flutter-version` directly.
+
+This script exists in case you want to programmatically generate `.flutter-version`:
+
+```bash
+./scripts/sync_flutter_version.sh
+```
+
+But it's simpler to just:
+
+```bash
+echo "3.38.4" > .flutter-version
+```
+
+## 💡 Real-World Examples
+
+### Example 1: Build Script
+
+```bash
+#!/bin/bash
+# build.sh
+
+APP_VERSION=$(python3 scripts/get_version.py version)
+FLUTTER_VERSION=$(cat .flutter-version)
+
+echo "Building app v$APP_VERSION with Flutter $FLUTTER_VERSION"
+flutter build web --dart-define=APP_VERSION=$APP_VERSION
+```
+
+### Example 2: Version Check in CI
+
+```yaml
+- name: Verify versions
+  run: |
+    FLUTTER_VERSION=$(cat .flutter-version)
+    APP_VERSION=$(python3 scripts/get_version.py version)
+    echo "Flutter: $FLUTTER_VERSION"
+    echo "App: $APP_VERSION"
+```
+
+### Example 3: Extract for Deployment
+
+```bash
+# Extract version for Docker tag
+APP_VERSION=$(python3 scripts/get_version.py version | cut -d'+' -f1)
+docker build -t myapp:$APP_VERSION .
 ```
 
 ## 🎯 Best Practices
 
-1. **Always sync after editing `versions.yaml`**
-   ```bash
-   ./scripts/sync_versions.sh
-   ```
+### ✅ Preferred (No Scripts)
 
-2. **Commit synced files together**
-   ```bash
-   git add versions.yaml .flutter-version pubspec.yaml .env.versions
-   git commit -m "chore: update versions"
-   ```
+```bash
+# Update Flutter version
+echo "3.39.0" > .flutter-version
 
-3. **Test after syncing**
-   ```bash
-   flutter pub get
-   flutter analyze
-   ```
+# Update app version
+vim pubspec.yaml  # Edit directly
+
+# Add dependency
+flutter pub add package_name
+```
+
+### ⚠️ Only When Needed (With Scripts)
+
+```bash
+# Extract version in CI/CD
+VERSION=$(python3 scripts/get_version.py version)
+
+# Use in custom automation
+python3 scripts/get_version.py dependencies.some_package
+```
+
+## 🔧 Setup (If You Need Scripts)
+
+```bash
+# Install Python dependency
+pip3 install pyyaml
+
+# Make executable
+chmod +x scripts/get_version.py
+chmod +x scripts/sync_flutter_version.sh
+```
+
+## 🆚 Comparison
+
+### Without Scripts (Recommended)
+
+```bash
+# Fast, simple, direct
+cat .flutter-version        # → 3.38.4
+grep "^version:" pubspec.yaml   # → version: 1.0.0+1
+```
+
+### With Scripts (Only if needed)
+
+```bash
+# Programmatic, parseable
+python3 scripts/get_version.py version  # → 1.0.0+1
+```
 
 ## 🐛 Troubleshooting
 
@@ -165,18 +204,22 @@ pip3 install pyyaml
 ### Permission denied
 
 ```bash
-chmod +x scripts/sync_versions.sh
-chmod +x scripts/version_manager.py
+chmod +x scripts/*.sh
 ```
 
-### Sync doesn't update files
+### Script returns wrong value
+
+The scripts read from `pubspec.yaml`. Make sure it's valid:
 
 ```bash
-# Force regenerate
-rm .flutter-version .env.versions
-./scripts/sync_versions.sh
+flutter pub get
 ```
 
 ## 📚 More Information
 
-See [VERSION_MANAGEMENT.md](../VERSION_MANAGEMENT.md) for detailed documentation.
+See [VERSION_MANAGEMENT.md](../VERSION_MANAGEMENT.md) for the complete version management guide.
+
+---
+
+**TL;DR**: You probably don't need these scripts. Just edit `.flutter-version` and `pubspec.yaml`
+directly! 🎯

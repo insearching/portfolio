@@ -1,412 +1,327 @@
 # Version Management
 
-This project uses a centralized version catalog system similar to Gradle's version catalog (
-`libs.versions.toml`). All versions are stored in a single YAML file that serves as the single
-source of truth.
+This project uses standard Flutter files as sources of truth for versions. Keep it simple!
 
-## 📋 Overview
+## 📋 Sources of Truth
 
-**Single Source of Truth**: `versions.yaml`
+### Flutter Version: `.flutter-version`
 
-This file contains all versions for:
+```
+3.38.4
+```
 
-- 🔧 SDK versions (Flutter, Dart)
-- 📦 Dependencies (packages and plugins)
-- 🛠️ Build tools (Gradle, Kotlin, Node, etc.)
-- 🎯 Platform configurations (Android, iOS)
-- 🚀 CI/CD configurations
+This file contains the Flutter SDK version used across all environments.
+
+### App Version: `pubspec.yaml`
+
+```yaml
+version: 1.0.0+1
+```
+
+This contains the app version following semantic versioning.
+
+### Dependencies: `pubspec.yaml`
+
+```yaml
+dependencies:
+  flutter_bloc: ^8.1.6
+  provider: ^6.1.5
+  # ... other packages
+```
+
+All package versions are managed in the standard Flutter way.
+
+## 🎯 Philosophy
+
+✅ **Use Flutter standards** - `.flutter-version` is a standard file
+✅ **Keep it simple** - No custom config files
+✅ **One command** - Just edit and commit
+✅ **CI/CD ready** - GitHub Actions reads `.flutter-version` natively
+
+## 🚀 How to Update Versions
+
+### Update Flutter Version
+
+```bash
+# 1. Edit .flutter-version
+echo "3.39.0" > .flutter-version
+
+# 2. Update local Flutter
+flutter upgrade  # or: fvm use 3.39.0
+
+# 3. Test
+flutter pub get
+flutter build web
+
+# 4. Commit
+git add .flutter-version
+git commit -m "chore: update Flutter to 3.39.0"
+```
+
+### Update App Version
+
+```bash
+# 1. Edit pubspec.yaml
+vim pubspec.yaml
+# Change: version: 2.0.0+2
+
+# 2. Test
+flutter build web
+
+# 3. Commit
+git add pubspec.yaml pubspec.lock
+git commit -m "chore: bump version to 2.0.0+2"
+```
+
+### Update Dependencies
+
+```bash
+# Use standard Flutter commands
+flutter pub add package_name        # Add new package
+flutter pub upgrade package_name    # Upgrade specific package
+flutter pub upgrade                 # Upgrade all packages
+flutter pub outdated               # Check for updates
+
+# Commit
+git add pubspec.yaml pubspec.lock
+git commit -m "chore: update dependencies"
+```
+
+## 🔄 CI/CD Integration
+
+GitHub Actions reads `.flutter-version` automatically:
+
+```yaml
+- name: Set up Flutter
+  uses: subosito/flutter-action@v2
+  with:
+    flutter-version-file: .flutter-version
+```
+
+That's it! No Python scripts, no extraction logic, just native support.
 
 ## 📁 File Structure
 
 ```
-versions.yaml              # Version catalog (single source of truth)
-.flutter-version          # Auto-generated from versions.yaml
-pubspec.yaml              # Auto-synced with versions.yaml
-.env.versions            # Auto-generated for CI/CD
+.flutter-version       # Flutter SDK version (single source of truth)
+pubspec.yaml          # App version and dependencies
+pubspec.lock          # Locked dependency versions (auto-generated)
 scripts/
-  ├── version_manager.py  # Python script to manage versions
-  ├── sync_versions.sh    # Shell script to sync all files
-  └── read-version.sh     # Helper for GitHub Actions
+  ├── get_version.py           # Optional: Extract values programmatically
+  └── sync_flutter_version.sh  # Optional: If you need to generate .flutter-version
 ```
 
-## 🚀 Quick Start
+## 🛠️ Optional Scripts
 
-### Viewing All Versions
+### Get Version Programmatically
 
-```bash
-python3 scripts/version_manager.py print
-```
-
-### Syncing All Files
-
-```bash
-# Make script executable (first time only)
-chmod +x scripts/sync_versions.sh
-
-# Run sync
-./scripts/sync_versions.sh
-```
-
-This will:
-
-1. ✅ Update `.flutter-version`
-2. ✅ Sync versions in `pubspec.yaml`
-3. ✅ Generate `.env.versions` for CI/CD
-
-## 📖 Usage Guide
-
-### Getting a Specific Version
+If you need to extract versions in scripts:
 
 ```bash
 # Get Flutter version
-python3 scripts/version_manager.py get sdk.flutter
+cat .flutter-version
 
-# Get a dependency version
-python3 scripts/version_manager.py dependency flutter_bloc
+# Get app version
+python3 scripts/get_version.py version
 
-# Get any nested value
-python3 scripts/version_manager.py get android.min_sdk
+# Get app name
+python3 scripts/get_version.py name
 ```
 
-### Updating Versions
+The `get_version.py` script is provided for convenience but is **not required** for normal
+operations.
 
-1. **Edit `versions.yaml`**:
-   ```yaml
-   sdk:
-     flutter: "3.39.0"  # Update this
-   ```
+## 🎯 Version Formats
 
-2. **Sync all files**:
-   ```bash
-   ./scripts/sync_versions.sh
-   ```
+### Flutter Version (`.flutter-version`)
 
-3. **Verify changes**:
-   ```bash
-   git diff
-   ```
+```
+3.38.4
+```
 
-4. **Commit**:
-   ```bash
-   git add versions.yaml .flutter-version pubspec.yaml
-   git commit -m "chore: update Flutter to 3.39.0"
-   ```
+Just the version number. That's it.
 
-### Adding New Dependencies
-
-Add to `versions.yaml`:
+### App Version (`pubspec.yaml`)
 
 ```yaml
-dependencies:
-  new_package:
-    version: "^1.0.0"
+version: MAJOR.MINOR.PATCH+BUILD_NUMBER
 ```
 
-Then sync:
+Example: `1.0.0+1`
+
+- **MAJOR**: Breaking changes (1.x.x → 2.0.0)
+- **MINOR**: New features, backwards compatible (1.0.x → 1.1.0)
+- **PATCH**: Bug fixes (1.0.0 → 1.0.1)
+- **BUILD_NUMBER**: Increment for each build (1.0.0+1 → 1.0.0+2)
+
+Follow [Semantic Versioning](https://semver.org/)
+
+### Dart SDK Constraint (`pubspec.yaml`)
+
+```yaml
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+```
+
+This specifies Dart SDK compatibility (not Flutter version).
+
+**Note**: `environment.sdk` is for **Dart SDK**, not Flutter SDK!
+
+- Flutter 3.38.4 includes Dart 3.10.3
+- The Dart SDK version comes with Flutter, you don't set it separately
+
+## 💡 Best Practices
+
+### 1. Update .flutter-version First
+
+Always update `.flutter-version` before changing code:
 
 ```bash
-./scripts/sync_versions.sh
+echo "3.39.0" > .flutter-version
+flutter upgrade
 ```
 
-## 🔧 Version Manager Commands
+### 2. Use Standard Flutter Commands
 
 ```bash
-# Get a value by key path
-python3 scripts/version_manager.py get <key.path>
-
-# Get dependency version
-python3 scripts/version_manager.py dependency <package_name>
-
-# Sync Flutter version to .flutter-version
-python3 scripts/version_manager.py sync-flutter
-
-# Sync versions to pubspec.yaml
-python3 scripts/version_manager.py sync-pubspec
-
-# Generate .env.versions file
-python3 scripts/version_manager.py generate-env
-
-# Print all versions
-python3 scripts/version_manager.py print
+flutter pub add package_name      # Add dependency
+flutter pub upgrade package_name  # Upgrade dependency
+flutter pub outdated             # Check for updates
 ```
 
-## 🔄 Automatic Syncing
-
-### GitHub Actions Integration
-
-The project includes a workflow (`.github/workflows/sync-versions.yml`) that automatically:
-
-1. Triggers when `versions.yaml` is pushed
-2. Syncs all version files
-3. Commits changes back to the repository
-
-### Manual Workflow Dispatch
-
-You can also trigger the sync manually from GitHub Actions UI:
-
-1. Go to "Actions" tab
-2. Select "Sync Versions" workflow
-3. Click "Run workflow"
-
-## 📱 CI/CD Integration
-
-### Reading Versions in Workflows
-
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-      
-      - name: Install PyYAML
-        run: pip install pyyaml
-      
-      - name: Read versions
-        id: versions
-        run: |
-          FLUTTER_VERSION=$(python3 scripts/version_manager.py get sdk.flutter)
-          echo "flutter=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
-      
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ steps.versions.outputs.flutter }}
-```
-
-### Using .env.versions
-
-After generating the `.env.versions` file:
-
-```yaml
-- name: Load versions
-  run: |
-    source .env.versions
-    echo "Flutter version: $FLUTTER_VERSION"
-```
-
-## 📦 Version Catalog Structure
-
-### Project Metadata
-
-```yaml
-project:
-  name: portfolio
-  version: 1.0.0      # App version
-  build_number: 1     # Build number
-```
-
-### SDK Versions
-
-```yaml
-sdk:
-  flutter: "3.38.4"
-  dart: ">=3.0.0 <4.0.0"
-```
-
-### Build Tools
-
-```yaml
-tools:
-  gradle: "8.0.0"
-  agp: "8.1.0"        # Android Gradle Plugin
-  kotlin: "1.9.0"
-  node: "20.x"
-```
-
-### Dependencies
-
-```yaml
-dependencies:
-  package_name:
-    version: "^1.0.0"
-```
-
-### Platform Configuration
-
-```yaml
-android:
-  min_sdk: 21
-  target_sdk: 34
-  compile_sdk: 34
-
-ios:
-  min_version: "12.0"
-  deployment_target: "12.0"
-```
-
-### Web Configuration
-
-```yaml
-web:
-  renderer: canvaskit
-  build_mode: release
-  use_wasm: false
-```
-
-## 🎯 Best Practices
-
-### 1. Always Update versions.yaml First
-
-Never manually edit `.flutter-version` or version numbers in `pubspec.yaml`. Always update
-`versions.yaml` and sync.
-
-### 2. Sync Before Committing
+### 3. Test After Updates
 
 ```bash
-./scripts/sync_versions.sh
-git add versions.yaml .flutter-version pubspec.yaml
-git commit -m "chore: update versions"
-```
-
-### 3. Version Naming Convention
-
-Follow [Semantic Versioning](https://semver.org/):
-
-- **MAJOR**: Breaking changes
-- **MINOR**: New features (backwards compatible)
-- **PATCH**: Bug fixes
-- **BUILD**: Increment for each build
-
-### 4. Document Breaking Changes
-
-When updating major versions, document what changed:
-
-```bash
-git commit -m "chore: update Flutter to 4.0.0
-
-BREAKING CHANGES:
-- Updated Flutter from 3.x to 4.x
-- See: https://docs.flutter.dev/release/breaking-changes"
-```
-
-### 5. Test After Updates
-
-```bash
-# After syncing versions
 flutter pub get
 flutter analyze
 flutter test
 flutter build web
 ```
 
+### 4. Commit Together
+
+```bash
+# Flutter update
+git add .flutter-version
+git commit -m "chore: update Flutter to 3.39.0"
+
+# App version update
+git add pubspec.yaml pubspec.lock
+git commit -m "chore: bump version to 2.0.0"
+
+# Dependency update
+git add pubspec.yaml pubspec.lock
+git commit -m "chore: update dependencies"
+```
+
+### 5. Document Breaking Changes
+
+```bash
+git commit -m "chore: update Flutter to 4.0.0
+
+BREAKING CHANGES:
+- Updated from Flutter 3.x to 4.x
+- Updated dependencies to latest versions
+- See: https://docs.flutter.dev/release/breaking-changes"
+```
+
 ## 🔍 Troubleshooting
 
-### Python Script Fails
+### SDK Version Solving Failed
 
-**Issue**: `ModuleNotFoundError: No module named 'yaml'`
+**Issue**: `Because portfolio requires SDK version >=X.Y.Z, version solving failed.`
 
-**Solution**:
-
-```bash
-pip install pyyaml
-# or
-pip3 install pyyaml
-```
-
-### Sync Script Permission Denied
-
-**Issue**: `Permission denied: ./scripts/sync_versions.sh`
-
-**Solution**:
-
-```bash
-chmod +x scripts/sync_versions.sh
-```
-
-### Version Mismatch After Sync
-
-**Issue**: Versions don't match after syncing
-
-**Solution**:
-
-```bash
-# Force resync
-rm .flutter-version .env.versions
-./scripts/sync_versions.sh
-```
-
-### CI/CD Can't Read Version
-
-**Issue**: GitHub Actions fails to read version
-
-**Solution**: Ensure Python setup and PyYAML installation steps are included:
+**Solution**: The `environment.sdk` in pubspec.yaml is for Dart SDK, not Flutter SDK!
 
 ```yaml
-- name: Set up Python
-  uses: actions/setup-python@v5
-  with:
-    python-version: '3.x'
+# ❌ WRONG - This is too high for Dart
+environment:
+  sdk: '>=3.38.4 <4.0.0'
 
-- name: Install PyYAML
-  run: pip install pyyaml
+# ✅ CORRECT - Dart SDK version
+environment:
+  sdk: '>=3.0.0 <4.0.0'
 ```
 
-## 🆚 Comparison with Other Approaches
+Check your Flutter/Dart version:
 
-### Traditional Approach (Before)
-
-```
-❌ Flutter version hardcoded in each workflow
-❌ Dependencies duplicated in multiple files
-❌ No single source of truth
-❌ Manual updates needed everywhere
+```bash
+flutter --version
+# Flutter 3.38.4 • Dart 3.10.3
 ```
 
-### Version Catalog Approach (Now)
+### Local Flutter Version Mismatch
 
-```
-✅ Single source of truth (versions.yaml)
-✅ Automatic syncing
-✅ Easy to update and maintain
-✅ CI/CD reads from catalog
-✅ Consistent across all environments
-```
+**Issue**: Local Flutter version doesn't match `.flutter-version`
 
-### Similar to Gradle Version Catalog
+**Solution**:
 
-```kotlin
-// Gradle (libs.versions.toml)
-[versions]
-kotlin = "1.9.0"
-compose = "1.5.0"
+```bash
+# Check current version
+flutter --version
 
-[libraries]
-kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+# Switch to project version (if using FVM)
+fvm use $(cat .flutter-version)
+
+# Or upgrade Flutter
+flutter upgrade
+
+# Or downgrade
+flutter downgrade 3.38.4
 ```
 
-```yaml
-# Flutter (versions.yaml)
-tools:
-  kotlin: "1.9.0"
+### CI/CD Uses Wrong Version
 
-dependencies:
-  flutter_bloc:
-    version: "^8.1.6"
+**Issue**: GitHub Actions uses wrong Flutter version
+
+**Solution**: Check `.flutter-version` is committed:
+
+```bash
+git add .flutter-version
+git commit -m "chore: add .flutter-version"
+git push
 ```
 
-## 📚 Additional Resources
+## 🆚 Why This Approach?
 
+### ✅ Simple (Current Approach)
+
+```
+.flutter-version  ← Flutter version (standard file)
+pubspec.yaml      ← App version & dependencies (standard Flutter)
+CI/CD reads .flutter-version natively
+```
+
+### ❌ Over-Engineered (What we avoided)
+
+```
+versions.yaml     ← Custom file (non-standard)
+sync scripts      ← Complex syncing
+.env files        ← Generated files
+Multiple sources of truth
+```
+
+## 📚 Resources
+
+- [Flutter Version File](https://fvm.app/documentation/guides/global-version)
+- [pubspec.yaml Documentation](https://docs.flutter.dev/tools/pubspec)
 - [Semantic Versioning](https://semver.org/)
-- [Flutter Version Management (FVM)](https://fvm.app/)
 - [Flutter Release Notes](https://docs.flutter.dev/release/release-notes)
-- [Gradle Version Catalogs](https://docs.gradle.org/current/userguide/platforms.html)
-- [GitHub Actions - Matrix Strategy](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs)
+- [Managing Flutter SDK](https://docs.flutter.dev/get-started/install)
 
 ## 🤝 Contributing
 
-When contributing, please:
+When contributing:
 
-1. Update `versions.yaml` for any version changes
-2. Run `./scripts/sync_versions.sh` before committing
-3. Include synced files in your commit
-4. Test locally with the new versions
+1. **Check** `.flutter-version` to know which Flutter version to use
+2. **Update** `pubspec.yaml` for version or dependency changes
+3. **Test** locally with the correct Flutter version
+4. **Commit** changed files together with meaningful messages
 
-## 📄 License
+---
 
-This version management system is part of the Portfolio project.
+**Remember**: Keep it simple!
+
+- `.flutter-version` for Flutter SDK version
+- `pubspec.yaml` for app version and dependencies
+- No custom config files needed! 🎯

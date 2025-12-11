@@ -47,7 +47,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-# Version management generated files (optional - can be committed for consistency)
-# Uncomment to ignore auto-generated files:
-.env.versions

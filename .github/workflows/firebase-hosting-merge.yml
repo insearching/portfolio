@@ -14,27 +14,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # Load versions from catalog
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Install PyYAML
-        run: pip install pyyaml
-
-      - name: Read Flutter version
-        id: versions
-        run: |
-          FLUTTER_VERSION=$(python3 scripts/version_manager.py get sdk.flutter)
-          echo "flutter=$FLUTTER_VERSION" >> $GITHUB_OUTPUT
-          echo "📱 Flutter version: $FLUTTER_VERSION"
-
-      # Set up Flutter
+      # Set up Flutter (reads from .flutter-version)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ steps.versions.outputs.flutter }}
+          flutter-version-file: .flutter-version
 
       # Run Flutter pub get to install dependencies
       - name: Install Dependencies

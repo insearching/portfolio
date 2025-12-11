@@ -1,7 +1,14 @@
 name: portfolio
 description: Portfolio web page.
 publish_to: none
+
+# Version: MAJOR.MINOR.PATCH+BUILD_NUMBER
+# This is the single source of truth for the app version
 version: 1.0.0+1
+
+# Environment constraints
+# This specifies the Dart SDK version (not Flutter version)
+# Flutter 3.38.4 includes Dart 3.10.3
 environment:
   sdk: '>=3.0.0 <4.0.0'
 dependencies:
