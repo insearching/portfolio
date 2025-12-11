@@ -18,6 +18,7 @@ class FeatureContainer extends StatelessWidget {
     return ElevatedContainer(
       padding: const EdgeInsets.all(24.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -32,14 +33,16 @@ class FeatureContainer extends StatelessWidget {
                 fit: BoxFit.fitHeight,
               ),
               const SizedBox(width: 16.0),
-              Text(
-                responsibility.title,
-                style: Theme.of(context).textTheme.bodyLarge,
-                overflow: TextOverflow.ellipsis,
+              Flexible(
+                child: Text(
+                  responsibility.title,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 16.0),
           _FeatureBody(
             body: responsibility.description,
             isScrollable: isPhone,

@@ -21,39 +21,49 @@ class EducationContainer extends StatelessWidget {
     return ElevatedContainer(
       padding: const EdgeInsets.all(24.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(
             education.title,
             style: Theme.of(context).textTheme.bodyLarge,
             softWrap: true,
             overflow: TextOverflow.ellipsis,
+            maxLines: 2,
           ),
+          const SizedBox(height: 8.0),
           Text(
             education.description,
             style: Theme.of(context).textTheme.bodyMedium,
             softWrap: true,
             overflow: TextOverflow.ellipsis,
+            maxLines: 2,
           ),
           const SizedBox(height: 16.0),
           const HorizontalDivider(),
-          const SizedBox(height: 24.0),
+          const SizedBox(height: 16.0),
           if (text != null) ...[
-            Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium,
-              softWrap: true,
-            )
+            Flexible(
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium,
+                softWrap: true,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(height: 8.0),
           ],
           if (imagePath != null && imagePath.isNotEmpty) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: InkWell(
-                onTap: link != null ? () => launchUrlString(link) : null,
-                child: Image(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.fill,
-                  width: double.infinity,
+            Flexible(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: InkWell(
+                  onTap: link != null ? () => launchUrlString(link) : null,
+                  child: Image(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
                 ),
               ),
             )
