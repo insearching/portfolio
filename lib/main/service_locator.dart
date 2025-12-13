@@ -1,21 +1,27 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
+import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/local/sqlite/database_helper.dart';
+import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/positions_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/posts_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/projects_local_data_source.dart';
+import 'package:portfolio/main/data/local/web/education_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/positions_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/posts_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/projects_local_data_source_web.dart';
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/data/remote/education_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/posts_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/projects_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart'
     as blog_repo_impl;
+import 'package:portfolio/main/data/repository/education_repository.dart'
+    as education_repo_impl;
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/data/repository/position_repository.dart'
     as position_repo_impl;
@@ -23,6 +29,7 @@ import 'package:portfolio/main/data/repository/project_repository.dart'
     as project_repo_impl;
 import 'package:portfolio/main/data/typedefs.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
+import 'package:portfolio/main/domain/repositories/education_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/domain/repositories/project_repository.dart';
 import 'package:sqflite/sqflite.dart';
@@ -51,6 +58,11 @@ Future<void> setupLocator() async {
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
     ),
   );
+  locator.registerLazySingleton<EducationRemoteDataSource>(
+    () => EducationRemoteDataSourceImpl(
+      firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+    ),
+  );
 
   // Register Local Data Sources based on platform
   if (kIsWeb) {
@@ -70,6 +82,11 @@ Future<void> setupLocator() async {
         ProjectsLocalDataSourceWebImpl(),
       ),
     );
+    locator.registerLazySingleton<EducationLocalDataSource>(
+      () => _EducationLocalDataSourceWebAdapter(
+        EducationLocalDataSourceWebImpl(),
+      ),
+    );
   } else {
     // Native platforms (mobile, desktop): Use SQLite
     final database = await DatabaseHelper.initDatabase();
@@ -87,6 +104,11 @@ Future<void> setupLocator() async {
     );
     locator.registerLazySingleton<ProjectsLocalDataSource>(
       () => ProjectsLocalDataSourceImpl(
+        database: locator<Database>(),
+      ),
+    );
+    locator.registerLazySingleton<EducationLocalDataSource>(
+      () => EducationLocalDataSourceImpl(
         database: locator<Database>(),
       ),
     );
@@ -118,12 +140,21 @@ Future<void> setupLocator() async {
     ),
   );
 
+  // Education Repository
+  locator.registerLazySingleton<EducationRepository>(
+    () => education_repo_impl.EducationRepositoryImpl(
+      remoteDataSource: locator<EducationRemoteDataSource>(),
+      localDataSource: locator<EducationLocalDataSource>(),
+    ),
+  );
+
   // Register centralized Portfolio Repository
   locator.registerLazySingleton<PortfolioRepository>(
     () => PortfolioRepository(
       blogRepository: locator<BlogRepository>(),
       positionRepository: locator<PositionRepository>(),
       projectRepository: locator<ProjectRepository>(),
+      educationRepository: locator<EducationRepository>(),
     ),
   );
 }
@@ -180,6 +211,26 @@ class _ProjectsLocalDataSourceWebAdapter implements ProjectsLocalDataSource {
 
   @override
   Future<List<Project>> getProjects() => _webImpl.getCachedProjects();
+
+  @override
+  Future<void> clearCache() => _webImpl.clearCache();
+}
+
+/// Adapter to make web implementation compatible with the EducationLocalDataSource interface
+class _EducationLocalDataSourceWebAdapter implements EducationLocalDataSource {
+  _EducationLocalDataSourceWebAdapter(this._webImpl);
+
+  final EducationLocalDataSourceWeb _webImpl;
+
+  @override
+  Future<void> saveEducation(education) => _webImpl.cacheEducation(education);
+
+  @override
+  Future<void> saveEducationList(educationList) =>
+      _webImpl.cacheEducationList(educationList);
+
+  @override
+  Future<List<Education>> getEducation() => _webImpl.getCachedEducation();
 
   @override
   Future<void> clearCache() => _webImpl.clearCache();

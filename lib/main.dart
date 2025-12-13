@@ -19,11 +19,13 @@ import 'main/data/device_info.dart';
 import 'main/data/device_type.dart';
 import 'main/service_locator.dart';
 import 'main/ui/components/app_error_widget.dart';
+import 'utils/env_config.dart';
 
 void main() async {
   ErrorWidget.builder = (_) => const AppErrorWidget();
   WidgetsFlutterBinding.ensureInitialized();
 
+  await EnvConfig.load();
   await setupLocator();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -61,21 +63,26 @@ class RootProvider extends StatelessWidget {
 }
 
 class PortfolioApplication extends StatelessWidget {
-  const PortfolioApplication({
-    Key? key,
-  }) : super(key: key);
+  const PortfolioApplication({super.key});
 
   @override
   Widget build(BuildContext context) {
     final deviceInfo = Provider.of<DeviceInfo>(context);
     final isSmallDevice = deviceInfo.deviceType == DeviceType.phone;
 
-    // Create the PortfolioBloc and load static_data
-    // On web, refresh all repositories to get the latest data
+    // Create the PortfolioBloc - it automatically loads data via streams
+    // On web, force refresh to get the latest data from remote
     return BlocProvider(
-      create: (context) => PortfolioBloc(
-        portfolioRepository: locator<PortfolioRepository>(),
-      )..add(kIsWeb ? const RefreshPortfolioData() : const LoadPortfolioData()),
+      create: (context) {
+        final bloc = PortfolioBloc(
+          portfolioRepository: locator<PortfolioRepository>(),
+        );
+        // On web, force a refresh to bypass all caches
+        if (kIsWeb) {
+          bloc.add(const RefreshPortfolioData());
+        }
+        return bloc;
+      },
       child: Builder(
         builder: (context) {
           // Get userName from the bloc state or use a default

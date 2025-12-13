@@ -72,13 +72,15 @@ class _ContactInfoContainerState extends State<_ContactInfoContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Image.asset(
-              widget.info.image,
+          if (widget.info.image.isNotEmpty) ...[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Image.asset(
+                widget.info.image,
+              ),
             ),
-          ),
-          const SizedBox(height: 32.0),
+            const SizedBox(height: 32.0),
+          ],
           Text(
             widget.info.title,
             style: Theme.of(context).textTheme.bodyLarge,

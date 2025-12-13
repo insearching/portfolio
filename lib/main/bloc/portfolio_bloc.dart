@@ -1,102 +1,113 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/bloc/portfolio_event.dart';
 import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 
-/// Main BLoC for managing portfolio static_data
-/// Follows the event-stream-state pattern as described in the Medium article
-/// Events are processed through handlers that emit new states
+/// Main BLoC for managing portfolio data
+/// Automatically subscribes to repository streams and emits states as data arrives
+/// Supports progressive loading: cached data appears first, then remote updates
 class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
   PortfolioBloc({
     required this.portfolioRepository,
-  }) : super(const PortfolioState()) {
+  }) : super(PortfolioState(
+          // Load static data immediately in initial state
+          personalInfo: portfolioRepository.getPersonalInfo(),
+          skills: portfolioRepository.getSkills(),
+          resumeTabs: portfolioRepository.getResumeTabs(),
+          status: PortfolioStatus.loading,
+        )) {
     // Register event handlers
-    on<LoadPortfolioData>(_onLoadPortfolioData);
-    on<LoadPosts>(_onLoadPosts);
-    on<LoadPositions>(_onLoadPositions);
     on<RefreshPortfolioData>(_onRefreshPortfolioData);
+    on<PostsUpdated>(_onPostsUpdated);
+    on<PositionsUpdated>(_onPositionsUpdated);
+    on<ProjectsUpdated>(_onProjectsUpdated);
+    on<EducationUpdated>(_onEducationUpdated);
+
+    // Set up stream subscriptions for progressive data loading
+    _setupStreamSubscriptions();
   }
 
   final PortfolioRepository portfolioRepository;
 
-  /// Handler for loading all portfolio static_data
-  Future<void> _onLoadPortfolioData(
-    LoadPortfolioData event,
-    Emitter<PortfolioState> emit,
-  ) async {
-    emit(state.copyWith(status: PortfolioStatus.loading));
+  /// Sets up stream subscriptions that trigger internal events
+  /// This approach properly follows BLoC pattern by using events
+  void _setupStreamSubscriptions() {
+    // Subscribe to posts stream (progressive: memory -> local -> remote)
+    portfolioRepository.getPostsStream().listen(
+      (posts) => add(PostsUpdated(posts)),
+      onError: (error) {
+        print('Error loading posts: $error');
+      },
+    );
 
-    try {
-      // Load static static_data (synchronous)
-      final personalInfo = portfolioRepository.getPersonalInfo();
-      final skills = portfolioRepository.getSkills();
-      final education = portfolioRepository.getEducation();
-      final resumeTabs = portfolioRepository.getResumeTabs();
+    // Subscribe to positions stream (progressive: memory -> local -> remote)
+    portfolioRepository.getPositionsStream().listen(
+      (positions) => add(PositionsUpdated(positions)),
+      onError: (error) {
+        print('Error loading positions: $error');
+      },
+    );
 
-      // Load remote static_data (asynchronous)
-      final posts = await portfolioRepository.getPosts();
-      final positions = await portfolioRepository.getPositions();
-      final projects = await portfolioRepository.getProjects();
+    // Subscribe to projects stream (progressive: memory -> local -> remote)
+    portfolioRepository.getProjectsStream().listen(
+      (projects) => add(ProjectsUpdated(projects)),
+      onError: (error) {
+        print('Error loading projects: $error');
+      },
+    );
 
-      emit(
-        state.copyWith(
-          status: PortfolioStatus.success,
-          personalInfo: personalInfo,
-          skills: skills,
-          education: education,
-          projects: projects,
-          posts: posts,
-          positions: positions,
-          resumeTabs: resumeTabs,
-        ),
-      );
-    } catch (error) {
-      emit(
-        state.copyWith(
-          status: PortfolioStatus.error,
-          errorMessage: 'Failed to load portfolio static_data: $error',
-        ),
-      );
-    }
+    // Subscribe to education stream (progressive: memory -> local -> remote)
+    portfolioRepository.getEducationStream().listen(
+      (education) => add(EducationUpdated(education)),
+      onError: (error) {
+        print('Error loading education: $error');
+      },
+    );
   }
 
-  /// Handler for loading posts only
-  Future<void> _onLoadPosts(
-    LoadPosts event,
-    Emitter<PortfolioState> emit,
-  ) async {
-    try {
-      final posts = await portfolioRepository.getPosts();
-      emit(state.copyWith(posts: posts));
-    } catch (error) {
-      emit(
-        state.copyWith(
-          status: PortfolioStatus.error,
-          errorMessage: 'Failed to load posts: $error',
-        ),
-      );
-    }
+  // Event handlers for stream updates
+
+  void _onPostsUpdated(PostsUpdated event, Emitter<PortfolioState> emit) {
+    emit(state.copyWith(
+      posts: event.posts,
+      status: PortfolioStatus.success,
+    ));
   }
 
-  /// Handler for loading positions only
-  Future<void> _onLoadPositions(
-    LoadPositions event,
+  void _onPositionsUpdated(
+    PositionsUpdated event,
     Emitter<PortfolioState> emit,
-  ) async {
-    try {
-      final positions = await portfolioRepository.getPositions();
-      emit(state.copyWith(positions: positions));
-    } catch (error) {
-      emit(
-        state.copyWith(
-          status: PortfolioStatus.error,
-          errorMessage: 'Failed to load positions: $error',
-        ),
-      );
-    }
+  ) {
+    emit(state.copyWith(
+      positions: event.positions,
+      status: PortfolioStatus.success,
+    ));
   }
 
-  /// Handler for refreshing all static_data
+  void _onProjectsUpdated(
+    ProjectsUpdated event,
+    Emitter<PortfolioState> emit,
+  ) {
+    emit(state.copyWith(
+      projects: event.projects,
+      status: PortfolioStatus.success,
+    ));
+  }
+
+  void _onEducationUpdated(
+    EducationUpdated event,
+    Emitter<PortfolioState> emit,
+  ) {
+    emit(state.copyWith(
+      education: event.education,
+      status: PortfolioStatus.success,
+    ));
+  }
+
+  /// Handler for manually refreshing all data
+  /// Clears caches and forces fresh data from remote sources
   Future<void> _onRefreshPortfolioData(
     RefreshPortfolioData event,
     Emitter<PortfolioState> emit,
@@ -104,37 +115,16 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     emit(state.copyWith(status: PortfolioStatus.loading));
 
     try {
-      // Force refresh all remote repositories
+      // Force refresh all remote repositories (clears caches)
       await portfolioRepository.refreshAll();
 
-      // Load static static_data (synchronous)
-      final personalInfo = portfolioRepository.getPersonalInfo();
-      final skills = portfolioRepository.getSkills();
-      final education = portfolioRepository.getEducation();
-      final resumeTabs = portfolioRepository.getResumeTabs();
-
-      // Load refreshed remote static_data (asynchronous)
-      final posts = await portfolioRepository.getPosts();
-      final positions = await portfolioRepository.getPositions();
-      final projects = await portfolioRepository.getProjects();
-
-      emit(
-        state.copyWith(
-          status: PortfolioStatus.success,
-          personalInfo: personalInfo,
-          skills: skills,
-          education: education,
-          projects: projects,
-          posts: posts,
-          positions: positions,
-          resumeTabs: resumeTabs,
-        ),
-      );
+      // The stream subscriptions will automatically receive the refreshed data
+      // No need to manually reload - the streams handle it automatically
     } catch (error) {
       emit(
         state.copyWith(
           status: PortfolioStatus.error,
-          errorMessage: 'Failed to refresh portfolio static_data: $error',
+          errorMessage: 'Failed to refresh portfolio data: $error',
         ),
       );
     }
