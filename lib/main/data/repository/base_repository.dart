@@ -18,19 +18,16 @@ import 'dart:async';
 /// Usage example:
 /// ```dart
 /// // Using Stream API (progressive loading)
-/// repository.readPostsStream().listen((posts) {
+/// repository.postsUpdateStream.listen((posts) {
 ///   // Called multiple times: first from cache, then from local, then from remote
 ///   print('Received ${posts.length} posts');
 /// });
 ///
-/// // Using Future API (backward compatible - waits for last emission)
-/// final posts = await repository.readPosts();
+/// // Using Future API (waits for last emission from all cache layers)
+/// final posts = await repository.postsUpdateStream.last;
 ///
-/// // Listening to remote updates only
-/// repository.postsUpdateStream.listen((posts) {
-///   // Called only when fresh data arrives from remote
-///   print('Remote data updated: ${posts.length} posts');
-/// });
+/// // Force refresh from remote, bypassing all caches
+/// final freshPosts = await repository.refreshPosts();
 /// ```
 abstract class BaseRepository<T, RemoteDataSource, LocalDataSource> {
   BaseRepository({

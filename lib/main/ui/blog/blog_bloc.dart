@@ -16,7 +16,7 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
   void _mapGetPostsEventToState(GetPosts event, Emitter<BlogState> emit) async {
     emit(state.copyWith(status: PostStatus.loading));
     try {
-      final posts = await blogRepository.readPosts();
+      final posts = await blogRepository.postsUpdateStream.last;
       emit(
         state.copyWith(
           status: PostStatus.success,

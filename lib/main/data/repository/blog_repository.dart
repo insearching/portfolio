@@ -30,31 +30,18 @@ class BlogRepositoryImpl
     }
   }
 
-  @override
-  Future<List<Post>> readPosts() async {
-    // For backward compatibility, return the last emitted value from the stream
-    return await fetchWithCache(entityName: 'posts').last;
-  }
-
-  /// Returns a Stream that emits posts progressively from cache layers
-  /// Emits from: memory -> local -> remote
-  Stream<List<Post>> readPostsStream() {
-    return fetchWithCache(entityName: 'posts');
-  }
-
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
+  @override
   Future<List<Post>> refreshPosts() async {
     return await refresh(entityName: 'posts').last;
   }
 
-  /// Returns a Stream for refresh that emits fresh data
-  Stream<List<Post>> refreshPostsStream() {
-    return refresh(entityName: 'posts');
-  }
-
-  /// Stream that notifies when posts are updated from remote
-  Stream<List<Post>> get postsUpdateStream => dataStream;
+  /// Stream that emits posts progressively from cache layers
+  /// Emits from: memory -> local -> remote
+  @override
+  Stream<List<Post>> get postsUpdateStream =>
+      fetchWithCache(entityName: 'posts');
 
   // Implement abstract methods from BaseRepository
 

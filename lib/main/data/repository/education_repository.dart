@@ -15,31 +15,18 @@ class EducationRepositoryImpl extends BaseRepository<
     required super.localDataSource,
   });
 
-  @override
-  Future<List<Education>> readEducation() async {
-    // For backward compatibility, return the last emitted value from the stream
-    return await fetchWithCache(entityName: 'education').last;
-  }
-
-  /// Returns a Stream that emits education progressively from cache layers
-  /// Emits from: memory -> local -> remote
-  Stream<List<Education>> readEducationStream() {
-    return fetchWithCache(entityName: 'education');
-  }
-
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
+  @override
   Future<List<Education>> refreshEducation() async {
     return await refresh(entityName: 'education').last;
   }
 
-  /// Returns a Stream for refresh that emits fresh data
-  Stream<List<Education>> refreshEducationStream() {
-    return refresh(entityName: 'education');
-  }
-
-  /// Stream that notifies when education is updated from remote
-  Stream<List<Education>> get educationUpdateStream => dataStream;
+  /// Stream that emits education progressively from cache layers
+  /// Emits from: memory -> local -> remote
+  @override
+  Stream<List<Education>> get educationUpdateStream =>
+      fetchWithCache(entityName: 'education');
 
   // Implement abstract methods from BaseRepository
 

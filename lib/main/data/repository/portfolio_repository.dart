@@ -37,42 +37,22 @@ class PortfolioRepository {
   List<Skill> getSkills() => Repository.skills;
 
   // Education - Remote data (from Firebase)
-  Future<List<Education>> getEducation() async {
-    try {
-      return await educationRepository.readEducation();
-    } catch (e) {
-      throw Exception('Failed to load education: $e');
-    }
-  }
-
   /// Returns a Stream that emits education progressively from cache layers
   /// Emits from: memory -> local -> remote
   Stream<List<Education>> getEducationStream() {
     try {
-      // Cast to implementation type to access stream method
-      final educationRepoImpl = educationRepository as dynamic;
-      return educationRepoImpl.readEducationStream() as Stream<List<Education>>;
+      return educationRepository.educationUpdateStream;
     } catch (e) {
       throw Exception('Failed to load education stream: $e');
     }
   }
 
   // Projects - Remote data (from Firebase)
-  Future<List<Project>> getProjects() async {
-    try {
-      return await projectRepository.readProjects();
-    } catch (e) {
-      throw Exception('Failed to load projects: $e');
-    }
-  }
-
   /// Returns a Stream that emits projects progressively from cache layers
   /// Emits from: memory -> local -> remote
   Stream<List<Project>> getProjectsStream() {
     try {
-      // Cast to implementation type to access stream method
-      final projectRepoImpl = projectRepository as dynamic;
-      return projectRepoImpl.readProjectsStream() as Stream<List<Project>>;
+      return projectRepository.projectsUpdateStream;
     } catch (e) {
       throw Exception('Failed to load projects stream: $e');
     }
@@ -82,42 +62,22 @@ class PortfolioRepository {
   List<String> getResumeTabs() => Repository.tabs;
 
   // Remote static_data - Posts (from Firebase)
-  Future<List<Post>> getPosts() async {
-    try {
-      return await blogRepository.readPosts();
-    } catch (e) {
-      throw Exception('Failed to load posts: $e');
-    }
-  }
-
   /// Returns a Stream that emits posts progressively from cache layers
   /// Emits from: memory -> local -> remote
   Stream<List<Post>> getPostsStream() {
     try {
-      // Cast to implementation type to access stream method
-      final blogRepoImpl = blogRepository as dynamic;
-      return blogRepoImpl.readPostsStream() as Stream<List<Post>>;
+      return blogRepository.postsUpdateStream;
     } catch (e) {
       throw Exception('Failed to load posts stream: $e');
     }
   }
 
   // Remote static_data - Positions (from Firebase)
-  Future<List<Position>> getPositions() async {
-    try {
-      return await positionRepository.readPositions();
-    } catch (e) {
-      throw Exception('Failed to load positions: $e');
-    }
-  }
-
   /// Returns a Stream that emits positions progressively from cache layers
   /// Emits from: memory -> local -> remote
   Stream<List<Position>> getPositionsStream() {
     try {
-      // Cast to implementation type to access stream method
-      final positionRepoImpl = positionRepository as dynamic;
-      return positionRepoImpl.readPositionsStream() as Stream<List<Position>>;
+      return positionRepository.positionsUpdateStream;
     } catch (e) {
       throw Exception('Failed to load positions stream: $e');
     }
@@ -128,18 +88,12 @@ class PortfolioRepository {
   /// This is useful for ensuring the latest data is displayed on web
   Future<void> refreshAll() async {
     try {
-      // Cast to implementation types to access refresh methods
-      final blogRepoImpl = blogRepository as dynamic;
-      final positionRepoImpl = positionRepository as dynamic;
-      final projectRepoImpl = projectRepository as dynamic;
-      final educationRepoImpl = educationRepository as dynamic;
-
       // Refresh all repositories in parallel
       await Future.wait<void>([
-        blogRepoImpl.refreshPosts() as Future<void>,
-        positionRepoImpl.refreshPositions() as Future<void>,
-        projectRepoImpl.refreshProjects() as Future<void>,
-        educationRepoImpl.refreshEducation() as Future<void>,
+        blogRepository.refreshPosts(),
+        positionRepository.refreshPositions(),
+        projectRepository.refreshProjects(),
+        educationRepository.refreshEducation(),
       ]);
     } catch (e) {
       throw Exception('Failed to refresh repositories: $e');
@@ -149,26 +103,17 @@ class PortfolioRepository {
   // Stream getters that notify when data is updated from remote
 
   /// Stream that notifies when posts are updated from remote
-  Stream<List<Post>> get postsUpdateStream {
-    final blogRepoImpl = blogRepository as dynamic;
-    return blogRepoImpl.postsUpdateStream as Stream<List<Post>>;
-  }
+  Stream<List<Post>> get postsUpdateStream => blogRepository.postsUpdateStream;
 
   /// Stream that notifies when positions are updated from remote
-  Stream<List<Position>> get positionsUpdateStream {
-    final positionRepoImpl = positionRepository as dynamic;
-    return positionRepoImpl.positionsUpdateStream as Stream<List<Position>>;
-  }
+  Stream<List<Position>> get positionsUpdateStream =>
+      positionRepository.positionsUpdateStream;
 
   /// Stream that notifies when projects are updated from remote
-  Stream<List<Project>> get projectsUpdateStream {
-    final projectRepoImpl = projectRepository as dynamic;
-    return projectRepoImpl.projectsUpdateStream as Stream<List<Project>>;
-  }
+  Stream<List<Project>> get projectsUpdateStream =>
+      projectRepository.projectsUpdateStream;
 
   /// Stream that notifies when education is updated from remote
-  Stream<List<Education>> get educationUpdateStream {
-    final educationRepoImpl = educationRepository as dynamic;
-    return educationRepoImpl.educationUpdateStream as Stream<List<Education>>;
-  }
+  Stream<List<Education>> get educationUpdateStream =>
+      educationRepository.educationUpdateStream;
 }

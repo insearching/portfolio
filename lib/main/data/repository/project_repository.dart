@@ -15,31 +15,18 @@ class ProjectRepositoryImpl extends BaseRepository<
     required super.localDataSource,
   });
 
-  @override
-  Future<List<Project>> readProjects() async {
-    // For backward compatibility, return the last emitted value from the stream
-    return await fetchWithCache(entityName: 'projects').last;
-  }
-
-  /// Returns a Stream that emits projects progressively from cache layers
-  /// Emits from: memory -> local -> remote
-  Stream<List<Project>> readProjectsStream() {
-    return fetchWithCache(entityName: 'projects');
-  }
-
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
+  @override
   Future<List<Project>> refreshProjects() async {
     return await refresh(entityName: 'projects').last;
   }
 
-  /// Returns a Stream for refresh that emits fresh data
-  Stream<List<Project>> refreshProjectsStream() {
-    return refresh(entityName: 'projects');
-  }
-
-  /// Stream that notifies when projects are updated from remote
-  Stream<List<Project>> get projectsUpdateStream => dataStream;
+  /// Stream that emits projects progressively from cache layers
+  /// Emits from: memory -> local -> remote
+  @override
+  Stream<List<Project>> get projectsUpdateStream =>
+      fetchWithCache(entityName: 'projects');
 
   // Implement abstract methods from BaseRepository
 

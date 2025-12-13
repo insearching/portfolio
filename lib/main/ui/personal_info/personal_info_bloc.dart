@@ -20,7 +20,7 @@ class PersonalInfoBloc extends Bloc<PersonalInfoEvent, PersonalInfoState> {
     }
     emit(state.copyWith(status: PersonalInfoStatus.loading));
     try {
-      final positions = await positionRepo.readPositions();
+      final positions = await positionRepo.positionsUpdateStream.last;
       emit(
         state.copyWith(
           status: PersonalInfoStatus.success,

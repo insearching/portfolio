@@ -15,31 +15,18 @@ class PositionRepositoryImpl extends BaseRepository<
     required super.localDataSource,
   });
 
-  @override
-  Future<List<Position>> readPositions() async {
-    // For backward compatibility, return the last emitted value from the stream
-    return await fetchWithCache(entityName: 'positions').last;
-  }
-
-  /// Returns a Stream that emits positions progressively from cache layers
-  /// Emits from: memory -> local -> remote
-  Stream<List<Position>> readPositionsStream() {
-    return fetchWithCache(entityName: 'positions');
-  }
-
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
+  @override
   Future<List<Position>> refreshPositions() async {
     return await refresh(entityName: 'positions').last;
   }
 
-  /// Returns a Stream for refresh that emits fresh data
-  Stream<List<Position>> refreshPositionsStream() {
-    return refresh(entityName: 'positions');
-  }
-
-  /// Stream that notifies when positions are updated from remote
-  Stream<List<Position>> get positionsUpdateStream => dataStream;
+  /// Stream that emits positions progressively from cache layers
+  /// Emits from: memory -> local -> remote
+  @override
+  Stream<List<Position>> get positionsUpdateStream =>
+      fetchWithCache(entityName: 'positions');
 
   // Implement abstract methods from BaseRepository
 

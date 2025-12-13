@@ -3,7 +3,10 @@ import 'package:portfolio/main/data/position.dart';
 /// Repository interface for managing positions
 /// Defines the contract for position static_data operations
 abstract class PositionRepository {
-  /// Fetches positions from remote source and caches them locally
-  /// Falls back to local cache if remote fetch fails
-  Future<List<Position>> readPositions();
+  /// Forces a refresh from remote, bypassing all caches
+  Future<List<Position>> refreshPositions();
+
+  /// Stream that emits positions progressively from cache layers
+  /// Emits from: memory -> local -> remote
+  Stream<List<Position>> get positionsUpdateStream;
 }

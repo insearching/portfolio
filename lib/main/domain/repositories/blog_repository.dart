@@ -6,7 +6,10 @@ abstract class BlogRepository {
   /// Adds a new post to the blog
   Future<void> addPost(Post post);
 
-  /// Fetches posts from remote source and caches them locally
-  /// Falls back to local cache if remote fetch fails
-  Future<List<Post>> readPosts();
+  /// Forces a refresh from remote, bypassing all caches
+  Future<List<Post>> refreshPosts();
+
+  /// Stream that emits posts progressively from cache layers
+  /// Emits from: memory -> local -> remote
+  Stream<List<Post>> get postsUpdateStream;
 }
