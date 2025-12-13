@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/post.dart';
 import 'package:sqflite/sqflite.dart';
 
-/// Local data source for Posts
+/// Local static_data source for Posts
 /// Handles all SQLite database operations for posts caching
 abstract class PostsLocalDataSource {
   Future<void> cachePost(Post post);

@@ -42,21 +42,22 @@ class BlogContainer extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16.0),
-          Flexible(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: CachedNetworkImage(
-                imageUrl: post.imageLink,
-                height: imageHeight,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const Center(child: CircularProgressIndicator()),
-                errorWidget: (context, url, error) =>
-                    const Icon(Icons.error, size: 150),
+          if (post.imageLink.isNotEmpty)
+            Flexible(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: CachedNetworkImage(
+                  imageUrl: post.imageLink,
+                  height: imageHeight,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error, size: 150),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

@@ -9,7 +9,7 @@ sealed class PortfolioEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Event to load all portfolio data
+/// Event to load all portfolio static_data
 class LoadPortfolioData extends PortfolioEvent {
   const LoadPortfolioData();
 }
@@ -24,7 +24,7 @@ class LoadPositions extends PortfolioEvent {
   const LoadPositions();
 }
 
-/// Event to refresh all data
+/// Event to refresh all static_data
 class RefreshPortfolioData extends PortfolioEvent {
   const RefreshPortfolioData();
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/ui/feature_content.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 
@@ -31,11 +30,7 @@ class DesktopFeatures extends StatelessWidget {
                   .map(
                     (position) => Expanded(
                       child: FeatureContainer(
-                        responsibility: Responsibility(
-                          icon: position.icon,
-                          title: position.title,
-                          description: position.description,
-                        ),
+                        position: position,
                         isPhone: false,
                       ),
                     ),

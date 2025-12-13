@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/main/data/repository/position_repository.dart';
+import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/service_locator.dart';
 import 'package:portfolio/main/ui/components/circle_image.dart';
 import 'package:portfolio/main/ui/components/position_label.dart';

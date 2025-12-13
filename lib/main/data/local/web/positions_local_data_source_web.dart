@@ -1,6 +1,6 @@
 import 'package:portfolio/main/data/position.dart';
 
-/// Web-compatible local data source for Positions
+/// Web-compatible local static_data source for Positions
 /// Uses in-memory caching since SQLite is not available on web
 abstract class PositionsLocalDataSourceWeb {
   Future<void> cachePosition(Position position);

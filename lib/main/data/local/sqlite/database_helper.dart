@@ -9,6 +9,7 @@ class DatabaseHelper {
   // Table names
   static const String postsTable = 'posts';
   static const String positionsTable = 'positions';
+  static const String projectsTable = 'projects';
 
   /// Initialize and create the database
   static Future<Database> initDatabase() async {
@@ -44,6 +45,18 @@ class DatabaseHelper {
         position TEXT NOT NULL,
         description TEXT NOT NULL,
         icon TEXT NOT NULL
+      )
+    ''');
+
+    // Create projects table
+    await db.execute('''
+      CREATE TABLE $projectsTable (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        image TEXT NOT NULL,
+        title TEXT NOT NULL,
+        role TEXT NOT NULL,
+        description TEXT NOT NULL,
+        link TEXT
       )
     ''');
 

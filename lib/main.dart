@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,11 +70,12 @@ class PortfolioApplication extends StatelessWidget {
     final deviceInfo = Provider.of<DeviceInfo>(context);
     final isSmallDevice = deviceInfo.deviceType == DeviceType.phone;
 
-    // Create the PortfolioBloc and load data
+    // Create the PortfolioBloc and load static_data
+    // On web, refresh all repositories to get the latest data
     return BlocProvider(
       create: (context) => PortfolioBloc(
         portfolioRepository: locator<PortfolioRepository>(),
-      )..add(const LoadPortfolioData()),
+      )..add(kIsWeb ? const RefreshPortfolioData() : const LoadPortfolioData()),
       child: Builder(
         builder: (context) {
           // Get userName from the bloc state or use a default
@@ -87,6 +89,7 @@ class PortfolioApplication extends StatelessWidget {
               final darkTheme = isSmallDevice
                   ? PortfolioTheme.phoneDarkTheme
                   : PortfolioTheme.desktopDarkTheme;
+
               final lightTheme = isSmallDevice
                   ? PortfolioTheme.phoneLightTheme
                   : PortfolioTheme.desktopLightTheme;

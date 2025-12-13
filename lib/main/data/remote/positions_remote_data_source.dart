@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/typedefs.dart';
 
-/// Remote data source for Positions
+/// Remote static_data source for Positions
 /// Handles all Firebase Realtime Database operations for positions
 abstract class PositionsRemoteDataSource {
   Future<List<Position>> readPositions();
@@ -24,22 +24,46 @@ class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
     if (event.snapshot.value == null) return [];
 
     try {
-      final List<dynamic> rawData = event.snapshot.value as List<dynamic>;
+      final rawData = event.snapshot.value;
       final List<Position> positions = [];
 
-      for (var value in rawData) {
-        if (value is Map) {
-          positions.add(
-            Position(
-              title: value['title']?.toString() ?? '',
-              description: value['description']?.toString() ?? '',
-              position: value['position']?.toString() ?? '',
-              icon: value['icon']?.toString() ?? 'assets/img/android.png',
-            ),
-          );
+      // Handle both Map (from .push()) and List formats
+      if (rawData is Map) {
+        // Firebase returns Map when using .push()
+        for (var entry in rawData.entries) {
+          final value = entry.value;
+          if (value is Map) {
+            final iconValue =
+                value['icon']?.toString() ?? 'assets/img/android.png';
+            positions.add(
+              Position(
+                title: value['title']?.toString() ?? '',
+                description: value['description']?.toString() ?? '',
+                position: value['position']?.toString() ?? '',
+                icon: iconValue.isEmpty ? 'assets/img/android.png' : iconValue,
+              ),
+            );
+          }
+        }
+      } else if (rawData is List) {
+        // Handle List format (if data is structured as array)
+        for (var value in rawData) {
+          if (value is Map) {
+            final iconValue =
+                value['icon']?.toString() ?? 'assets/img/android.png';
+            positions.add(
+              Position(
+                title: value['title']?.toString() ?? '',
+                description: value['description']?.toString() ?? '',
+                position: value['position']?.toString() ?? '',
+                icon: iconValue.isEmpty ? 'assets/img/android.png' : iconValue,
+              ),
+            );
+          }
         }
       }
 
+      print('Loaded ${positions.length} positions from Firebase');
       return positions;
     } catch (e) {
       print('Error parsing positions from Firebase: $e');

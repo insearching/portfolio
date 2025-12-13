@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:portfolio/main/data/repository/position_repository.dart';
+import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 

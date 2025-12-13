@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:portfolio/main/data/repository/blog_repository.dart';
+import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/ui/blog/blog_event.dart';
 
 import 'blog_state.dart';

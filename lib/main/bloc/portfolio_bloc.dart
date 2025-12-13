@@ -3,7 +3,7 @@ import 'package:portfolio/main/bloc/portfolio_event.dart';
 import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 
-/// Main BLoC for managing portfolio data
+/// Main BLoC for managing portfolio static_data
 /// Follows the event-stream-state pattern as described in the Medium article
 /// Events are processed through handlers that emit new states
 class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
@@ -19,7 +19,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
 
   final PortfolioRepository portfolioRepository;
 
-  /// Handler for loading all portfolio data
+  /// Handler for loading all portfolio static_data
   Future<void> _onLoadPortfolioData(
     LoadPortfolioData event,
     Emitter<PortfolioState> emit,
@@ -27,17 +27,16 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     emit(state.copyWith(status: PortfolioStatus.loading));
 
     try {
-      // Load static data (synchronous)
+      // Load static static_data (synchronous)
       final personalInfo = portfolioRepository.getPersonalInfo();
       final skills = portfolioRepository.getSkills();
       final education = portfolioRepository.getEducation();
-      final projects = portfolioRepository.getProjects();
-      final responsibilities = portfolioRepository.getResponsibilities();
       final resumeTabs = portfolioRepository.getResumeTabs();
 
-      // Load remote data (asynchronous)
+      // Load remote static_data (asynchronous)
       final posts = await portfolioRepository.getPosts();
       final positions = await portfolioRepository.getPositions();
+      final projects = await portfolioRepository.getProjects();
 
       emit(
         state.copyWith(
@@ -46,7 +45,6 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
           skills: skills,
           education: education,
           projects: projects,
-          responsibilities: responsibilities,
           posts: posts,
           positions: positions,
           resumeTabs: resumeTabs,
@@ -56,7 +54,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
       emit(
         state.copyWith(
           status: PortfolioStatus.error,
-          errorMessage: 'Failed to load portfolio data: $error',
+          errorMessage: 'Failed to load portfolio static_data: $error',
         ),
       );
     }
@@ -98,12 +96,47 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     }
   }
 
-  /// Handler for refreshing all data
+  /// Handler for refreshing all static_data
   Future<void> _onRefreshPortfolioData(
     RefreshPortfolioData event,
     Emitter<PortfolioState> emit,
   ) async {
-    // Delegate to load portfolio data
-    add(const LoadPortfolioData());
+    emit(state.copyWith(status: PortfolioStatus.loading));
+
+    try {
+      // Force refresh all remote repositories
+      await portfolioRepository.refreshAll();
+
+      // Load static static_data (synchronous)
+      final personalInfo = portfolioRepository.getPersonalInfo();
+      final skills = portfolioRepository.getSkills();
+      final education = portfolioRepository.getEducation();
+      final resumeTabs = portfolioRepository.getResumeTabs();
+
+      // Load refreshed remote static_data (asynchronous)
+      final posts = await portfolioRepository.getPosts();
+      final positions = await portfolioRepository.getPositions();
+      final projects = await portfolioRepository.getProjects();
+
+      emit(
+        state.copyWith(
+          status: PortfolioStatus.success,
+          personalInfo: personalInfo,
+          skills: skills,
+          education: education,
+          projects: projects,
+          posts: posts,
+          positions: positions,
+          resumeTabs: resumeTabs,
+        ),
+      );
+    } catch (error) {
+      emit(
+        state.copyWith(
+          status: PortfolioStatus.error,
+          errorMessage: 'Failed to refresh portfolio static_data: $error',
+        ),
+      );
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/typedefs.dart';
 
-/// Remote data source for Posts
+/// Remote static_data source for Posts
 /// Handles all Firebase Realtime Database operations for posts
 abstract class PostsRemoteDataSource {
   Future<void> addPost(Post post);
@@ -43,22 +43,42 @@ class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
     if (event.snapshot.value == null) return [];
 
     try {
-      final List<dynamic> rawData = event.snapshot.value as List<dynamic>;
+      final rawData = event.snapshot.value;
       final List<Post> posts = [];
 
-      for (var value in rawData) {
-        if (value is Map) {
-          posts.add(
-            Post(
-              title: value['title']?.toString() ?? '',
-              description: value['description']?.toString() ?? '',
-              imageLink: value['imageLink']?.toString() ?? '',
-              link: value['link']?.toString() ?? '',
-            ),
-          );
+      // Handle both Map (from .push()) and List formats
+      if (rawData is Map) {
+        // Firebase returns Map when using .push()
+        for (var entry in rawData.entries) {
+          final value = entry.value;
+          if (value is Map) {
+            posts.add(
+              Post(
+                title: value['title']?.toString() ?? '',
+                description: value['description']?.toString() ?? '',
+                imageLink: value['imageLink']?.toString() ?? '',
+                link: value['link']?.toString() ?? '',
+              ),
+            );
+          }
+        }
+      } else if (rawData is List) {
+        // Handle List format (if data is structured as array)
+        for (var value in rawData) {
+          if (value is Map) {
+            posts.add(
+              Post(
+                title: value['title']?.toString() ?? '',
+                description: value['description']?.toString() ?? '',
+                imageLink: value['imageLink']?.toString() ?? '',
+                link: value['link']?.toString() ?? '',
+              ),
+            );
+          }
         }
       }
 
+      print('Loaded ${posts.length} posts from Firebase');
       return posts;
     } catch (e) {
       print('Error parsing posts from Firebase: $e');

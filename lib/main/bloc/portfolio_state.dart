@@ -4,10 +4,9 @@ import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
-import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/data/skill.dart';
 
-/// Status enumeration for data loading states
+/// Status enumeration for static_data loading states
 enum PortfolioStatus {
   initial,
   loading,
@@ -26,7 +25,7 @@ extension PortfolioStatusX on PortfolioStatus {
   bool get isError => this == PortfolioStatus.error;
 }
 
-/// Main portfolio state containing all portfolio data
+/// Main portfolio state containing all portfolio static_data
 class PortfolioState extends Equatable {
   const PortfolioState({
     this.status = PortfolioStatus.initial,
@@ -34,7 +33,6 @@ class PortfolioState extends Equatable {
     this.skills = const [],
     this.education = const [],
     this.projects = const [],
-    this.responsibilities = const [],
     this.posts = const [],
     this.positions = const [],
     this.resumeTabs = const [],
@@ -46,7 +44,6 @@ class PortfolioState extends Equatable {
   final List<Skill> skills;
   final List<Education> education;
   final List<Project> projects;
-  final List<Responsibility> responsibilities;
   final List<Post> posts;
   final List<Position> positions;
   final List<String> resumeTabs;
@@ -59,7 +56,6 @@ class PortfolioState extends Equatable {
         skills,
         education,
         projects,
-        responsibilities,
         posts,
         positions,
         resumeTabs,
@@ -72,7 +68,6 @@ class PortfolioState extends Equatable {
     List<Skill>? skills,
     List<Education>? education,
     List<Project>? projects,
-    List<Responsibility>? responsibilities,
     List<Post>? posts,
     List<Position>? positions,
     List<String>? resumeTabs,
@@ -84,7 +79,6 @@ class PortfolioState extends Equatable {
       skills: skills ?? this.skills,
       education: education ?? this.education,
       projects: projects ?? this.projects,
-      responsibilities: responsibilities ?? this.responsibilities,
       posts: posts ?? this.posts,
       positions: positions ?? this.positions,
       resumeTabs: resumeTabs ?? this.resumeTabs,

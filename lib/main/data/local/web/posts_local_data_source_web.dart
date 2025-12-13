@@ -1,6 +1,6 @@
 import 'package:portfolio/main/data/post.dart';
 
-/// Web-compatible local data source for Posts
+/// Web-compatible local static_data source for Posts
 /// Uses in-memory caching since SQLite is not available on web
 abstract class PostsLocalDataSourceWeb {
   Future<void> cachePost(Post post);

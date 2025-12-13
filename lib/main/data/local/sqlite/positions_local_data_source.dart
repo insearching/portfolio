@@ -1,12 +1,16 @@
 import 'package:portfolio/main/data/position.dart';
 import 'package:sqflite/sqflite.dart';
 
-/// Local data source for Positions
+/// Local static_data source for Positions
 /// Handles all SQLite database operations for positions caching
 abstract class PositionsLocalDataSource {
+  Future<void> savePosition(Position position);
+
   Future<void> savePositions(List<Position> positions);
 
   Future<List<Position>> getPositions();
+
+  Future<void> clearCache();
 }
 
 class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {

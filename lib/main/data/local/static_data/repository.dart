@@ -1,91 +1,9 @@
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/project.dart';
-import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/data/skill.dart';
 
 class Repository {
-  static const List<Responsibility> responsibilities = [
-    Responsibility(
-      icon: 'assets/img/android.png',
-      title: 'Android development',
-      description: 'I’m an Android developer with over 10 years of hands-on '
-          'experience building apps that are not only functional but truly '
-          'enjoyable to use. I’ve worked across a range of industries—from '
-          'automotive to healthcare to e-commerce—and each project has pushed '
-          'me to grow, adapt, and keep learning.\n\n'
-          'One of the highlights of my career was leading the development of '
-          'the LoroPlay SST solution. It started from scratch, and I was there '
-          'for every step—designing the architecture, writing the core code, '
-          'and making sure the final product was solid, smooth, and ready for '
-          'real users. I’ve also contributed to large-scale projects like '
-          'Daimler Mercedes PRO B2B and Medtronic, where attention to detail, '
-          'clean architecture, and long-term maintainability were essential.\n\n'
-          'I’m most comfortable working with Kotlin and Java, using Jetpack '
-          'Compose and modern architectures like MVVM and MVI. I care deeply '
-          'about clean code, smart design patterns, and writing tests that '
-          'actually catch problems before users do. I’m also a big believer '
-          'in collaboration—I enjoy working closely with designers, product '
-          'managers, and fellow developers to bring ideas to life.\n\n'
-          'Beyond the tech, I’m someone who takes initiative, communicates '
-          'clearly, and genuinely enjoys solving problems. Whether it\'s '
-          'mentoring a teammate, untangling a tricky bug, or refining a feature '
-          'until it feels just right, I’m always up for the challenge.',
-    ),
-    Responsibility(
-      icon: 'assets/img/flutter.png',
-      title: 'Flutter development',
-      description: 'I’ve been focused on building cross-platform apps using '
-          'Flutter. What drew me to Flutter was the ability to create beautiful, '
-          'high-performance applications from a single codebase—without '
-          'compromising on user experience or responsiveness.'
-          'I’ve had the chance to work on several real-world Flutter projects '
-          'where I was involved in everything from setting up the app architecture '
-          'to refining animations and optimizing performance. I follow best '
-          'practices like BLoC and clean architecture, and I’m confident working '
-          'with REST APIs, local databases, state management, and testing. '
-          'I also enjoy integrating native platform features when needed, '
-          'making sure each app feels smooth and native on both Android and iOS.\n\n'
-          'What I enjoy most about Flutter is how quickly it lets me bring ideas '
-          'to life—and how it pushes me to think creatively about UI and UX. '
-          'I take pride in writing maintainable, well-tested code and '
-          'collaborating closely with designers, backend developers, and product '
-          'teams to make sure the final product delivers real value.\n\n'
-          'I’m proactive, detail-oriented, and always curious about new tools '
-          'and techniques that can make apps better. Whether I’m leading a new '
-          'project or jumping in to help polish the last 10%, I bring the same '
-          'energy and care to every line of code. By the way, this portfolio was'
-          'create with Flutter as well.',
-    ),
-    Responsibility(
-      icon: 'assets/img/kmp.png',
-      title: 'KMP development',
-      description: 'I’ve been focused on building cross-platform apps and '
-          'recently shifted my attention to Kotlin Multiplatform (KMP). '
-          'What excites me about KMP is its ability to share core business '
-          'logic across Android, iOS, and even backend platforms—while still '
-          'allowing for platform-specific UI and native performance. It offers '
-          'the flexibility and power I value as a developer, especially when '
-          'building scalable and maintainable solutions.\n\n'
-          'Currently, I\'m working on a personal pet project that parses RSS '
-          'feeds using KMP. This project has been a great opportunity to deepen '
-          'my understanding of shared code architecture, asynchronous data '
-          'handling with coroutines, and modular app design. I\'m really enjoying'
-          'the challenge and am eager to leverage this knowledge in a real production'
-          'environment.\n\n'
-          'In my previous cross-platform work, I built several Flutter '
-          'applications where I handled everything from setting up architecture '
-          'to optimizing animations and performance. That experience taught me '
-          'the importance of clean architecture, solid state management, and '
-          'writing testable, maintainable code—skills I now bring into my work '
-          'with KMP.\n\n'
-          'I’m proactive, detail-oriented, and always looking to explore tools '
-          'and practices that improve development efficiency and product'
-          'quality. Whether I’m starting a new feature or helping refine the '
-          'final polish, I bring the same care and commitment to every line '
-          'of code.',
-    )
-  ];
   static const List<Project> projects = [
     Project(
       image: 'assets/img/loro-sst.jpeg',
@@ -129,7 +47,7 @@ class Repository {
           'easily configurable through a configuration file and can be installed from '
           'the Maven repository. Its main feature is the ability to scan insurance '
           'documents and upload them to a configured API server, streamlining the '
-          'management of policies, claims, and user data for other apps.',
+          'management of policies, claims, and user static_data for other apps.',
       link: 'https://play.google.com/store/apps/details?id=ch.oekk2.dip',
     ),
     Project(
@@ -151,8 +69,8 @@ class Repository {
           'and banking services. Users can view account balances, track transactions, '
           'transfer money, and pay bills. It provides secure login with biometric options, '
           'delivers a smooth and responsive interface, and integrates with APIs for '
-          'real-time data. The app is designed for reliable performance across different '
-          'devices while ensuring user data privacy and security.',
+          'real-time static_data. The app is designed for reliable performance across different '
+          'devices while ensuring user static_data privacy and security.',
       link:
           'https://play.google.com/store/apps/details?id=co.uk.mycashplus.maapp',
     ),
@@ -166,9 +84,9 @@ class Repository {
           'predictive maintenance, fuel monitoring, and driver behavior analysis, '
           'helping companies reduce downtime, cut costs, and improve overall efficiency. '
           'The platform ensures compliance with safety standards and offers fleet managers '
-          'valuable insights for making data-driven decisions. The Android app plays a crucial '
+          'valuable insights for making static_data-driven decisions. The Android app plays a crucial '
           'role by acting as a mobile interface for fleet managers and drivers, allowing '
-          'them to access vehicle data, receive notifications, and manage operations on '
+          'them to access vehicle static_data, receive notifications, and manage operations on '
           'the go. It enhances connectivity and enables real-time monitoring, making fleet '
           'management more accessible and efficient.',
     ),
@@ -178,10 +96,10 @@ class Repository {
       role: 'Middle Android developer',
       description: 'MiniMed - Medical project targeted on diabetes people. '
           'With the MiniMed Mobile app, it is possible to display key insulin pump '
-          'and CGM data right on the smartphone. The app transfers data from '
-          'insulin pump as well as CGM data to better understand glucose levels '
+          'and CGM static_data right on the smartphone. The app transfers static_data from '
+          'insulin pump as well as CGM static_data to better understand glucose levels '
           'and review its history. App allows to see how levels are trending. '
-          'Automatic data uploads to the server make sharing of data with care '
+          'Automatic static_data uploads to the server make sharing of static_data with care '
           'partners as easy as it can be.',
       link:
           'https://play.google.com/store/apps/details?id=com.medtronic.diabetes.minimedmobile.eu&hl=en',
@@ -251,7 +169,7 @@ class Repository {
       text:
           'Advanced studies with a strong focus on research and innovation in software '
           'development, system architecture, and engineering methodologies. Key areas of '
-          'research included optimization of algorithms, data structures, and scalable '
+          'research included optimization of algorithms, static_data structures, and scalable '
           'system design. The program fostered a deep understanding of emerging '
           'technologies and problem-solving through hands-on projects and academic '
           'research, preparing for leadership roles in both research and complex '

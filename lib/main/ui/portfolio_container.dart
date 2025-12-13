@@ -38,16 +38,23 @@ class _PortfolioContainerState extends State<PortfolioContainer> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Flexible(
-            child: Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(4.0),
-                child: Image.asset(
-                  widget.image,
+          if (widget.image.isNotEmpty)
+            Flexible(
+              child: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4.0),
+                  child: Image.asset(
+                    widget.image,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.image_not_supported,
+                        size: 64.0,
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
           const SizedBox(height: 16.0),
           Center(
             child: Text(

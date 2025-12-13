@@ -41,12 +41,25 @@ class ImageButtonState extends State<ImageButton> {
           child: SizedBox(
             width: 20,
             height: 20,
-            child: Image.asset(
-              widget.icon,
-              color: isHovered ? UIColors.accent : defaultIconColor,
-              width: 20.0,
-              height: 20.0,
-            ),
+            child: widget.icon.isNotEmpty
+                ? Image.asset(
+                    widget.icon,
+                    color: isHovered ? UIColors.accent : defaultIconColor,
+                    width: 20.0,
+                    height: 20.0,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.image_not_supported,
+                        size: 20.0,
+                        color: isHovered ? UIColors.accent : defaultIconColor,
+                      );
+                    },
+                  )
+                : Icon(
+                    Icons.image_not_supported,
+                    size: 20.0,
+                    color: isHovered ? UIColors.accent : defaultIconColor,
+                  ),
           ),
         ),
       ),

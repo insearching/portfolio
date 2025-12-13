@@ -12,7 +12,27 @@ class CircleImage extends StatelessWidget {
     return ClipOval(
       child: SizedBox.fromSize(
         size: Size.fromRadius(radius), // Image radius
-        child: Image.asset(imageAsset, fit: BoxFit.cover),
+        child: imageAsset.isNotEmpty
+            ? Image.asset(
+                imageAsset,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: const Color(0xFF424242),
+                    child: const Icon(
+                      CupertinoIcons.person_circle,
+                      size: 64,
+                    ),
+                  );
+                },
+              )
+            : Container(
+                color: const Color(0xFF424242),
+                child: const Icon(
+                  CupertinoIcons.person_circle,
+                  size: 64,
+                ),
+              ),
       ),
     );
   }

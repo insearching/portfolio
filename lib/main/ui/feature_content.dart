@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/responsibility.dart';
+import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 
 class FeatureContainer extends StatelessWidget {
   const FeatureContainer({
-    required this.responsibility,
+    required this.position,
     required this.isPhone,
     Key? key,
   }) : super(key: key);
 
-  final Responsibility responsibility;
+  final Position position;
   final bool isPhone;
 
   @override
@@ -26,16 +26,23 @@ class FeatureContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Image.asset(
-                responsibility.icon,
-                color: UIColors.accent,
-                height: 32.0,
-                fit: BoxFit.fitHeight,
-              ),
+              if (position.icon.isNotEmpty)
+                Image.asset(
+                  position.icon,
+                  color: UIColors.accent,
+                  height: 32.0,
+                  fit: BoxFit.fitHeight,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.image_not_supported,
+                      size: 32.0,
+                    );
+                  },
+                ),
               const SizedBox(width: 16.0),
               Flexible(
                 child: Text(
-                  responsibility.title,
+                  position.title,
                   style: Theme.of(context).textTheme.bodyLarge,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -44,7 +51,7 @@ class FeatureContainer extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           _FeatureBody(
-            body: responsibility.description,
+            body: position.description,
             isScrollable: isPhone,
           )
         ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/responsibility.dart';
 import 'package:portfolio/main/ui/feature_content.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 
@@ -33,11 +32,7 @@ class TabletFeatures extends StatelessWidget {
             ),
             itemCount: state.positions.length,
             itemBuilder: (context, index) => FeatureContainer(
-              responsibility: Responsibility(
-                icon: state.positions[index].icon,
-                title: state.positions[index].title,
-                description: state.positions[index].description,
-              ),
+              position: state.positions[index],
               isPhone: false,
             ),
           )

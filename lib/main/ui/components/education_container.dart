@@ -56,10 +56,21 @@ class EducationContainer extends StatelessWidget {
               borderRadius: BorderRadius.circular(8.0),
               child: InkWell(
                 onTap: link != null ? () => launchUrlString(link) : null,
-                child: Image(
-                  image: AssetImage(imagePath),
+                child: Image.asset(
+                  imagePath,
                   fit: BoxFit.cover,
                   width: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 48,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             )
