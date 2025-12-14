@@ -26,7 +26,10 @@ jobs:
 
       # Build Flutter web
       - name: Build Flutter Web
-        run: flutter build web
+        env:
+          FIREBASE_EMAIL: ${{ secrets.FIREBASE_EMAIL || vars.FIREBASE_EMAIL }}
+          FIREBASE_PASSWORD: ${{ secrets.FIREBASE_PASSWORD || vars.FIREBASE_PASSWORD }}
+        run: flutter build web --dart-define=FIREBASE_EMAIL=$FIREBASE_EMAIL --dart-define=FIREBASE_PASSWORD=$FIREBASE_PASSWORD
 
       # (Optional) Upload the build artifacts for later use (e.g., deployment)
       - name: Upload Build Artifacts
