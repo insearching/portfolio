@@ -5,6 +5,7 @@ import 'package:portfolio/main/bloc/portfolio_event.dart';
 import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
@@ -22,12 +23,13 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     required this.getPostsStream,
     required this.getPositionsStream,
     required this.getSkillsStream,
+    required this.getPersonalInfoStream,
     required this.refreshAll,
-  }) : super(PortfolioState(
-          // Load static data immediately in initial state
-          personalInfo: portfolioRepository.getPersonalInfo(),
-          skills: const [], // Skills will be loaded from stream
-          resumeTabs: const ['Education', 'Professional Skills'],
+  }) : super(const PortfolioState(
+          // Data will be loaded from streams - start with null to show loading
+          personalInfo: null,
+          skills: [],
+          resumeTabs: ['Education', 'Professional Skills'],
           status: PortfolioStatus.loading,
         )) {
     // Register event handlers
@@ -37,6 +39,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     on<ProjectsUpdated>(_onProjectsUpdated);
     on<EducationUpdated>(_onEducationUpdated);
     on<SkillsUpdated>(_onSkillsUpdated);
+    on<PersonalInfoUpdated>(_onPersonalInfoUpdated);
 
     // Set up stream subscriptions for progressive data loading
     _setupStreamSubscriptions();
@@ -48,11 +51,20 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
   final GetPostsStream getPostsStream;
   final GetPositionsStream getPositionsStream;
   final GetSkillsStream getSkillsStream;
+  final GetPersonalInfoStream getPersonalInfoStream;
   final RefreshAll refreshAll;
 
   /// Sets up stream subscriptions that trigger internal events
   /// This approach properly follows BLoC pattern by using events
   void _setupStreamSubscriptions() {
+    // Subscribe to personal info stream (progressive: memory -> local -> remote)
+    getPersonalInfoStream().listen(
+      (personalInfo) => add(PersonalInfoUpdated(personalInfo)),
+      onError: (error) {
+        print('Error loading personal info: $error');
+      },
+    );
+
     // Subscribe to posts stream (progressive: memory -> local -> remote)
     getPostsStream().listen(
       (posts) => add(PostsUpdated(posts)),
@@ -140,6 +152,29 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     emit(state.copyWith(
       skills: event.skills,
       status: PortfolioStatus.success,
+    ));
+  }
+
+  void _onPersonalInfoUpdated(
+    PersonalInfoUpdated event,
+    Emitter<PortfolioState> emit,
+  ) {
+    final info = event.personalInfo;
+    if (info == null) {
+      emit(
+        state.copyWith(
+          status: PortfolioStatus.error,
+          errorMessage:
+              'Failed to load personal info. Check Firebase data and permissions.',
+        ),
+      );
+      return;
+    }
+
+    emit(state.copyWith(
+      personalInfo: info,
+      status: PortfolioStatus.success,
+      errorMessage: null,
     ));
   }
 

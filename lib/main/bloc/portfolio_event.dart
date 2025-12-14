@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
@@ -71,4 +72,14 @@ class SkillsUpdated extends PortfolioEvent {
 
   @override
   List<Object?> get props => [skills];
+}
+
+/// Internal event when personal info is updated from stream
+class PersonalInfoUpdated extends PortfolioEvent {
+  const PersonalInfoUpdated(this.personalInfo);
+
+  final PersonalInfo? personalInfo;
+
+  @override
+  List<Object?> get props => [personalInfo];
 }

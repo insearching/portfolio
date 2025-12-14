@@ -128,7 +128,8 @@ class ContactFormBloc extends Bloc<ContactFormEvent, ContactFormState> {
 
   /// Send email using mailto URL
   Future<void> _sendEmail(SubmitContactForm form) async {
-    final userEmail = portfolioRepository.getUserEmail();
+    // Default email - this could be configured via environment or fetched from PersonalInfo
+    const userEmail = 'hrabas.serhii@gmail.com';
     final Uri url = Uri.parse(
       'mailto:$userEmail?subject=${form.subject}'
       '&body=${form.message}\n\n${form.email}\nPhone:${form.phone}',

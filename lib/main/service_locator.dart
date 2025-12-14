@@ -4,19 +4,23 @@ import 'package:get_it/get_it.dart';
 import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/local/sqlite/database_helper.dart';
 import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
+import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/positions_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/posts_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/projects_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/skills_local_data_source.dart';
 import 'package:portfolio/main/data/local/web/education_local_data_source_web.dart';
+import 'package:portfolio/main/data/local/web/personal_info_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/positions_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/posts_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/projects_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/skills_local_data_source_web.dart';
+import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/remote/education_remote_data_source.dart';
+import 'package:portfolio/main/data/remote/personal_info_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/posts_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/projects_remote_data_source.dart';
@@ -25,6 +29,8 @@ import 'package:portfolio/main/data/repository/blog_repository.dart'
     as blog_repo_impl;
 import 'package:portfolio/main/data/repository/education_repository.dart'
     as education_repo_impl;
+import 'package:portfolio/main/data/repository/personal_info_repository.dart'
+    as personal_info_repo_impl;
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/data/repository/position_repository.dart'
     as position_repo_impl;
@@ -36,10 +42,12 @@ import 'package:portfolio/main/data/skill.dart';
 import 'package:portfolio/main/data/typedefs.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/education_repository.dart';
+import 'package:portfolio/main/domain/repositories/personal_info_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/domain/repositories/project_repository.dart';
 import 'package:portfolio/main/domain/repositories/skill_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
@@ -81,6 +89,11 @@ Future<void> setupLocator() async {
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
     ),
   );
+  locator.registerLazySingleton<PersonalInfoRemoteDataSource>(
+    () => PersonalInfoRemoteDataSourceImpl(
+      firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+    ),
+  );
 
   // Register Local Data Sources based on platform
   if (kIsWeb) {
@@ -110,6 +123,11 @@ Future<void> setupLocator() async {
         SkillsLocalDataSourceWebImpl(),
       ),
     );
+    locator.registerLazySingleton<PersonalInfoLocalDataSource>(
+      () => _PersonalInfoLocalDataSourceWebAdapter(
+        PersonalInfoLocalDataSourceWebImpl(),
+      ),
+    );
   } else {
     // Native platforms (mobile, desktop): Use SQLite
     final database = await DatabaseHelper.initDatabase();
@@ -137,6 +155,11 @@ Future<void> setupLocator() async {
     );
     locator.registerLazySingleton<SkillsLocalDataSource>(
       () => SkillsLocalDataSourceImpl(
+        database: locator<Database>(),
+      ),
+    );
+    locator.registerLazySingleton<PersonalInfoLocalDataSource>(
+      () => PersonalInfoLocalDataSourceImpl(
         database: locator<Database>(),
       ),
     );
@@ -184,6 +207,14 @@ Future<void> setupLocator() async {
     ),
   );
 
+  // PersonalInfo Repository
+  locator.registerLazySingleton<PersonalInfoRepository>(
+    () => personal_info_repo_impl.PersonalInfoRepositoryImpl(
+      remoteDataSource: locator<PersonalInfoRemoteDataSource>(),
+      localDataSource: locator<PersonalInfoLocalDataSource>(),
+    ),
+  );
+
   // Register centralized Portfolio Repository (for static data only)
   locator.registerLazySingleton<PortfolioRepository>(
     () => const PortfolioRepository(),
@@ -220,6 +251,12 @@ Future<void> setupLocator() async {
     ),
   );
 
+  locator.registerLazySingleton<GetPersonalInfoStream>(
+    () => GetPersonalInfoStream(
+      personalInfoRepository: locator<PersonalInfoRepository>(),
+    ),
+  );
+
   locator.registerLazySingleton<RefreshAll>(
     () => RefreshAll(
       blogRepository: locator<BlogRepository>(),
@@ -227,8 +264,27 @@ Future<void> setupLocator() async {
       projectRepository: locator<ProjectRepository>(),
       educationRepository: locator<EducationRepository>(),
       skillRepository: locator<SkillRepository>(),
+      personalInfoRepository: locator<PersonalInfoRepository>(),
     ),
   );
+}
+
+/// Adapter to make web implementation compatible with the PersonalInfoLocalDataSource interface
+class _PersonalInfoLocalDataSourceWebAdapter
+    implements PersonalInfoLocalDataSource {
+  _PersonalInfoLocalDataSourceWebAdapter(this._webImpl);
+
+  final PersonalInfoLocalDataSourceWeb _webImpl;
+
+  @override
+  Future<void> savePersonalInfo(PersonalInfo info) =>
+      _webImpl.cachePersonalInfo(info);
+
+  @override
+  Future<PersonalInfo?> getPersonalInfo() => _webImpl.getCachedPersonalInfo();
+
+  @override
+  Future<void> clearCache() => _webImpl.clearCache();
 }
 
 /// Adapter to make web implementation compatible with the PostsLocalDataSource interface

@@ -7,6 +7,7 @@ import 'package:portfolio/main/bloc/portfolio_bloc.dart';
 import 'package:portfolio/main/bloc/portfolio_event.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
@@ -87,6 +88,7 @@ class PortfolioApplication extends StatelessWidget {
           getPostsStream: locator<GetPostsStream>(),
           getPositionsStream: locator<GetPositionsStream>(),
           getSkillsStream: locator<GetSkillsStream>(),
+          getPersonalInfoStream: locator<GetPersonalInfoStream>(),
           refreshAll: locator<RefreshAll>(),
         );
         // On web, force a refresh to bypass all caches

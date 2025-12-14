@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 /// Helper class to manage SQLite database
 class DatabaseHelper {
   static const String _databaseName = 'portfolio_cache.db';
-  static const int _databaseVersion = 1;
+  static const int _databaseVersion = 2;
 
   // Table names
   static const String postsTable = 'posts';
@@ -12,6 +12,7 @@ class DatabaseHelper {
   static const String projectsTable = 'projects';
   static const String educationTable = 'education';
   static const String skillsTable = 'skills';
+  static const String personalInfoTable = 'personal_info';
 
   /// Initialize and create the database
   static Future<Database> initDatabase() async {
@@ -85,6 +86,18 @@ class DatabaseHelper {
       )
     ''');
 
+    // Create personal_info table
+    await db.execute('''
+      CREATE TABLE $personalInfoTable (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        image TEXT NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        email TEXT NOT NULL,
+        socials TEXT NOT NULL
+      )
+    ''');
+
     print('Database tables created successfully');
   }
 
@@ -94,7 +107,21 @@ class DatabaseHelper {
     int oldVersion,
     int newVersion,
   ) async {
-    // Handle future database migrations here
+    // Handle database migrations here
+    if (oldVersion < 2) {
+      // Add personal_info table in version 2
+      await db.execute('''
+        CREATE TABLE $personalInfoTable (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          image TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          email TEXT NOT NULL,
+          socials TEXT NOT NULL
+        )
+      ''');
+      print('Added personal_info table in database upgrade');
+    }
     print('Database upgraded from version $oldVersion to $newVersion');
   }
 }

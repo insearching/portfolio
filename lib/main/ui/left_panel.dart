@@ -46,7 +46,30 @@ class LeftPanel extends StatelessWidget {
           const SizedBox(height: 24.0),
           BlocBuilder<PortfolioBloc, PortfolioState>(
             builder: (context, state) {
-              final socials = state.personalInfo?.socials ?? [];
+              if (state.status.isError) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    state.errorMessage ?? 'Failed to load personal info',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: Colors.redAccent),
+                  ),
+                );
+              }
+
+              if (state.personalInfo == null) {
+                // Show loading indicator while personal info is being loaded
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              final socials = state.personalInfo!.socials;
               return Socials(socials: socials);
             },
           ),

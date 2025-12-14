@@ -4,7 +4,6 @@ import 'package:portfolio/main/bloc/contact_form_event.dart';
 import 'package:portfolio/main/bloc/portfolio_bloc.dart';
 import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/navigation_menu.dart';
-import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/service_locator.dart';
@@ -120,16 +119,32 @@ class _TabletContentState extends State<TabletContent> {
                 const HorizontalDivider(),
                 BlocBuilder<PortfolioBloc, PortfolioState>(
                   builder: (context, state) {
+                    if (state.status.isError) {
+                      return Padding(
+                        padding: const EdgeInsets.all(64.0),
+                        child: Text(
+                          state.errorMessage ?? 'Failed to load personal info',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(color: Colors.redAccent),
+                        ),
+                      );
+                    }
+
+                    if (state.personalInfo == null) {
+                      // Show loading indicator while personal info is loading
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(64.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
                     return Contact(
                       key: keys[NavigationMenu.contact],
-                      info: state.personalInfo ??
-                          const PersonalInfo(
-                            image: '',
-                            title: '',
-                            description: '',
-                            email: '',
-                            socials: [],
-                          ),
+                      info: state.personalInfo!,
                       onMessageSend: widget.onMessageSend,
                     );
                   },
