@@ -3,6 +3,7 @@ import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/data/skill.dart';
 
 /// Base class for all portfolio events
 /// Using sealed class pattern for exhaustive event handling
@@ -60,4 +61,14 @@ class EducationUpdated extends PortfolioEvent {
 
   @override
   List<Object?> get props => [education];
+}
+
+/// Internal event when skills are updated from stream
+class SkillsUpdated extends PortfolioEvent {
+  const SkillsUpdated(this.skills);
+
+  final List<Skill> skills;
+
+  @override
+  List<Object?> get props => [skills];
 }

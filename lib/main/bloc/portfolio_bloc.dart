@@ -4,6 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/bloc/portfolio_event.dart';
 import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
+import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
+import 'package:portfolio/main/domain/usecases/refresh_all.dart';
 
 /// Main BLoC for managing portfolio data
 /// Automatically subscribes to repository streams and emits states as data arrives
@@ -11,11 +17,17 @@ import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
   PortfolioBloc({
     required this.portfolioRepository,
+    required this.getEducationStream,
+    required this.getProjectsStream,
+    required this.getPostsStream,
+    required this.getPositionsStream,
+    required this.getSkillsStream,
+    required this.refreshAll,
   }) : super(PortfolioState(
           // Load static data immediately in initial state
           personalInfo: portfolioRepository.getPersonalInfo(),
-          skills: portfolioRepository.getSkills(),
-          resumeTabs: portfolioRepository.getResumeTabs(),
+          skills: const [], // Skills will be loaded from stream
+          resumeTabs: const ['Education', 'Professional Skills'],
           status: PortfolioStatus.loading,
         )) {
     // Register event handlers
@@ -24,18 +36,25 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     on<PositionsUpdated>(_onPositionsUpdated);
     on<ProjectsUpdated>(_onProjectsUpdated);
     on<EducationUpdated>(_onEducationUpdated);
+    on<SkillsUpdated>(_onSkillsUpdated);
 
     // Set up stream subscriptions for progressive data loading
     _setupStreamSubscriptions();
   }
 
   final PortfolioRepository portfolioRepository;
+  final GetEducationStream getEducationStream;
+  final GetProjectsStream getProjectsStream;
+  final GetPostsStream getPostsStream;
+  final GetPositionsStream getPositionsStream;
+  final GetSkillsStream getSkillsStream;
+  final RefreshAll refreshAll;
 
   /// Sets up stream subscriptions that trigger internal events
   /// This approach properly follows BLoC pattern by using events
   void _setupStreamSubscriptions() {
     // Subscribe to posts stream (progressive: memory -> local -> remote)
-    portfolioRepository.getPostsStream().listen(
+    getPostsStream().listen(
       (posts) => add(PostsUpdated(posts)),
       onError: (error) {
         print('Error loading posts: $error');
@@ -43,7 +62,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     );
 
     // Subscribe to positions stream (progressive: memory -> local -> remote)
-    portfolioRepository.getPositionsStream().listen(
+    getPositionsStream().listen(
       (positions) => add(PositionsUpdated(positions)),
       onError: (error) {
         print('Error loading positions: $error');
@@ -51,7 +70,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     );
 
     // Subscribe to projects stream (progressive: memory -> local -> remote)
-    portfolioRepository.getProjectsStream().listen(
+    getProjectsStream().listen(
       (projects) => add(ProjectsUpdated(projects)),
       onError: (error) {
         print('Error loading projects: $error');
@@ -59,10 +78,18 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     );
 
     // Subscribe to education stream (progressive: memory -> local -> remote)
-    portfolioRepository.getEducationStream().listen(
+    getEducationStream().listen(
       (education) => add(EducationUpdated(education)),
       onError: (error) {
         print('Error loading education: $error');
+      },
+    );
+
+    // Subscribe to skills stream (progressive: memory -> local -> remote)
+    getSkillsStream().listen(
+      (skills) => add(SkillsUpdated(skills)),
+      onError: (error) {
+        print('Error loading skills: $error');
       },
     );
   }
@@ -106,6 +133,16 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     ));
   }
 
+  void _onSkillsUpdated(
+    SkillsUpdated event,
+    Emitter<PortfolioState> emit,
+  ) {
+    emit(state.copyWith(
+      skills: event.skills,
+      status: PortfolioStatus.success,
+    ));
+  }
+
   /// Handler for manually refreshing all data
   /// Clears caches and forces fresh data from remote sources
   Future<void> _onRefreshPortfolioData(
@@ -116,7 +153,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
 
     try {
       // Force refresh all remote repositories (clears caches)
-      await portfolioRepository.refreshAll();
+      await refreshAll();
 
       // The stream subscriptions will automatically receive the refreshed data
       // No need to manually reload - the streams handle it automatically

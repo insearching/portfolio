@@ -6,6 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/bloc/portfolio_bloc.dart';
 import 'package:portfolio/main/bloc/portfolio_event.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
+import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
+import 'package:portfolio/main/domain/usecases/refresh_all.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/mobile/mobile_scaffold.dart';
 import 'package:portfolio/main/ui/responsive/responsive_layout.dart';
@@ -76,6 +82,12 @@ class PortfolioApplication extends StatelessWidget {
       create: (context) {
         final bloc = PortfolioBloc(
           portfolioRepository: locator<PortfolioRepository>(),
+          getEducationStream: locator<GetEducationStream>(),
+          getProjectsStream: locator<GetProjectsStream>(),
+          getPostsStream: locator<GetPostsStream>(),
+          getPositionsStream: locator<GetPositionsStream>(),
+          getSkillsStream: locator<GetSkillsStream>(),
+          refreshAll: locator<RefreshAll>(),
         );
         // On web, force a refresh to bypass all caches
         if (kIsWeb) {

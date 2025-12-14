@@ -7,10 +7,12 @@ import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dar
 import 'package:portfolio/main/data/local/sqlite/positions_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/posts_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/projects_local_data_source.dart';
+import 'package:portfolio/main/data/local/sqlite/skills_local_data_source.dart';
 import 'package:portfolio/main/data/local/web/education_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/positions_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/posts_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/projects_local_data_source_web.dart';
+import 'package:portfolio/main/data/local/web/skills_local_data_source_web.dart';
 import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/project.dart';
@@ -18,6 +20,7 @@ import 'package:portfolio/main/data/remote/education_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/posts_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/projects_remote_data_source.dart';
+import 'package:portfolio/main/data/remote/skills_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart'
     as blog_repo_impl;
 import 'package:portfolio/main/data/repository/education_repository.dart'
@@ -27,11 +30,21 @@ import 'package:portfolio/main/data/repository/position_repository.dart'
     as position_repo_impl;
 import 'package:portfolio/main/data/repository/project_repository.dart'
     as project_repo_impl;
+import 'package:portfolio/main/data/repository/skill_repository.dart'
+    as skill_repo_impl;
+import 'package:portfolio/main/data/skill.dart';
 import 'package:portfolio/main/data/typedefs.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/education_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/domain/repositories/project_repository.dart';
+import 'package:portfolio/main/domain/repositories/skill_repository.dart';
+import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
+import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
+import 'package:portfolio/main/domain/usecases/refresh_all.dart';
 import 'package:sqflite/sqflite.dart';
 
 final GetIt locator = GetIt.instance;
@@ -63,6 +76,11 @@ Future<void> setupLocator() async {
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
     ),
   );
+  locator.registerLazySingleton<SkillsRemoteDataSource>(
+    () => SkillsRemoteDataSourceImpl(
+      firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+    ),
+  );
 
   // Register Local Data Sources based on platform
   if (kIsWeb) {
@@ -87,6 +105,11 @@ Future<void> setupLocator() async {
         EducationLocalDataSourceWebImpl(),
       ),
     );
+    locator.registerLazySingleton<SkillsLocalDataSource>(
+      () => _SkillsLocalDataSourceWebAdapter(
+        SkillsLocalDataSourceWebImpl(),
+      ),
+    );
   } else {
     // Native platforms (mobile, desktop): Use SQLite
     final database = await DatabaseHelper.initDatabase();
@@ -109,6 +132,11 @@ Future<void> setupLocator() async {
     );
     locator.registerLazySingleton<EducationLocalDataSource>(
       () => EducationLocalDataSourceImpl(
+        database: locator<Database>(),
+      ),
+    );
+    locator.registerLazySingleton<SkillsLocalDataSource>(
+      () => SkillsLocalDataSourceImpl(
         database: locator<Database>(),
       ),
     );
@@ -148,13 +176,57 @@ Future<void> setupLocator() async {
     ),
   );
 
-  // Register centralized Portfolio Repository
+  // Skill Repository
+  locator.registerLazySingleton<SkillRepository>(
+    () => skill_repo_impl.SkillRepositoryImpl(
+      remoteDataSource: locator<SkillsRemoteDataSource>(),
+      localDataSource: locator<SkillsLocalDataSource>(),
+    ),
+  );
+
+  // Register centralized Portfolio Repository (for static data only)
   locator.registerLazySingleton<PortfolioRepository>(
-    () => PortfolioRepository(
+    () => const PortfolioRepository(),
+  );
+
+  // Register Use Cases
+  locator.registerLazySingleton<GetEducationStream>(
+    () => GetEducationStream(
+      educationRepository: locator<EducationRepository>(),
+    ),
+  );
+
+  locator.registerLazySingleton<GetProjectsStream>(
+    () => GetProjectsStream(
+      projectRepository: locator<ProjectRepository>(),
+    ),
+  );
+
+  locator.registerLazySingleton<GetPostsStream>(
+    () => GetPostsStream(
+      blogRepository: locator<BlogRepository>(),
+    ),
+  );
+
+  locator.registerLazySingleton<GetPositionsStream>(
+    () => GetPositionsStream(
+      positionRepository: locator<PositionRepository>(),
+    ),
+  );
+
+  locator.registerLazySingleton<GetSkillsStream>(
+    () => GetSkillsStream(
+      skillRepository: locator<SkillRepository>(),
+    ),
+  );
+
+  locator.registerLazySingleton<RefreshAll>(
+    () => RefreshAll(
       blogRepository: locator<BlogRepository>(),
       positionRepository: locator<PositionRepository>(),
       projectRepository: locator<ProjectRepository>(),
       educationRepository: locator<EducationRepository>(),
+      skillRepository: locator<SkillRepository>(),
     ),
   );
 }
@@ -231,6 +303,25 @@ class _EducationLocalDataSourceWebAdapter implements EducationLocalDataSource {
 
   @override
   Future<List<Education>> getEducation() => _webImpl.getCachedEducation();
+
+  @override
+  Future<void> clearCache() => _webImpl.clearCache();
+}
+
+/// Adapter to make web implementation compatible with the SkillsLocalDataSource interface
+class _SkillsLocalDataSourceWebAdapter implements SkillsLocalDataSource {
+  _SkillsLocalDataSourceWebAdapter(this._webImpl);
+
+  final SkillsLocalDataSourceWeb _webImpl;
+
+  @override
+  Future<void> saveSkill(skill) => _webImpl.cacheSkill(skill);
+
+  @override
+  Future<void> saveSkills(skills) => _webImpl.cacheSkills(skills);
+
+  @override
+  Future<List<Skill>> getSkills() => _webImpl.getCachedSkills();
 
   @override
   Future<void> clearCache() => _webImpl.clearCache();
