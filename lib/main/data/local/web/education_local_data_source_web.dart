@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 
 /// Web-compatible local data source for Education
 /// Uses in-memory caching since SQLite is not available on web

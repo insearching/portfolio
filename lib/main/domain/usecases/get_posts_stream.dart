@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 
 /// Use case for getting posts stream

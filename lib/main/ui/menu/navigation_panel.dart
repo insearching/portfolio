@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/device_info.dart';
-import 'package:portfolio/main/data/navigation_menu.dart';
+import 'package:portfolio/main/domain/model/device_info.dart';
+import 'package:portfolio/main/ui/menu/navigation_menu.dart';
 import 'package:portfolio/utils/collections.dart';
 import 'package:portfolio/utils/colors.dart';
 import 'package:provider/provider.dart';

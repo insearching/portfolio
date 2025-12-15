@@ -1,5 +1,7 @@
-import 'package:portfolio/main/data/position.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
+import 'package:portfolio/main/data/mapper/position_remote_model_mapper.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 
 /// Remote static_data source for Positions
 /// Handles all Firebase Realtime Database operations for positions
@@ -21,47 +23,14 @@ class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
         firebaseDatabaseReference.child(_collectionName);
     final event = await positionsCollection.once();
 
-    if (event.snapshot.value == null) return [];
+    final rawData = event.snapshot.value;
+    if (rawData == null) return [];
 
     try {
-      final rawData = event.snapshot.value;
-      final List<Position> positions = [];
-
-      // Handle both Map (from .push()) and List formats
-      if (rawData is Map) {
-        // Firebase returns Map when using .push()
-        for (var entry in rawData.entries) {
-          final value = entry.value;
-          if (value is Map) {
-            final iconValue =
-                value['icon']?.toString() ?? 'assets/img/android.png';
-            positions.add(
-              Position(
-                title: value['title']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                position: value['position']?.toString() ?? '',
-                icon: iconValue.isEmpty ? 'assets/img/android.png' : iconValue,
-              ),
-            );
-          }
-        }
-      } else if (rawData is List) {
-        // Handle List format (if data is structured as array)
-        for (var value in rawData) {
-          if (value is Map) {
-            final iconValue =
-                value['icon']?.toString() ?? 'assets/img/android.png';
-            positions.add(
-              Position(
-                title: value['title']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                position: value['position']?.toString() ?? '',
-                icon: iconValue.isEmpty ? 'assets/img/android.png' : iconValue,
-              ),
-            );
-          }
-        }
-      }
+      final positions = firebaseRawToJsonMaps(rawData)
+          .map(positionRemoteModelFromJson)
+          .map((m) => m.toDomain())
+          .toList();
 
       print('Loaded ${positions.length} positions from Firebase');
       return positions;

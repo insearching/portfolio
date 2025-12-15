@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 
 enum PostStatus { success, error, loading }
 

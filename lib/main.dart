@@ -22,9 +22,9 @@ import 'package:portfolio/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'main/data/device_info.dart';
-import 'main/data/device_type.dart';
 import 'main/di/service_locator.dart';
+import 'main/domain/model/device_info.dart';
+import 'main/domain/model/device_type.dart';
 import 'main/ui/components/app_error_widget.dart';
 import 'utils/env_config.dart';
 

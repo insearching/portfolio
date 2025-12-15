@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
 
 /// Repository interface for managing personal information
 /// Defines the contract for personal info data operations

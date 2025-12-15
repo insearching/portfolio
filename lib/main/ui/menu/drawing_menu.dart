@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/components/theme_toggle_button.dart';
 import 'package:portfolio/main/ui/contact/socials.dart';
 import 'package:portfolio/main/ui/menu/keys.dart';
+import 'package:portfolio/main/ui/menu/navigation_menu.dart';
 import 'package:portfolio/main/ui/menu/navigation_panel.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_bloc.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_state.dart';

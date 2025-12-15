@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/domain/repositories/education_repository.dart';
 
 /// Use case for getting education stream

@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
 import 'package:portfolio/main/domain/repositories/personal_info_repository.dart';
 
 /// Use case for fetching personal info progressively from cache layers

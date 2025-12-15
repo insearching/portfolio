@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/device_info.dart';
-import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/domain/model/device_info.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/ui/components/custom_dialog.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_container.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/device_type.dart';
+import '../../domain/model/device_type.dart';
 
 class Portfolio extends StatefulWidget {
   const Portfolio({

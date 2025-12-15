@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 
 /// Repository interface for managing education records
 /// Defines the contract for education data operations

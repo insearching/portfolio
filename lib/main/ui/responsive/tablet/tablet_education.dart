@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/ui/components/education_container.dart';
 
 class TabletEducationWidget extends StatelessWidget {

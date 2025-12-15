@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:portfolio/main/data/position.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 
 enum PersonalInfoStatus { success, error, loading }
 

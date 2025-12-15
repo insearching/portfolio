@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Local data source for Projects

@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 
 /// Repository interface for managing blog posts
 /// Defines the contract for blog post static_data operations

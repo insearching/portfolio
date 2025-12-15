@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Local static_data source for Posts

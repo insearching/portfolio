@@ -1,5 +1,7 @@
-import 'package:portfolio/main/data/skill.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
+import 'package:portfolio/main/data/mapper/skill_remote_model_mapper.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 
 /// Remote data source for Skills
 /// Handles all Firebase Realtime Database operations for skills
@@ -20,41 +22,14 @@ class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
     final skillsCollection = firebaseDatabaseReference.child(_collectionName);
     final event = await skillsCollection.once();
 
-    if (event.snapshot.value == null) return [];
+    final rawData = event.snapshot.value;
+    if (rawData == null) return [];
 
     try {
-      final rawData = event.snapshot.value;
-      final List<Skill> skills = [];
-
-      // Handle both Map (from .push()) and List formats
-      if (rawData is Map) {
-        // Firebase returns Map when using .push()
-        for (var entry in rawData.entries) {
-          final value = entry.value;
-          if (value is Map) {
-            skills.add(
-              Skill(
-                title: value['title']?.toString() ?? '',
-                value: (value['value'] as num?)?.toInt() ?? 0,
-                type: _parseSkillType(value['type']?.toString() ?? 'hard'),
-              ),
-            );
-          }
-        }
-      } else if (rawData is List) {
-        // Handle List format (if data is structured as array)
-        for (var value in rawData) {
-          if (value is Map) {
-            skills.add(
-              Skill(
-                title: value['title']?.toString() ?? '',
-                value: (value['value'] as num?)?.toInt() ?? 0,
-                type: _parseSkillType(value['type']?.toString() ?? 'hard'),
-              ),
-            );
-          }
-        }
-      }
+      final skills = firebaseRawToJsonMaps(rawData)
+          .map(skillRemoteModelFromJson)
+          .map((m) => m.toDomain())
+          .toList();
 
       print('Loaded ${skills.length} skills from Firebase');
       return skills;
@@ -62,10 +37,5 @@ class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
       print('Error parsing skills from Firebase: $e');
       rethrow;
     }
-  }
-
-  /// Helper method to parse SkillType from string
-  SkillType _parseSkillType(String typeString) {
-    return typeString.toLowerCase() == 'soft' ? SkillType.soft : SkillType.hard;
   }
 }

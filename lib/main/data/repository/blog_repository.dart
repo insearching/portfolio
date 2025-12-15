@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/local/sqlite/posts_local_data_source.dart';
-import 'package:portfolio/main/data/post.dart';
 import 'package:portfolio/main/data/remote/posts_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/base_repository.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 
 /// Implementation of BlogRepository

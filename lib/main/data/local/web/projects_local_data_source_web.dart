@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 
 /// Web-compatible local data source for Projects
 /// Uses in-memory caching since SQLite is not available on web

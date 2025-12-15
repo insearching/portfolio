@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 
 /// Web-compatible local static_data source for Posts
 /// Uses in-memory caching since SQLite is not available on web

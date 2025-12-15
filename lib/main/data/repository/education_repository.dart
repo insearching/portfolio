@@ -1,7 +1,7 @@
-import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
 import 'package:portfolio/main/data/remote/education_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/base_repository.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/domain/repositories/education_repository.dart';
 
 /// Implementation of EducationRepository

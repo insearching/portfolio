@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/main/data/navigation_menu.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
@@ -12,6 +11,7 @@ import 'package:portfolio/main/ui/contact/contact.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/menu/keys.dart';
+import 'package:portfolio/main/ui/menu/navigation_menu.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_bloc.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_event.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';

@@ -1,5 +1,7 @@
-import 'package:portfolio/main/data/education.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/mapper/education_remote_model_mapper.dart';
+import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 
 /// Remote data source for Education
 /// Handles all Firebase Realtime Database operations for education records
@@ -21,55 +23,14 @@ class EducationRemoteDataSourceImpl implements EducationRemoteDataSource {
         firebaseDatabaseReference.child(_collectionName);
     final event = await educationCollection.once();
 
-    if (event.snapshot.value == null) return [];
+    final rawData = event.snapshot.value;
+    if (rawData == null) return [];
 
     try {
-      final rawData = event.snapshot.value;
-      final List<Education> educationList = [];
-
-      // Handle both Map (from .push()) and List formats
-      if (rawData is Map) {
-        // Firebase returns Map when using .push()
-        for (var entry in rawData.entries) {
-          final value = entry.value;
-          if (value is Map) {
-            educationList.add(
-              Education(
-                title: value['title']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                type: EducationType.values.firstWhere(
-                  (e) =>
-                      e.name == (value['type']?.toString() ?? 'certification'),
-                  orElse: () => EducationType.certification,
-                ),
-                text: value['text']?.toString(),
-                link: value['link']?.toString(),
-                imageUrl: value['imageUrl']?.toString(),
-              ),
-            );
-          }
-        }
-      } else if (rawData is List) {
-        // Handle List format (if data is structured as array)
-        for (var value in rawData) {
-          if (value is Map) {
-            educationList.add(
-              Education(
-                title: value['title']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                type: EducationType.values.firstWhere(
-                  (e) =>
-                      e.name == (value['type']?.toString() ?? 'certification'),
-                  orElse: () => EducationType.certification,
-                ),
-                text: value['text']?.toString(),
-                link: value['link']?.toString(),
-                imageUrl: value['imageUrl']?.toString(),
-              ),
-            );
-          }
-        }
-      }
+      final educationList = firebaseRawToJsonMaps(rawData)
+          .map(educationRemoteModelFromJson)
+          .map((m) => m.toDomain())
+          .toList();
 
       print('Loaded ${educationList.length} education records from Firebase');
       return educationList;

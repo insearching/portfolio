@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/education.dart';
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/education.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_education.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_professional_skills.dart';

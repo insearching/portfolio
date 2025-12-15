@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/local/sqlite/projects_local_data_source.dart';
-import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/remote/projects_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/base_repository.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/domain/repositories/project_repository.dart';
 
 /// Implementation of ProjectRepository

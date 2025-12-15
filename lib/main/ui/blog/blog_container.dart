@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/post.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

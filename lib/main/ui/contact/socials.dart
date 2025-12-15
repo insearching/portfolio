@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/domain/model/social_info.dart';
 import 'package:portfolio/main/ui/components/image_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 

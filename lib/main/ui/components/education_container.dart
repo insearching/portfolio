@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:url_launcher/url_launcher_string.dart';

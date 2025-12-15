@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:portfolio/main/data/personal_info.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/mapper/personal_info_remote_model_mapper.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
 import 'package:portfolio/utils/env_config.dart';
 
 /// Remote data source for PersonalInfo
@@ -32,7 +33,9 @@ class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
       if (rawData is Map) {
         final data = Map<String, dynamic>.from(rawData);
         print('Loaded personal info from Firebase');
-        return PersonalInfo.fromJson(data);
+
+        final model = personalInfoRemoteModelFromJson(data);
+        return model.toDomain();
       }
 
       print('Unexpected data format for personal info in Firebase');
@@ -62,7 +65,8 @@ class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
 
       // Write data to Firebase Realtime Database
       final personalInfoRef = firebaseDatabaseReference.child(_collectionName);
-      await personalInfoRef.set(info.toJson());
+      final model = personalInfoRemoteModelFromDomain(info);
+      await personalInfoRef.set(model.toJson());
       print('Personal info written to Firebase successfully');
 
       // Sign out after writing for security

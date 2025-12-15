@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 
 /// Repository interface for managing skills
 /// Defines the contract for skill data operations

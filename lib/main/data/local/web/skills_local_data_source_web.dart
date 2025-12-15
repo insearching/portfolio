@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 
 /// Web-compatible local data source for Skills
 /// Uses in-memory caching since SQLite is not available on web

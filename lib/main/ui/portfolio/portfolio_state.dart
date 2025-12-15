@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'package:portfolio/main/data/education.dart';
-import 'package:portfolio/main/data/personal_info.dart';
-import 'package:portfolio/main/data/position.dart';
-import 'package:portfolio/main/data/post.dart';
-import 'package:portfolio/main/data/project.dart';
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/education.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
+import 'package:portfolio/main/domain/model/position.dart';
+import 'package:portfolio/main/domain/model/post.dart';
+import 'package:portfolio/main/domain/model/project.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 
 /// Status enumeration for static_data loading states
 enum PortfolioStatus {

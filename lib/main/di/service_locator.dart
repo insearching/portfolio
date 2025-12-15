@@ -1,7 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
-import 'package:portfolio/main/data/education.dart';
 import 'package:portfolio/main/data/local/sqlite/database_helper.dart';
 import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
@@ -15,10 +14,6 @@ import 'package:portfolio/main/data/local/web/positions_local_data_source_web.da
 import 'package:portfolio/main/data/local/web/posts_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/projects_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/skills_local_data_source_web.dart';
-import 'package:portfolio/main/data/personal_info.dart';
-import 'package:portfolio/main/data/position.dart';
-import 'package:portfolio/main/data/post.dart';
-import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/data/remote/education_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/personal_info_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
@@ -38,8 +33,13 @@ import 'package:portfolio/main/data/repository/project_repository.dart'
     as project_repo_impl;
 import 'package:portfolio/main/data/repository/skill_repository.dart'
     as skill_repo_impl;
-import 'package:portfolio/main/data/skill.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/education.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
+import 'package:portfolio/main/domain/model/position.dart';
+import 'package:portfolio/main/domain/model/post.dart';
+import 'package:portfolio/main/domain/model/project.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/education_repository.dart';
 import 'package:portfolio/main/domain/repositories/personal_info_repository.dart';

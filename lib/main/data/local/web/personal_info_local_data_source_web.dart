@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
 
 /// Web-compatible local data source for PersonalInfo
 /// Uses in-memory caching since SQLite is not available on web

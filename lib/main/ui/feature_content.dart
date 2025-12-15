@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/position.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 

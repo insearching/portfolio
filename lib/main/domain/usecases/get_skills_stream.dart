@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/domain/repositories/skill_repository.dart';
 
 /// Use case for getting skills stream

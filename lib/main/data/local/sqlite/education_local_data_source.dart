@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/education.dart';
+import 'package:portfolio/main/domain/model/education.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Local data source for Education

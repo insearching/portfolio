@@ -1,5 +1,7 @@
-import 'package:portfolio/main/data/project.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
+import 'package:portfolio/main/data/mapper/project_remote_model_mapper.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 
 /// Remote data source for Projects
 /// Handles all Firebase Realtime Database operations for projects
@@ -20,51 +22,14 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
     final projectsCollection = firebaseDatabaseReference.child(_collectionName);
     final event = await projectsCollection.once();
 
-    if (event.snapshot.value == null) return [];
+    final rawData = event.snapshot.value;
+    if (rawData == null) return [];
 
     try {
-      final rawData = event.snapshot.value;
-      final List<Project> projects = [];
-
-      // Handle both Map (from .push()) and List formats
-      if (rawData is Map) {
-        // Firebase returns Map when using .push()
-        for (var entry in rawData.entries) {
-          final value = entry.value;
-          if (value is Map) {
-            final imageValue =
-                value['image']?.toString() ?? 'assets/img/default.png';
-            projects.add(
-              Project(
-                image:
-                    imageValue.isEmpty ? 'assets/img/default.png' : imageValue,
-                title: value['title']?.toString() ?? '',
-                role: value['role']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                link: value['link']?.toString(),
-              ),
-            );
-          }
-        }
-      } else if (rawData is List) {
-        // Handle List format (if data is structured as array)
-        for (var value in rawData) {
-          if (value is Map) {
-            final imageValue =
-                value['image']?.toString() ?? 'assets/img/default.png';
-            projects.add(
-              Project(
-                image:
-                    imageValue.isEmpty ? 'assets/img/default.png' : imageValue,
-                title: value['title']?.toString() ?? '',
-                role: value['role']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                link: value['link']?.toString(),
-              ),
-            );
-          }
-        }
-      }
+      final projects = firebaseRawToJsonMaps(rawData)
+          .map(projectRemoteModelFromJson)
+          .map((m) => m.toDomain())
+          .toList();
 
       print('Loaded ${projects.length} projects from Firebase');
       return projects;

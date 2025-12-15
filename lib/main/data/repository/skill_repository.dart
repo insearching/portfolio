@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/local/sqlite/skills_local_data_source.dart';
 import 'package:portfolio/main/data/remote/skills_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/base_repository.dart';
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/domain/repositories/skill_repository.dart';
 
 /// Implementation of SkillRepository

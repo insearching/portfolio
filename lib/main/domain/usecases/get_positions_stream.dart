@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/position.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 
 /// Use case for getting positions stream

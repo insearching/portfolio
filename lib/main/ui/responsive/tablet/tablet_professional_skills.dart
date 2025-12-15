@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/skill.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/ui/components/skill_progress_bar.dart';
 
 class TabletProfessionalSkillsWidget extends StatefulWidget {

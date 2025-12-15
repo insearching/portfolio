@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/position.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 
 /// Web-compatible local static_data source for Positions
 /// Uses in-memory caching since SQLite is not available on web

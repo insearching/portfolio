@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
-import 'package:portfolio/main/data/personal_info.dart';
 import 'package:portfolio/main/data/remote/personal_info_remote_data_source.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
 import 'package:portfolio/main/domain/repositories/personal_info_repository.dart';
 
 /// Implementation of PersonalInfoRepository

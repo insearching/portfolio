@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/ui/components/custom_dialog.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_container.dart';
 

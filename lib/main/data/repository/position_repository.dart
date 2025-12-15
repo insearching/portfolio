@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/local/sqlite/positions_local_data_source.dart';
-import 'package:portfolio/main/data/position.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
 import 'package:portfolio/main/data/repository/base_repository.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 
 /// Implementation of PositionRepository

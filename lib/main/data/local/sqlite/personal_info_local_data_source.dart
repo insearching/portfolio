@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:portfolio/main/data/personal_info.dart';
+import 'package:portfolio/main/data/mapper/social_info_remote_model_mapper.dart';
+import 'package:portfolio/main/domain/model/personal_info.dart';
 import 'package:sqflite/sqflite.dart';
 
 /// Local data source for PersonalInfo
@@ -29,7 +30,7 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
 
       // Convert socials list to JSON string for storage
       final socialsJson =
-          jsonEncode(info.socials.map((s) => s.toJson()).toList());
+          jsonEncode(info.socials.map(socialInfoToJsonMap).toList());
 
       await database.insert(
         _tableName,
@@ -65,7 +66,8 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
       final socialsJson = map['socials'] as String? ?? '[]';
       final socialsList = jsonDecode(socialsJson) as List<dynamic>;
       final socials = socialsList
-          .map((s) => SocialInfo.fromJson(s as Map<String, dynamic>))
+          .whereType<Map>()
+          .map((s) => socialInfoFromJsonMap(Map<String, dynamic>.from(s)))
           .toList();
 
       return PersonalInfo(

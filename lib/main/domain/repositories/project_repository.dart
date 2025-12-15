@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 
 /// Repository interface for managing projects
 /// Defines the contract for project data operations

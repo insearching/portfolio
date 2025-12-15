@@ -1,5 +1,7 @@
-import 'package:portfolio/main/data/post.dart';
-import 'package:portfolio/main/data/typedefs.dart';
+import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
+import 'package:portfolio/main/data/mapper/post_remote_model_mapper.dart';
+import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/post.dart';
 
 /// Remote static_data source for Posts
 /// Handles all Firebase Realtime Database operations for posts
@@ -22,12 +24,8 @@ class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
     final postsCollection = firebaseDatabaseReference.child(_collectionName);
 
     try {
-      await postsCollection.push().set({
-        'title': post.title,
-        'description': post.description,
-        'imageLink': post.imageLink,
-        'link': post.link,
-      });
+      final model = postRemoteModelFromDomain(post);
+      await postsCollection.push().set(model.toJson());
       print('Post added successfully to Firebase');
     } catch (e) {
       print('Error adding post to Firebase: $e');
@@ -40,43 +38,14 @@ class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
     final postsCollection = firebaseDatabaseReference.child(_collectionName);
     final event = await postsCollection.once();
 
-    if (event.snapshot.value == null) return [];
+    final rawData = event.snapshot.value;
+    if (rawData == null) return [];
 
     try {
-      final rawData = event.snapshot.value;
-      final List<Post> posts = [];
-
-      // Handle both Map (from .push()) and List formats
-      if (rawData is Map) {
-        // Firebase returns Map when using .push()
-        for (var entry in rawData.entries) {
-          final value = entry.value;
-          if (value is Map) {
-            posts.add(
-              Post(
-                title: value['title']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                imageLink: value['imageLink']?.toString() ?? '',
-                link: value['link']?.toString() ?? '',
-              ),
-            );
-          }
-        }
-      } else if (rawData is List) {
-        // Handle List format (if data is structured as array)
-        for (var value in rawData) {
-          if (value is Map) {
-            posts.add(
-              Post(
-                title: value['title']?.toString() ?? '',
-                description: value['description']?.toString() ?? '',
-                imageLink: value['imageLink']?.toString() ?? '',
-                link: value['link']?.toString() ?? '',
-              ),
-            );
-          }
-        }
-      }
+      final posts = firebaseRawToJsonMaps(rawData)
+          .map(postRemoteModelFromJson)
+          .map((m) => m.toDomain())
+          .toList();
 
       print('Loaded ${posts.length} posts from Firebase');
       return posts;

@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/position.dart';
+import 'package:portfolio/main/domain/model/position.dart';
 
 /// Repository interface for managing positions
 /// Defines the contract for position static_data operations

@@ -1,4 +1,4 @@
-import 'package:portfolio/main/data/project.dart';
+import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/domain/repositories/project_repository.dart';
 
 /// Use case for getting projects stream
