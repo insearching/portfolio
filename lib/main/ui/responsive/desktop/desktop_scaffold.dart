@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/bloc/contact_form_event.dart';
-import 'package:portfolio/main/ui/left_panel.dart';
+import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/menu/drawing_menu.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_content.dart';
 
 class DesktopScaffold extends StatelessWidget {
@@ -20,7 +20,7 @@ class DesktopScaffold extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         child: Row(
           children: [
-            const LeftPanel(),
+            const DrawingMenu(),
             VerticalDivider(
               width: 1.0,
               color: Theme.of(context).dividerColor,

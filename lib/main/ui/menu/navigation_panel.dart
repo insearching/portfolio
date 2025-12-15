@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 class NavigationPanel extends StatefulWidget {
   const NavigationPanel({
     required this.onMenuItemSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final ValueChanged<int> onMenuItemSelected;
 
@@ -65,8 +65,8 @@ class IconLabel extends StatefulWidget {
     required this.assetName,
     required this.text,
     required this.onPressed,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final int position;
   final String assetName;

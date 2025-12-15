@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/utils/colors.dart';
 
-import 'components/elevated_container.dart';
+import '../components/elevated_container.dart';
 
 class PortfolioContainer extends StatefulWidget {
   const PortfolioContainer({
@@ -9,8 +9,8 @@ class PortfolioContainer extends StatefulWidget {
     required this.title,
     required this.onTap,
     this.showArrow = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String image;
   final String title;

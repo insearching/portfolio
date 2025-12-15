@@ -6,16 +6,9 @@ import 'package:portfolio/main/ui/responsive/tablet/tablet_scaffold.dart';
 
 const String userName = 'Serhii Hrabas';
 
-class MainPageModule extends StatefulWidget {
-  const MainPageModule({
-    Key? key,
-  }) : super(key: key);
+class MainPageModule extends StatelessWidget {
+  const MainPageModule({super.key});
 
-  @override
-  _MainPageModuleState createState() => _MainPageModuleState();
-}
-
-class _MainPageModuleState extends State<MainPageModule> {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(

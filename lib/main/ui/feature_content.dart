@@ -7,8 +7,8 @@ class FeatureContainer extends StatelessWidget {
   const FeatureContainer({
     required this.position,
     required this.isPhone,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Position position;
   final bool isPhone;
@@ -64,8 +64,7 @@ class _FeatureBody extends StatefulWidget {
   const _FeatureBody({
     required this.body,
     required this.isScrollable,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final String body;
   final bool isScrollable;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/ui/blog/blog_container.dart';
 import 'package:portfolio/main/ui/blog/blog_state.dart';
-import 'package:portfolio/main/ui/blog_container.dart';
 
 class MobileBlogWidget extends StatelessWidget {
   const MobileBlogWidget({

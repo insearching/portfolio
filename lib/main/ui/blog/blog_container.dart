@@ -9,8 +9,8 @@ class BlogContainer extends StatelessWidget {
     required this.post,
     required this.horizontalPadding,
     required this.imageHeight,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Post post;
   final double horizontalPadding;

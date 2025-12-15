@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/bloc/contact_form_event.dart';
-import 'package:portfolio/main/ui/left_panel.dart';
+import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/menu/drawing_menu.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_content.dart';
 
 class TabletScaffold extends StatefulWidget {
@@ -54,7 +54,7 @@ class _TabletScaffoldState extends State<TabletScaffold> {
       ),
       drawer: Drawer(
         width: 250.0,
-        child: LeftPanel(
+        child: DrawingMenu(
           onMenuItemSelected: () {
             Navigator.of(context).pop();
             setState(() {

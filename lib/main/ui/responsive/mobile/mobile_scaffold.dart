@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:portfolio/main/bloc/contact_form_event.dart';
-import 'package:portfolio/main/ui/left_panel.dart';
+import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/menu/drawing_menu.dart';
 
 import 'mobile_content.dart';
 
@@ -52,7 +52,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
       ),
       drawer: Drawer(
         width: 250.0,
-        child: LeftPanel(
+        child: DrawingMenu(
           onMenuItemSelected: () {
             Navigator.of(context).pop();
             setState(() {

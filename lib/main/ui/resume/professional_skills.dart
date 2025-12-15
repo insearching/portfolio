@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 class ProfessionalSkillsWidget extends StatefulWidget {
   const ProfessionalSkillsWidget({
     required this.skills,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<Skill> skills;
 

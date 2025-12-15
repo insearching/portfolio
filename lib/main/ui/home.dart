@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
-import 'package:portfolio/main/service_locator.dart';
 import 'package:portfolio/main/ui/components/circle_image.dart';
 import 'package:portfolio/main/ui/components/position_label.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
@@ -13,8 +13,8 @@ class Home extends StatefulWidget {
   const Home({
     required this.name,
     required this.onContactClicked,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String name;
   final VoidCallback onContactClicked;

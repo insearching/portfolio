@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/data/project.dart';
 import 'package:portfolio/main/ui/components/custom_dialog.dart';
-import 'package:portfolio/main/ui/portfolio_container.dart';
+import 'package:portfolio/main/ui/portfolio/portfolio_container.dart';
 
 class DesktopPortfolio extends StatefulWidget {
   const DesktopPortfolio({

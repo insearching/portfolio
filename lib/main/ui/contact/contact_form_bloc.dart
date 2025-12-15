@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/main/bloc/contact_form_event.dart';
-import 'package:portfolio/main/bloc/contact_form_state.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
+import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/contact/contact_form_state.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// BLoC for managing contact form state and submission

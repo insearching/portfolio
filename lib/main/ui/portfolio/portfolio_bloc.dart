@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:portfolio/main/bloc/portfolio_event.dart';
-import 'package:portfolio/main/bloc/portfolio_state.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
@@ -11,6 +9,8 @@ import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
 import 'package:portfolio/main/domain/usecases/refresh_all.dart';
+import 'package:portfolio/main/ui/portfolio/portfolio_event.dart';
+import 'package:portfolio/main/ui/portfolio/portfolio_state.dart';
 
 /// Main BLoC for managing portfolio data
 /// Automatically subscribes to repository streams and emits states as data arrives
