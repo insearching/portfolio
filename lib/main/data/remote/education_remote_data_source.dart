@@ -6,6 +6,8 @@ import 'package:portfolio/main/domain/model/education.dart';
 /// Remote data source for Education
 /// Handles all Firebase Realtime Database operations for education records
 abstract class EducationRemoteDataSource {
+  Future<void> addEducation(Education education);
+
   Future<List<Education>> readEducation();
 }
 
@@ -16,6 +18,21 @@ class EducationRemoteDataSourceImpl implements EducationRemoteDataSource {
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
   static const String _collectionName = 'education';
+
+  @override
+  Future<void> addEducation(Education education) async {
+    final educationCollection =
+        firebaseDatabaseReference.child(_collectionName);
+
+    try {
+      final model = educationRemoteModelFromDomain(education);
+      await educationCollection.push().set(model.toJson());
+      print('Education record added successfully to Firebase');
+    } catch (e) {
+      print('Error adding education record to Firebase: $e');
+      rethrow;
+    }
+  }
 
   @override
   Future<List<Education>> readEducation() async {

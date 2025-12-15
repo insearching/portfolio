@@ -15,6 +15,19 @@ class ProjectRepositoryImpl extends BaseRepository<
     required super.localDataSource,
   });
 
+  @override
+  Future<void> addProject(Project project) async {
+    try {
+      // Add to remote first
+      await remoteDataSource.addProject(project);
+
+      // Update memory cache if it exists
+      updateMemoryCacheWithItem(project);
+    } catch (e) {
+      throw Exception('Failed to add project: $e');
+    }
+  }
+
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
   @override

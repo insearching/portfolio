@@ -15,6 +15,19 @@ class PositionRepositoryImpl extends BaseRepository<
     required super.localDataSource,
   });
 
+  @override
+  Future<void> addPosition(Position position) async {
+    try {
+      // Add to remote first
+      await remoteDataSource.addPosition(position);
+
+      // Update memory cache if it exists
+      updateMemoryCacheWithItem(position);
+    } catch (e) {
+      throw Exception('Failed to add position: $e');
+    }
+  }
+
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
   @override

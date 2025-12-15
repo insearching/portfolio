@@ -1,0 +1,423 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/main/domain/model/education.dart';
+import 'package:portfolio/main/domain/model/position.dart';
+import 'package:portfolio/main/domain/model/post.dart';
+import 'package:portfolio/main/domain/model/project.dart';
+import 'package:portfolio/main/domain/model/skill.dart';
+import 'package:portfolio/main/domain/repositories/auth_repository.dart';
+import 'package:portfolio/main/domain/repositories/blog_repository.dart';
+import 'package:portfolio/main/domain/repositories/education_repository.dart';
+import 'package:portfolio/main/domain/repositories/position_repository.dart';
+import 'package:portfolio/main/domain/repositories/project_repository.dart';
+import 'package:portfolio/main/domain/repositories/skill_repository.dart';
+import 'package:portfolio/main/domain/usecases/add_blog_post.dart';
+import 'package:portfolio/main/domain/usecases/add_education.dart';
+import 'package:portfolio/main/domain/usecases/add_position.dart';
+import 'package:portfolio/main/domain/usecases/add_project.dart';
+import 'package:portfolio/main/domain/usecases/add_skill.dart';
+import 'package:portfolio/main/domain/usecases/authenticate_admin.dart';
+import 'package:portfolio/main/domain/usecases/check_authentication.dart';
+
+void main() {
+  group('AuthenticateAdmin', () {
+    test('returns true when authentication succeeds', () async {
+      final repo = _FakeAuthRepository(authenticateResult: true);
+      final usecase = AuthenticateAdmin(authRepository: repo);
+
+      final result = await usecase('test@example.com', 'password123');
+
+      expect(result, true);
+      expect(repo.lastEmail, 'test@example.com');
+      expect(repo.lastPassword, 'password123');
+    });
+
+    test('returns false when authentication fails', () async {
+      final repo = _FakeAuthRepository(authenticateResult: false);
+      final usecase = AuthenticateAdmin(authRepository: repo);
+
+      final result = await usecase('test@example.com', 'wrong');
+
+      expect(result, false);
+    });
+
+    test('throws exception when repository throws', () async {
+      final repo = _FakeAuthRepository(throwOnAuthenticate: true);
+      final usecase = AuthenticateAdmin(authRepository: repo);
+
+      expect(
+        () => usecase('test@example.com', 'password'),
+        throwsA(
+          predicate(
+            (e) =>
+                e is Exception &&
+                e.toString().contains('Authentication failed'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('CheckAuthentication', () {
+    test('returns true when user is authenticated', () async {
+      final repo = _FakeAuthRepository(isAuthenticatedResult: true);
+      final usecase = CheckAuthentication(authRepository: repo);
+
+      final result = await usecase();
+
+      expect(result, true);
+    });
+
+    test('returns false when user is not authenticated', () async {
+      final repo = _FakeAuthRepository(isAuthenticatedResult: false);
+      final usecase = CheckAuthentication(authRepository: repo);
+
+      final result = await usecase();
+
+      expect(result, false);
+    });
+
+    test('returns false when repository throws', () async {
+      final repo = _FakeAuthRepository(throwOnIsAuthenticated: true);
+      final usecase = CheckAuthentication(authRepository: repo);
+
+      final result = await usecase();
+
+      expect(result, false);
+    });
+  });
+
+  group('AddBlogPost', () {
+    test('successfully adds a blog post', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test Post',
+        description: 'Test Description',
+        imageLink: 'https://example.com/image.jpg',
+        link: 'https://example.com/post',
+      );
+
+      await usecase(post);
+
+      expect(repo.addedPost, post);
+    });
+
+    test('throws exception when repository fails', () async {
+      final repo = _FakeBlogRepository(throwOnAdd: true);
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test',
+        description: 'Test',
+        imageLink: '',
+        link: '',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('AddProject', () {
+    test('successfully adds a project', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'assets/img/test.png',
+        title: 'Test Project',
+        role: 'Developer',
+        description: 'Test Description',
+      );
+
+      await usecase(project);
+
+      expect(repo.addedProject, project);
+    });
+
+    test('throws exception when repository fails', () async {
+      final repo = _FakeProjectRepository(throwOnAdd: true);
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: '',
+        title: 'Test',
+        role: 'Dev',
+        description: 'Desc',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('AddSkill', () {
+    test('successfully adds a skill', () async {
+      final repo = _FakeSkillRepository();
+      final usecase = AddSkill(skillRepository: repo);
+
+      const skill = Skill(
+        title: 'Flutter',
+        value: 90,
+        type: SkillType.hard,
+      );
+
+      await usecase(skill);
+
+      expect(repo.addedSkill, skill);
+    });
+
+    test('throws exception when repository fails', () async {
+      final repo = _FakeSkillRepository(throwOnAdd: true);
+      final usecase = AddSkill(skillRepository: repo);
+
+      const skill = Skill(title: 'Test', value: 50, type: SkillType.soft);
+
+      expect(
+        () => usecase(skill),
+        throwsA(
+          predicate(
+            (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('AddEducation', () {
+    test('successfully adds education', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Computer Science',
+        description: 'University Degree',
+        type: EducationType.college,
+      );
+
+      await usecase(education);
+
+      expect(repo.addedEducation, education);
+    });
+
+    test('throws exception when repository fails', () async {
+      final repo = _FakeEducationRepository(throwOnAdd: true);
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Test',
+        description: 'Desc',
+        type: EducationType.certification,
+      );
+
+      expect(
+        () => usecase(education),
+        throwsA(
+          predicate(
+            (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('AddPosition', () {
+    test('successfully adds a position', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: 'Tech Company',
+        position: 'Senior Developer',
+        description: 'Working on mobile apps',
+        icon: 'assets/img/flutter.png',
+      );
+
+      await usecase(position);
+
+      expect(repo.addedPosition, position);
+    });
+
+    test('throws exception when repository fails', () async {
+      final repo = _FakePositionRepository(throwOnAdd: true);
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: 'Company',
+        position: 'Dev',
+        description: 'Desc',
+        icon: '',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+  });
+}
+
+// Fake repositories for testing
+
+class _FakeAuthRepository implements AuthRepository {
+  _FakeAuthRepository({
+    this.authenticateResult = true,
+    this.isAuthenticatedResult = true,
+    this.throwOnAuthenticate = false,
+    this.throwOnIsAuthenticated = false,
+  });
+
+  final bool authenticateResult;
+  final bool isAuthenticatedResult;
+  final bool throwOnAuthenticate;
+  final bool throwOnIsAuthenticated;
+
+  String? lastEmail;
+  String? lastPassword;
+
+  @override
+  Future<bool> authenticate(String email, String password) async {
+    if (throwOnAuthenticate) {
+      throw Exception('Auth error');
+    }
+    lastEmail = email;
+    lastPassword = password;
+    return authenticateResult;
+  }
+
+  @override
+  Future<bool> isAuthenticated() async {
+    if (throwOnIsAuthenticated) {
+      throw Exception('Check auth error');
+    }
+    return isAuthenticatedResult;
+  }
+
+  @override
+  Future<void> signOut() async {}
+
+  @override
+  Future<String?> getCurrentUserEmail() async => 'test@example.com';
+}
+
+class _FakeBlogRepository implements BlogRepository {
+  _FakeBlogRepository({this.throwOnAdd = false});
+
+  final bool throwOnAdd;
+  Post? addedPost;
+
+  @override
+  Future<void> addPost(Post post) async {
+    if (throwOnAdd) {
+      throw Exception('Add post failed');
+    }
+    addedPost = post;
+  }
+
+  @override
+  Future<List<Post>> refreshPosts() async => [];
+
+  @override
+  Stream<List<Post>> get postsUpdateStream => Stream.value([]);
+}
+
+class _FakeProjectRepository implements ProjectRepository {
+  _FakeProjectRepository({this.throwOnAdd = false});
+
+  final bool throwOnAdd;
+  Project? addedProject;
+
+  @override
+  Future<void> addProject(Project project) async {
+    if (throwOnAdd) {
+      throw Exception('Add project failed');
+    }
+    addedProject = project;
+  }
+
+  @override
+  Future<List<Project>> refreshProjects() async => [];
+
+  @override
+  Stream<List<Project>> get projectsUpdateStream => Stream.value([]);
+}
+
+class _FakeSkillRepository implements SkillRepository {
+  _FakeSkillRepository({this.throwOnAdd = false});
+
+  final bool throwOnAdd;
+  Skill? addedSkill;
+
+  @override
+  Future<void> addSkill(Skill skill) async {
+    if (throwOnAdd) {
+      throw Exception('Add skill failed');
+    }
+    addedSkill = skill;
+  }
+
+  @override
+  Future<List<Skill>> refreshSkills() async => [];
+
+  @override
+  Stream<List<Skill>> get skillsUpdateStream => Stream.value([]);
+}
+
+class _FakeEducationRepository implements EducationRepository {
+  _FakeEducationRepository({this.throwOnAdd = false});
+
+  final bool throwOnAdd;
+  Education? addedEducation;
+
+  @override
+  Future<void> addEducation(Education education) async {
+    if (throwOnAdd) {
+      throw Exception('Add education failed');
+    }
+    addedEducation = education;
+  }
+
+  @override
+  Future<List<Education>> refreshEducation() async => [];
+
+  @override
+  Stream<List<Education>> get educationUpdateStream => Stream.value([]);
+}
+
+class _FakePositionRepository implements PositionRepository {
+  _FakePositionRepository({this.throwOnAdd = false});
+
+  final bool throwOnAdd;
+  Position? addedPosition;
+
+  @override
+  Future<void> addPosition(Position position) async {
+    if (throwOnAdd) {
+      throw Exception('Add position failed');
+    }
+    addedPosition = position;
+  }
+
+  @override
+  Future<List<Position>> refreshPositions() async => [];
+
+  @override
+  Stream<List<Position>> get positionsUpdateStream => Stream.value([]);
+}

@@ -3,6 +3,9 @@ import 'package:portfolio/main/domain/model/education.dart';
 /// Repository interface for managing education records
 /// Defines the contract for education data operations
 abstract class EducationRepository {
+  /// Adds a new education record
+  Future<void> addEducation(Education education);
+
   /// Forces a refresh from remote, bypassing all caches
   Future<List<Education>> refreshEducation();
 

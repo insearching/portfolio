@@ -15,6 +15,19 @@ class EducationRepositoryImpl extends BaseRepository<
     required super.localDataSource,
   });
 
+  @override
+  Future<void> addEducation(Education education) async {
+    try {
+      // Add to remote first
+      await remoteDataSource.addEducation(education);
+
+      // Update memory cache if it exists
+      updateMemoryCacheWithItem(education);
+    } catch (e) {
+      throw Exception('Failed to add education: $e');
+    }
+  }
+
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
   @override

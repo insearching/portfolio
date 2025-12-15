@@ -284,6 +284,11 @@ class _FakeEducationRemote implements EducationRemoteDataSource {
   final List<Education> _items;
 
   @override
+  Future<void> addEducation(Education education) async {
+    _items.add(education);
+  }
+
+  @override
   Future<List<Education>> readEducation() async => List<Education>.from(_items);
 }
 
@@ -321,6 +326,11 @@ class _FakeProjectsRemote implements ProjectsRemoteDataSource {
   _FakeProjectsRemote(this._items);
 
   final List<Project> _items;
+
+  @override
+  Future<void> addProject(Project project) async {
+    _items.add(project);
+  }
 
   @override
   Future<List<Project>> readProjects() async => List<Project>.from(_items);
@@ -361,6 +371,11 @@ class _FakePositionsRemote implements PositionsRemoteDataSource {
   final List<Position> _items;
 
   @override
+  Future<void> addPosition(Position position) async {
+    _items.add(position);
+  }
+
+  @override
   Future<List<Position>> readPositions() async => List<Position>.from(_items);
 }
 
@@ -392,6 +407,11 @@ class _FakeSkillsRemote implements SkillsRemoteDataSource {
   _FakeSkillsRemote(this._items);
 
   final List<Skill> _items;
+
+  @override
+  Future<void> addSkill(Skill skill) async {
+    _items.add(skill);
+  }
 
   @override
   Future<List<Skill>> readSkills() async => List<Skill>.from(_items);

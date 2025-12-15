@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
 import 'package:portfolio/main/ui/menu/drawing_menu.dart';
 import 'package:portfolio/main/ui/responsive/tablet/tablet_content.dart';
@@ -45,11 +46,17 @@ class _TabletScaffoldState extends State<TabletScaffold> {
           },
         ),
       ),
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: TabletContent(
-          name: widget.name,
-          onMessageSend: widget.onMessageSend,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onLongPress: () {
+          context.go('/admin');
+        },
+        child: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: TabletContent(
+            name: widget.name,
+            onMessageSend: widget.onMessageSend,
+          ),
         ),
       ),
       drawer: Drawer(

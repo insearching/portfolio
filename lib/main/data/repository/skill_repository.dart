@@ -14,6 +14,19 @@ class SkillRepositoryImpl
     required super.localDataSource,
   });
 
+  @override
+  Future<void> addSkill(Skill skill) async {
+    try {
+      // Add to remote first
+      await remoteDataSource.addSkill(skill);
+
+      // Update memory cache if it exists
+      updateMemoryCacheWithItem(skill);
+    } catch (e) {
+      throw Exception('Failed to add skill: $e');
+    }
+  }
+
   /// Forces a refresh from remote, bypassing all caches
   /// For backward compatibility, returns the last value from the refresh stream
   @override

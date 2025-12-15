@@ -6,6 +6,8 @@ import 'package:portfolio/main/domain/model/skill.dart';
 /// Remote data source for Skills
 /// Handles all Firebase Realtime Database operations for skills
 abstract class SkillsRemoteDataSource {
+  Future<void> addSkill(Skill skill);
+
   Future<List<Skill>> readSkills();
 }
 
@@ -16,6 +18,20 @@ class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
   static const String _collectionName = 'skills';
+
+  @override
+  Future<void> addSkill(Skill skill) async {
+    final skillsCollection = firebaseDatabaseReference.child(_collectionName);
+
+    try {
+      final model = skillRemoteModelFromDomain(skill);
+      await skillsCollection.push().set(model.toJson());
+      print('Skill added successfully to Firebase');
+    } catch (e) {
+      print('Error adding skill to Firebase: $e');
+      rethrow;
+    }
+  }
 
   @override
   Future<List<Skill>> readSkills() async {

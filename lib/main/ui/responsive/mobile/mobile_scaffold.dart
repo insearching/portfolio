@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
 import 'package:portfolio/main/ui/menu/drawing_menu.dart';
 
@@ -46,9 +47,15 @@ class _MobileScaffoldState extends State<MobileScaffold> {
           },
         ),
       ),
-      body: MobileContent(
-        name: widget.name,
-        onMessageSend: widget.onMessageSend,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onLongPress: () {
+          context.go('/admin');
+        },
+        child: MobileContent(
+          name: widget.name,
+          onMessageSend: widget.onMessageSend,
+        ),
       ),
       drawer: Drawer(
         width: 250.0,

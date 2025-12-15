@@ -291,6 +291,9 @@ class _FakeEducationRepository implements EducationRepository {
     if (throwOnRefresh) throw StateError('education refresh boom');
     return const <Education>[];
   }
+
+  @override
+  Future<void> addEducation(Education education) async {}
 }
 
 class _FakeProjectRepository implements ProjectRepository {
@@ -318,6 +321,9 @@ class _FakeProjectRepository implements ProjectRepository {
     if (throwOnRefresh) throw StateError('projects refresh boom');
     return const <Project>[];
   }
+
+  @override
+  Future<void> addProject(Project project) async {}
 }
 
 class _FakeBlogRepository implements BlogRepository {
@@ -375,6 +381,9 @@ class _FakeSkillRepository implements SkillRepository {
     if (throwOnRefresh) throw StateError('skills refresh boom');
     return const <Skill>[];
   }
+
+  @override
+  Future<void> addSkill(Skill skill) async {}
 }
 
 class _FakePersonalInfoRepository implements PersonalInfoRepository {
@@ -424,4 +433,7 @@ class _FakePositionRepository implements PositionRepository {
     if (throwOnRefresh) throw StateError('positions refresh boom');
     return const <Position>[];
   }
+
+  @override
+  Future<void> addPosition(Position position) async {}
 }

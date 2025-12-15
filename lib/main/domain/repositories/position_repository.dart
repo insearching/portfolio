@@ -3,6 +3,9 @@ import 'package:portfolio/main/domain/model/position.dart';
 /// Repository interface for managing positions
 /// Defines the contract for position static_data operations
 abstract class PositionRepository {
+  /// Adds a new position
+  Future<void> addPosition(Position position);
+
   /// Forces a refresh from remote, bypassing all caches
   Future<List<Position>> refreshPositions();
 

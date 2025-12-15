@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:get_it/get_it.dart';
@@ -33,6 +34,7 @@ import 'package:portfolio/main/data/repository/project_repository.dart'
     as project_repo_impl;
 import 'package:portfolio/main/data/repository/skill_repository.dart'
     as skill_repo_impl;
+import 'package:portfolio/main/data/repository/auth_repository_impl.dart';
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
@@ -40,12 +42,20 @@ import 'package:portfolio/main/domain/model/position.dart';
 import 'package:portfolio/main/domain/model/post.dart';
 import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
+import 'package:portfolio/main/domain/repositories/auth_repository.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/education_repository.dart';
 import 'package:portfolio/main/domain/repositories/personal_info_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/domain/repositories/project_repository.dart';
 import 'package:portfolio/main/domain/repositories/skill_repository.dart';
+import 'package:portfolio/main/domain/usecases/add_blog_post.dart';
+import 'package:portfolio/main/domain/usecases/add_education.dart';
+import 'package:portfolio/main/domain/usecases/add_position.dart';
+import 'package:portfolio/main/domain/usecases/add_project.dart';
+import 'package:portfolio/main/domain/usecases/add_skill.dart';
+import 'package:portfolio/main/domain/usecases/authenticate_admin.dart';
+import 'package:portfolio/main/domain/usecases/check_authentication.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_positions_stream.dart';
@@ -53,11 +63,19 @@ import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
 import 'package:portfolio/main/domain/usecases/refresh_all.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 final GetIt locator = GetIt.instance;
 
 Future<void> setupLocator() async {
+  // Register SharedPreferences
+  final sharedPreferences = await SharedPreferences.getInstance();
+  locator.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+
+  // Register Firebase Auth
+  locator.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+
   // Register Firebase Database Reference (Remote)
   locator.registerLazySingleton<FirebaseDatabaseReference>(
     () => FirebaseDatabase.instance.ref(),
@@ -266,6 +284,43 @@ Future<void> setupLocator() async {
       skillRepository: locator<SkillRepository>(),
       personalInfoRepository: locator<PersonalInfoRepository>(),
     ),
+  );
+
+  // Register Auth Repository
+  locator.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      firebaseAuth: locator<FirebaseAuth>(),
+      sharedPreferences: locator<SharedPreferences>(),
+    ),
+  );
+
+  // Register Admin Use Cases
+  locator.registerLazySingleton<AuthenticateAdmin>(
+    () => AuthenticateAdmin(authRepository: locator<AuthRepository>()),
+  );
+
+  locator.registerLazySingleton<CheckAuthentication>(
+    () => CheckAuthentication(authRepository: locator<AuthRepository>()),
+  );
+
+  locator.registerLazySingleton<AddBlogPost>(
+    () => AddBlogPost(blogRepository: locator<BlogRepository>()),
+  );
+
+  locator.registerLazySingleton<AddProject>(
+    () => AddProject(projectRepository: locator<ProjectRepository>()),
+  );
+
+  locator.registerLazySingleton<AddSkill>(
+    () => AddSkill(skillRepository: locator<SkillRepository>()),
+  );
+
+  locator.registerLazySingleton<AddEducation>(
+    () => AddEducation(educationRepository: locator<EducationRepository>()),
+  );
+
+  locator.registerLazySingleton<AddPosition>(
+    () => AddPosition(positionRepository: locator<PositionRepository>()),
   );
 }
 

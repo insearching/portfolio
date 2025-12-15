@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
@@ -11,6 +13,7 @@ import 'package:portfolio/main/domain/usecases/get_posts_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_projects_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
 import 'package:portfolio/main/domain/usecases/refresh_all.dart';
+import 'package:portfolio/main/ui/admin/admin_page.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_bloc.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_event.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_scaffold.dart';
@@ -31,6 +34,9 @@ import 'utils/env_config.dart';
 void main() async {
   ErrorWidget.builder = (_) => const AppErrorWidget();
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Use path-based URL strategy for web (removes the # from URLs)
+  setUrlStrategy(PathUrlStrategy());
 
   await EnvConfig.load();
   await setupLocator();
@@ -69,8 +75,58 @@ class RootProvider extends StatelessWidget {
   }
 }
 
-class PortfolioApplication extends StatelessWidget {
+class PortfolioApplication extends StatefulWidget {
   const PortfolioApplication({super.key});
+
+  @override
+  State<PortfolioApplication> createState() => _PortfolioApplicationState();
+}
+
+class _PortfolioApplicationState extends State<PortfolioApplication> {
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    // Create router once during initialization
+    _router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) {
+            final userName = context.select(
+                    (PortfolioBloc bloc) => bloc.state.personalInfo?.title) ??
+                'Portfolio';
+            return ResponsiveLayout(
+              mobileScaffold: MobileScaffold(
+                name: userName,
+                onMessageSend: (form) {},
+              ),
+              tabletScaffold: TabletScaffold(
+                name: userName,
+                onMessageSend: (form) {},
+              ),
+              desktopScaffold: DesktopScaffold(
+                name: userName,
+                onMessageSend: (form) {},
+              ),
+            );
+          },
+        ),
+        GoRoute(
+          path: '/admin',
+          builder: (context, state) => const AdminPage(),
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _router.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,61 +153,42 @@ class PortfolioApplication extends StatelessWidget {
         }
         return bloc;
       },
-      child: Builder(
-        builder: (context) {
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          // Select themes based on device type
+          final darkTheme = isSmallDevice
+              ? PortfolioTheme.phoneDarkTheme
+              : PortfolioTheme.desktopDarkTheme;
+
+          final lightTheme = isSmallDevice
+              ? PortfolioTheme.phoneLightTheme
+              : PortfolioTheme.desktopLightTheme;
+
+          final isDark = themeProvider.themeMode == ThemeMode.dark ||
+              (themeProvider.themeMode == ThemeMode.system &&
+                  MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+
+          final currentTheme = isDark ? darkTheme : lightTheme;
+
           // Get userName from the bloc state or use a default
           final userName = context.select(
                   (PortfolioBloc bloc) => bloc.state.personalInfo?.title) ??
               'Portfolio';
 
-          return Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              // Select themes based on device type
-              final darkTheme = isSmallDevice
-                  ? PortfolioTheme.phoneDarkTheme
-                  : PortfolioTheme.desktopDarkTheme;
-
-              final lightTheme = isSmallDevice
-                  ? PortfolioTheme.phoneLightTheme
-                  : PortfolioTheme.desktopLightTheme;
-
-              final isDark = themeProvider.themeMode == ThemeMode.dark ||
-                  (themeProvider.themeMode == ThemeMode.system &&
-                      MediaQuery.platformBrightnessOf(context) ==
-                          Brightness.dark);
-
-              final currentTheme = isDark ? darkTheme : lightTheme;
-
-              return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                  statusBarColor: currentTheme.scaffoldBackgroundColor,
-                  statusBarIconBrightness:
-                      isDark ? Brightness.light : Brightness.dark,
-                  statusBarBrightness:
-                      isDark ? Brightness.dark : Brightness.light,
-                ),
-                child: MaterialApp(
-                  title: userName,
-                  theme: lightTheme,
-                  darkTheme: darkTheme,
-                  themeMode: themeProvider.themeMode,
-                  home: ResponsiveLayout(
-                    mobileScaffold: MobileScaffold(
-                      name: userName,
-                      onMessageSend: (form) {},
-                    ),
-                    tabletScaffold: TabletScaffold(
-                      name: userName,
-                      onMessageSend: (form) {},
-                    ),
-                    desktopScaffold: DesktopScaffold(
-                      name: userName,
-                      onMessageSend: (form) {},
-                    ),
-                  ),
-                ),
-              );
-            },
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(
+              statusBarColor: currentTheme.scaffoldBackgroundColor,
+              statusBarIconBrightness:
+                  isDark ? Brightness.light : Brightness.dark,
+              statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            ),
+            child: MaterialApp.router(
+              title: userName,
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: themeProvider.themeMode,
+              routerConfig: _router,
+            ),
           );
         },
       ),

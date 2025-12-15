@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
 import 'package:portfolio/main/ui/menu/drawing_menu.dart';
 import 'package:portfolio/main/ui/responsive/desktop/desktop_content.dart';
@@ -7,8 +9,8 @@ class DesktopScaffold extends StatelessWidget {
   const DesktopScaffold({
     required this.name,
     required this.onMessageSend,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String name;
   final ValueChanged<SubmitContactForm> onMessageSend;
@@ -16,20 +18,27 @@ class DesktopScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: Row(
-          children: [
-            const DrawingMenu(),
-            VerticalDivider(
-              width: 1.0,
-              color: Theme.of(context).dividerColor,
-            ),
-            DesktopContent(
-              name: name,
-              onMessageSend: onMessageSend,
-            )
-          ],
+      body: GestureDetector(
+        onLongPress: kIsWeb
+            ? null
+            : () {
+                context.go('/admin');
+              },
+        child: Container(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: Row(
+            children: [
+              const DrawingMenu(),
+              VerticalDivider(
+                width: 1.0,
+                color: Theme.of(context).dividerColor,
+              ),
+              DesktopContent(
+                name: name,
+                onMessageSend: onMessageSend,
+              )
+            ],
+          ),
         ),
       ),
     );

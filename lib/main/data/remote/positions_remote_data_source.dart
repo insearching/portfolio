@@ -6,6 +6,8 @@ import 'package:portfolio/main/domain/model/position.dart';
 /// Remote static_data source for Positions
 /// Handles all Firebase Realtime Database operations for positions
 abstract class PositionsRemoteDataSource {
+  Future<void> addPosition(Position position);
+
   Future<List<Position>> readPositions();
 }
 
@@ -16,6 +18,21 @@ class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
   static const String _collectionName = 'positions';
+
+  @override
+  Future<void> addPosition(Position position) async {
+    final positionsCollection =
+        firebaseDatabaseReference.child(_collectionName);
+
+    try {
+      final model = positionRemoteModelFromDomain(position);
+      await positionsCollection.push().set(model.toJson());
+      print('Position added successfully to Firebase');
+    } catch (e) {
+      print('Error adding position to Firebase: $e');
+      rethrow;
+    }
+  }
 
   @override
   Future<List<Position>> readPositions() async {
