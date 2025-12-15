@@ -15,9 +15,18 @@ abstract class PersonalInfoRemoteDataSource {
 class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
   PersonalInfoRemoteDataSourceImpl({
     required this.firebaseDatabaseReference,
-  });
+    FirebaseAuth? firebaseAuth,
+    String? firebaseEmail,
+    String? firebasePassword,
+  })  : _firebaseAuth = firebaseAuth,
+        _firebaseEmail = firebaseEmail,
+        _firebasePassword = firebasePassword;
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
+  final FirebaseAuth? _firebaseAuth;
+  final String? _firebaseEmail;
+  final String? _firebasePassword;
+
   static const String _collectionName = 'personal_info';
 
   @override
@@ -50,15 +59,15 @@ class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
   Future<void> writePersonalInfo(PersonalInfo info) async {
     try {
       // Authenticate before writing
-      final auth = FirebaseAuth.instance;
+      final auth = _firebaseAuth ?? FirebaseAuth.instance;
       final currentUser = auth.currentUser;
 
       // If not authenticated, sign in with credentials from .env
       if (currentUser == null) {
         print('Authenticating with Firebase...');
         await auth.signInWithEmailAndPassword(
-          email: EnvConfig.firebaseEmail,
-          password: EnvConfig.firebasePassword,
+          email: _firebaseEmail ?? EnvConfig.firebaseEmail,
+          password: _firebasePassword ?? EnvConfig.firebasePassword,
         );
         print('Firebase authentication successful');
       }
