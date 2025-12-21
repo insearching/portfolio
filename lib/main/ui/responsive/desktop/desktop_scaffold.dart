@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
@@ -22,7 +22,9 @@ class DesktopScaffold extends StatelessWidget {
         onLongPress: kIsWeb
             ? null
             : () {
-                context.go('/admin');
+                if (kDebugMode) {
+                  context.go('/admin');
+                }
               },
         child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,

@@ -43,7 +43,7 @@ class FakeDatabaseReference implements DatabaseReference {
       _store['__root__'] = current;
     }
 
-    Map<dynamic, dynamic> map = current as Map;
+    Map<dynamic, dynamic> map = current;
 
     for (var i = 0; i < path.length - 1; i++) {
       final segment = path[i];

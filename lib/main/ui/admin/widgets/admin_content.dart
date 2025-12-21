@@ -3,7 +3,6 @@ import 'package:portfolio/main/ui/admin/widgets/blog_form.dart';
 import 'package:portfolio/main/ui/admin/widgets/education_form.dart';
 import 'package:portfolio/main/ui/admin/widgets/position_form.dart';
 import 'package:portfolio/main/ui/admin/widgets/project_form.dart';
-import 'package:portfolio/main/ui/menu/navigation_menu.dart';
 
 /// Main admin content with tabs for different sections
 class AdminContent extends StatefulWidget {
