@@ -86,9 +86,13 @@ class _FeatureBodyState extends State<_FeatureBody> {
               ),
             ),
           )
-        : Text(
-            widget.body,
-            style: Theme.of(context).textTheme.bodyMedium,
+        : Flexible(
+            child: Text(
+              widget.body,
+              style: Theme.of(context).textTheme.bodyMedium,
+              overflow: TextOverflow.fade,
+              maxLines: 10,
+            ),
           );
   }
 }

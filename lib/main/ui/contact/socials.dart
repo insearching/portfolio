@@ -18,12 +18,14 @@ class Socials extends StatefulWidget {
 class _SocialsState extends State<Socials> {
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
+      spacing: 8.0,
+      runSpacing: 8.0,
       children: widget.socials
           .map(
             (social) => ImageButton(
               icon: social.icon,
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.all(4.0),
               onTap: () => launchUrl(
                 Uri.parse(social.url),
               ),

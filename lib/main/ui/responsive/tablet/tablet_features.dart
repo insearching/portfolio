@@ -29,6 +29,7 @@ class TabletFeatures extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 16.0,
+              childAspectRatio: 1.0,
             ),
             itemCount: state.positions.length,
             itemBuilder: (context, index) => FeatureContainer(

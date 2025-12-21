@@ -7,8 +7,8 @@ import 'package:url_launcher/url_launcher_string.dart';
 class EducationContainer extends StatelessWidget {
   const EducationContainer({
     required this.education,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Education education;
 
@@ -22,6 +22,7 @@ class EducationContainer extends StatelessWidget {
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             education.title,
@@ -40,40 +41,44 @@ class EducationContainer extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           const HorizontalDivider(),
-          const SizedBox(height: 16.0),
           if (text != null) ...[
-            Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium,
-              softWrap: true,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+            const SizedBox(height: 16.0),
+            Flexible(
+              child: Text(
+                text,
+                style: Theme.of(context).textTheme.bodyMedium,
+                softWrap: true,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-            const SizedBox(height: 8.0),
           ],
           if (imagePath != null && imagePath.isNotEmpty) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: InkWell(
-                onTap: link != null ? () => launchUrlString(link) : null,
-                child: Image.asset(
-                  imagePath,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const SizedBox(
-                      height: 100,
-                      child: Center(
-                        child: Icon(
-                          Icons.image_not_supported,
-                          size: 48,
+            const SizedBox(height: 16.0),
+            Flexible(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: InkWell(
+                  onTap: link != null ? () => launchUrlString(link) : null,
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const SizedBox(
+                        height: 80,
+                        child: Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 32,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ],
       ),

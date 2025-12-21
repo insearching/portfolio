@@ -41,17 +41,16 @@ class _TabletContentState extends State<TabletContent> {
   @override
   Widget build(BuildContext context) {
     final ScrollController controller = ScrollController();
-    return Expanded(
-      child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        child: SingleChildScrollView(
-          controller: controller,
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: SingleChildScrollView(
+        controller: controller,
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
                 Home(
                   key: keys[NavigationMenu.home],
                   name: widget.name,
@@ -149,8 +148,7 @@ class _TabletContentState extends State<TabletContent> {
                     );
                   },
                 ),
-              ],
-            ),
+            ],
           ),
         ),
       ),
