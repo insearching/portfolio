@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'dart:convert';
 
 import 'package:portfolio/main/data/mapper/social_info_remote_model_mapper.dart';
@@ -17,10 +18,13 @@ abstract class PersonalInfoLocalDataSource {
 class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
   PersonalInfoLocalDataSourceImpl({
     required this.database,
+    required this.logger,
   });
 
   final Database database;
+  final AppLogger logger;
   static const String _tableName = 'personal_info';
+  static const String _tag = 'PersonalInfoLocalDataSource';
 
   @override
   Future<void> savePersonalInfo(PersonalInfo info) async {
@@ -43,9 +47,9 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Personal info cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching personal info in SQLite: $e');
+      logger.debug('Personal info cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching personal info in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -77,8 +81,8 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
         email: map['email'] as String? ?? '',
         socials: socials,
       );
-    } catch (e) {
-      print('Error getting cached personal info from SQLite: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached personal info from SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -87,9 +91,9 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
   Future<void> clearCache() async {
     try {
       await database.delete(_tableName);
-      print('Personal info cache cleared successfully');
-    } catch (e) {
-      print('Error clearing personal info cache: $e');
+      logger.debug('Personal info cache cleared successfully', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error clearing personal info cache', e, stackTrace, _tag);
       rethrow;
     }
   }

@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:get_it/get_it.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
+import 'package:portfolio/core/logger/debug_logger.dart';
+import 'package:portfolio/core/logger/release_logger.dart';
 import 'package:portfolio/main/data/local/sqlite/database_helper.dart';
 import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
@@ -21,6 +24,7 @@ import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/posts_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/projects_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/skills_remote_data_source.dart';
+import 'package:portfolio/main/data/repository/auth_repository_impl.dart';
 import 'package:portfolio/main/data/repository/blog_repository.dart'
     as blog_repo_impl;
 import 'package:portfolio/main/data/repository/education_repository.dart'
@@ -34,7 +38,6 @@ import 'package:portfolio/main/data/repository/project_repository.dart'
     as project_repo_impl;
 import 'package:portfolio/main/data/repository/skill_repository.dart'
     as skill_repo_impl;
-import 'package:portfolio/main/data/repository/auth_repository_impl.dart';
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
@@ -69,6 +72,11 @@ import 'package:sqflite/sqflite.dart';
 final GetIt locator = GetIt.instance;
 
 Future<void> setupLocator() async {
+  // Register Logger (Debug or Release implementation based on build mode)
+  locator.registerLazySingleton<AppLogger>(
+    () => kDebugMode ? DebugLogger() : ReleaseLogger(),
+  );
+
   // Register SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
   locator.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
@@ -85,31 +93,37 @@ Future<void> setupLocator() async {
   locator.registerLazySingleton<PostsRemoteDataSource>(
     () => PostsRemoteDataSourceImpl(
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+      logger: locator<AppLogger>(),
     ),
   );
   locator.registerLazySingleton<PositionsRemoteDataSource>(
     () => PositionsRemoteDataSourceImpl(
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+      logger: locator<AppLogger>(),
     ),
   );
   locator.registerLazySingleton<ProjectsRemoteDataSource>(
     () => ProjectsRemoteDataSourceImpl(
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+      logger: locator<AppLogger>(),
     ),
   );
   locator.registerLazySingleton<EducationRemoteDataSource>(
     () => EducationRemoteDataSourceImpl(
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+      logger: locator<AppLogger>(),
     ),
   );
   locator.registerLazySingleton<SkillsRemoteDataSource>(
     () => SkillsRemoteDataSourceImpl(
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+      logger: locator<AppLogger>(),
     ),
   );
   locator.registerLazySingleton<PersonalInfoRemoteDataSource>(
     () => PersonalInfoRemoteDataSourceImpl(
       firebaseDatabaseReference: locator<FirebaseDatabaseReference>(),
+      logger: locator<AppLogger>(),
     ),
   );
 
@@ -118,32 +132,32 @@ Future<void> setupLocator() async {
     // Web platform: Use in-memory caching
     locator.registerLazySingleton<PostsLocalDataSource>(
       () => _PostsLocalDataSourceWebAdapter(
-        PostsLocalDataSourceWebImpl(),
+        PostsLocalDataSourceWebImpl(logger: locator<AppLogger>()),
       ),
     );
     locator.registerLazySingleton<PositionsLocalDataSource>(
       () => _PositionsLocalDataSourceWebAdapter(
-        PositionsLocalDataSourceWebImpl(),
+        PositionsLocalDataSourceWebImpl(logger: locator<AppLogger>()),
       ),
     );
     locator.registerLazySingleton<ProjectsLocalDataSource>(
       () => _ProjectsLocalDataSourceWebAdapter(
-        ProjectsLocalDataSourceWebImpl(),
+        ProjectsLocalDataSourceWebImpl(logger: locator<AppLogger>()),
       ),
     );
     locator.registerLazySingleton<EducationLocalDataSource>(
       () => _EducationLocalDataSourceWebAdapter(
-        EducationLocalDataSourceWebImpl(),
+        EducationLocalDataSourceWebImpl(logger: locator<AppLogger>()),
       ),
     );
     locator.registerLazySingleton<SkillsLocalDataSource>(
       () => _SkillsLocalDataSourceWebAdapter(
-        SkillsLocalDataSourceWebImpl(),
+        SkillsLocalDataSourceWebImpl(logger: locator<AppLogger>()),
       ),
     );
     locator.registerLazySingleton<PersonalInfoLocalDataSource>(
       () => _PersonalInfoLocalDataSourceWebAdapter(
-        PersonalInfoLocalDataSourceWebImpl(),
+        PersonalInfoLocalDataSourceWebImpl(logger: locator<AppLogger>()),
       ),
     );
   } else {
@@ -154,31 +168,37 @@ Future<void> setupLocator() async {
     locator.registerLazySingleton<PostsLocalDataSource>(
       () => PostsLocalDataSourceImpl(
         database: locator<Database>(),
+        logger: locator<AppLogger>(),
       ),
     );
     locator.registerLazySingleton<PositionsLocalDataSource>(
       () => PositionsLocalDataSourceImpl(
         database: locator<Database>(),
+        logger: locator<AppLogger>(),
       ),
     );
     locator.registerLazySingleton<ProjectsLocalDataSource>(
       () => ProjectsLocalDataSourceImpl(
         database: locator<Database>(),
+        logger: locator<AppLogger>(),
       ),
     );
     locator.registerLazySingleton<EducationLocalDataSource>(
       () => EducationLocalDataSourceImpl(
         database: locator<Database>(),
+        logger: locator<AppLogger>(),
       ),
     );
     locator.registerLazySingleton<SkillsLocalDataSource>(
       () => SkillsLocalDataSourceImpl(
         database: locator<Database>(),
+        logger: locator<AppLogger>(),
       ),
     );
     locator.registerLazySingleton<PersonalInfoLocalDataSource>(
       () => PersonalInfoLocalDataSourceImpl(
         database: locator<Database>(),
+        logger: locator<AppLogger>(),
       ),
     );
   }
@@ -190,6 +210,7 @@ Future<void> setupLocator() async {
     () => blog_repo_impl.BlogRepositoryImpl(
       remoteDataSource: locator<PostsRemoteDataSource>(),
       localDataSource: locator<PostsLocalDataSource>(),
+      logger: locator<AppLogger>(),
     ),
   );
 
@@ -198,6 +219,7 @@ Future<void> setupLocator() async {
     () => position_repo_impl.PositionRepositoryImpl(
       remoteDataSource: locator<PositionsRemoteDataSource>(),
       localDataSource: locator<PositionsLocalDataSource>(),
+      logger: locator<AppLogger>(),
     ),
   );
 
@@ -206,6 +228,7 @@ Future<void> setupLocator() async {
     () => project_repo_impl.ProjectRepositoryImpl(
       remoteDataSource: locator<ProjectsRemoteDataSource>(),
       localDataSource: locator<ProjectsLocalDataSource>(),
+      logger: locator<AppLogger>(),
     ),
   );
 
@@ -214,6 +237,7 @@ Future<void> setupLocator() async {
     () => education_repo_impl.EducationRepositoryImpl(
       remoteDataSource: locator<EducationRemoteDataSource>(),
       localDataSource: locator<EducationLocalDataSource>(),
+      logger: locator<AppLogger>(),
     ),
   );
 
@@ -222,6 +246,7 @@ Future<void> setupLocator() async {
     () => skill_repo_impl.SkillRepositoryImpl(
       remoteDataSource: locator<SkillsRemoteDataSource>(),
       localDataSource: locator<SkillsLocalDataSource>(),
+      logger: locator<AppLogger>(),
     ),
   );
 
@@ -230,6 +255,7 @@ Future<void> setupLocator() async {
     () => personal_info_repo_impl.PersonalInfoRepositoryImpl(
       remoteDataSource: locator<PersonalInfoRemoteDataSource>(),
       localDataSource: locator<PersonalInfoLocalDataSource>(),
+      logger: locator<AppLogger>(),
     ),
   );
 

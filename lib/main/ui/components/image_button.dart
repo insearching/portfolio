@@ -7,8 +7,8 @@ class ImageButton extends StatefulWidget {
     required this.icon,
     required this.onTap,
     this.padding = const EdgeInsets.all(0),
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String icon;
   final VoidCallback onTap;

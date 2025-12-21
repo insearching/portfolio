@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/post.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,10 +17,13 @@ abstract class PostsLocalDataSource {
 class PostsLocalDataSourceImpl implements PostsLocalDataSource {
   PostsLocalDataSourceImpl({
     required this.database,
+    required this.logger,
   });
 
   final Database database;
+  final AppLogger logger;
   static const String _tableName = 'posts';
+  static const String _tag = 'PostsLocalDataSource';
 
   @override
   Future<void> cachePost(Post post) async {
@@ -34,9 +38,9 @@ class PostsLocalDataSourceImpl implements PostsLocalDataSource {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Post cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching post in SQLite: $e');
+      logger.debug('Post cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching post in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -64,9 +68,9 @@ class PostsLocalDataSourceImpl implements PostsLocalDataSource {
       }
 
       await batch.commit(noResult: true);
-      print('${posts.length} posts cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching posts in SQLite: $e');
+      logger.debug('${posts.length} posts cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching posts in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -84,8 +88,8 @@ class PostsLocalDataSourceImpl implements PostsLocalDataSource {
           link: maps[i]['link'] as String? ?? '',
         );
       });
-    } catch (e) {
-      print('Error getting cached posts from SQLite: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached posts from SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -94,9 +98,9 @@ class PostsLocalDataSourceImpl implements PostsLocalDataSource {
   Future<void> clearCache() async {
     try {
       await database.delete(_tableName);
-      print('Posts cache cleared successfully');
-    } catch (e) {
-      print('Error clearing posts cache: $e');
+      logger.debug('Posts cache cleared successfully', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error clearing posts cache', e, stackTrace, _tag);
       rethrow;
     }
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
 import 'package:portfolio/main/domain/usecases/get_personal_info_stream.dart';
@@ -147,6 +148,7 @@ class _PortfolioApplicationState extends State<PortfolioApplication> {
           getSkillsStream: locator<GetSkillsStream>(),
           getPersonalInfoStream: locator<GetPersonalInfoStream>(),
           refreshAll: locator<RefreshAll>(),
+          logger: locator<AppLogger>(),
         );
         // On web, force a refresh to bypass all caches
         if (kIsWeb) {

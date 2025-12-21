@@ -7,9 +7,8 @@ import 'package:rxdart/rxdart.dart';
 class _UserInteractionDetectorContainer extends InheritedWidget {
   const _UserInteractionDetectorContainer({
     required this.userInteractionDetectorState,
-    required Widget child,
-    Key? key,
-  }) : super(key: key, child: child);
+    required super.child,
+  });
 
   final UserInteractionDetectorState userInteractionDetectorState;
 
@@ -20,8 +19,8 @@ class _UserInteractionDetectorContainer extends InheritedWidget {
 class UserInteractionDetector extends StatefulWidget {
   const UserInteractionDetector({
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   static UserInteractionDetectorState? of(BuildContext context) => context
       .dependOnInheritedWidgetOfExactType<_UserInteractionDetectorContainer>()

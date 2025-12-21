@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/positions_local_data_source.dart';
@@ -26,7 +27,19 @@ import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/domain/model/social_info.dart';
 
+import '../../../helpers/test_service_locator.dart';
+
 void main() {
+  // Setup test dependencies before all tests
+  setUpAll(() async {
+    await setupTestLocator();
+  });
+
+  // Clean up after all tests
+  tearDownAll(() async {
+    await tearDownTestLocator();
+  });
+
   group('BaseRepository', () {
     test('fetchWithCache emits memory -> local -> remote and caches remote',
         () async {
@@ -72,8 +85,10 @@ void main() {
       ]);
       final local = _FakePostsLocalDataSource(initial: []);
 
-      final repo =
-          BlogRepositoryImpl(remoteDataSource: remote, localDataSource: local);
+      final repo = BlogRepositoryImpl(
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>());
 
       // Populate memory cache
       await repo.postsUpdateStream.last;
@@ -95,7 +110,9 @@ void main() {
       final remote = _FakeEducationRemote([_edu('r')]);
       final local = _FakeEducationLocal([_edu('l')]);
       final repo = EducationRepositoryImpl(
-          remoteDataSource: remote, localDataSource: local);
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>());
 
       final emitted = await repo.educationUpdateStream.toList();
       expect(emitted.length, 2);
@@ -107,7 +124,9 @@ void main() {
       final remote = _FakeProjectsRemote([_proj('r')]);
       final local = _FakeProjectsLocal([_proj('l')]);
       final repo = ProjectRepositoryImpl(
-          remoteDataSource: remote, localDataSource: local);
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>());
 
       final emitted = await repo.projectsUpdateStream.toList();
       expect(emitted.length, 2);
@@ -119,7 +138,9 @@ void main() {
       final remote = _FakePositionsRemote([_pos('r')]);
       final local = _FakePositionsLocal([_pos('l')]);
       final repo = PositionRepositoryImpl(
-          remoteDataSource: remote, localDataSource: local);
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>());
 
       final emitted = await repo.positionsUpdateStream.toList();
       expect(emitted.length, 2);
@@ -130,8 +151,10 @@ void main() {
     test('SkillRepositoryImpl streams local then remote', () async {
       final remote = _FakeSkillsRemote([_skill('r')]);
       final local = _FakeSkillsLocal([_skill('l')]);
-      final repo =
-          SkillRepositoryImpl(remoteDataSource: remote, localDataSource: local);
+      final repo = SkillRepositoryImpl(
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>());
 
       final emitted = await repo.skillsUpdateStream.toList();
       expect(emitted.length, 2);
@@ -157,7 +180,9 @@ void main() {
       ));
 
       final repo = PersonalInfoRepositoryImpl(
-          remoteDataSource: remote, localDataSource: local);
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>());
 
       final values = await repo.personalInfoUpdateStream.toList();
       expect(values.length, 2);
@@ -200,12 +225,16 @@ class _FakeListLocal<T> {
 
 class _TestIntRepository
     extends BaseRepository<int, _FakeListRemote<int>, _FakeListLocal<int>> {
-  _TestIntRepository(
-      {required _FakeListRemote<int> remote,
-      required _FakeListLocal<int> local})
-      : _remote = remote,
+  _TestIntRepository({
+    required _FakeListRemote<int> remote,
+    required _FakeListLocal<int> local,
+  })  : _remote = remote,
         _local = local,
-        super(remoteDataSource: remote, localDataSource: local);
+        super(
+          remoteDataSource: remote,
+          localDataSource: local,
+          logger: testLocator<AppLogger>(),
+        );
 
   final _FakeListRemote<int> _remote;
   final _FakeListLocal<int> _local;

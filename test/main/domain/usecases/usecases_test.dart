@@ -270,12 +270,13 @@ class _FakeEducationRepository implements EducationRepository {
   _FakeEducationRepository({
     Stream<List<Education>>? stream,
     this.throwOnStreamGet = false,
-    this.throwOnRefresh = false,
-  }) : _stream = stream ?? const Stream<List<Education>>.empty();
+    bool throwOnRefresh = false,
+  })  : _throwOnRefresh = throwOnRefresh,
+        _stream = stream ?? const Stream<List<Education>>.empty();
 
   final Stream<List<Education>> _stream;
   final bool throwOnStreamGet;
-  final bool throwOnRefresh;
+  final bool _throwOnRefresh;
 
   int refreshCalled = 0;
 
@@ -288,7 +289,7 @@ class _FakeEducationRepository implements EducationRepository {
   @override
   Future<List<Education>> refreshEducation() async {
     refreshCalled++;
-    if (throwOnRefresh) throw StateError('education refresh boom');
+    if (_throwOnRefresh) throw StateError('education refresh boom');
     return const <Education>[];
   }
 
@@ -300,12 +301,13 @@ class _FakeProjectRepository implements ProjectRepository {
   _FakeProjectRepository({
     Stream<List<Project>>? stream,
     this.throwOnStreamGet = false,
-    this.throwOnRefresh = false,
-  }) : _stream = stream ?? const Stream<List<Project>>.empty();
+    bool throwOnRefresh = false,
+  })  : _throwOnRefresh = throwOnRefresh,
+        _stream = stream ?? const Stream<List<Project>>.empty();
 
   final Stream<List<Project>> _stream;
   final bool throwOnStreamGet;
-  final bool throwOnRefresh;
+  final bool _throwOnRefresh;
 
   int refreshCalled = 0;
 
@@ -318,7 +320,7 @@ class _FakeProjectRepository implements ProjectRepository {
   @override
   Future<List<Project>> refreshProjects() async {
     refreshCalled++;
-    if (throwOnRefresh) throw StateError('projects refresh boom');
+    if (_throwOnRefresh) throw StateError('projects refresh boom');
     return const <Project>[];
   }
 
@@ -330,12 +332,13 @@ class _FakeBlogRepository implements BlogRepository {
   _FakeBlogRepository({
     Stream<List<Post>>? stream,
     this.throwOnStreamGet = false,
-    this.throwOnRefresh = false,
-  }) : _stream = stream ?? const Stream<List<Post>>.empty();
+    bool throwOnRefresh = false,
+  })  : _throwOnRefresh = throwOnRefresh,
+        _stream = stream ?? const Stream<List<Post>>.empty();
 
   final Stream<List<Post>> _stream;
   final bool throwOnStreamGet;
-  final bool throwOnRefresh;
+  final bool _throwOnRefresh;
 
   int refreshCalled = 0;
 
@@ -348,7 +351,7 @@ class _FakeBlogRepository implements BlogRepository {
   @override
   Future<List<Post>> refreshPosts() async {
     refreshCalled++;
-    if (throwOnRefresh) throw StateError('posts refresh boom');
+    if (_throwOnRefresh) throw StateError('posts refresh boom');
     return const <Post>[];
   }
 
@@ -360,12 +363,13 @@ class _FakeSkillRepository implements SkillRepository {
   _FakeSkillRepository({
     Stream<List<Skill>>? stream,
     this.throwOnStreamGet = false,
-    this.throwOnRefresh = false,
-  }) : _stream = stream ?? const Stream<List<Skill>>.empty();
+    bool throwOnRefresh = false,
+  })  : _throwOnRefresh = throwOnRefresh,
+        _stream = stream ?? const Stream<List<Skill>>.empty();
 
   final Stream<List<Skill>> _stream;
   final bool throwOnStreamGet;
-  final bool throwOnRefresh;
+  final bool _throwOnRefresh;
 
   int refreshCalled = 0;
 
@@ -378,7 +382,7 @@ class _FakeSkillRepository implements SkillRepository {
   @override
   Future<List<Skill>> refreshSkills() async {
     refreshCalled++;
-    if (throwOnRefresh) throw StateError('skills refresh boom');
+    if (_throwOnRefresh) throw StateError('skills refresh boom');
     return const <Skill>[];
   }
 
@@ -389,11 +393,12 @@ class _FakeSkillRepository implements SkillRepository {
 class _FakePersonalInfoRepository implements PersonalInfoRepository {
   _FakePersonalInfoRepository({
     Stream<PersonalInfo?>? stream,
-    this.throwOnRefresh = false,
-  }) : _stream = stream ?? const Stream<PersonalInfo?>.empty();
+    bool throwOnRefresh = false,
+  })  : _throwOnRefresh = throwOnRefresh,
+        _stream = stream ?? const Stream<PersonalInfo?>.empty();
 
   final Stream<PersonalInfo?> _stream;
-  final bool throwOnRefresh;
+  final bool _throwOnRefresh;
 
   int refreshCalled = 0;
 
@@ -403,7 +408,7 @@ class _FakePersonalInfoRepository implements PersonalInfoRepository {
   @override
   Future<PersonalInfo?> refreshPersonalInfo() async {
     refreshCalled++;
-    if (throwOnRefresh) throw StateError('personal info refresh boom');
+    if (_throwOnRefresh) throw StateError('personal info refresh boom');
     return null;
   }
 }
@@ -412,12 +417,13 @@ class _FakePositionRepository implements PositionRepository {
   _FakePositionRepository({
     Stream<List<Position>>? stream,
     this.throwOnStreamGet = false,
-    this.throwOnRefresh = false,
-  }) : _stream = stream ?? const Stream<List<Position>>.empty();
+    bool throwOnRefresh = false,
+  })  : _throwOnRefresh = throwOnRefresh,
+        _stream = stream ?? const Stream<List<Position>>.empty();
 
   final Stream<List<Position>> _stream;
   final bool throwOnStreamGet;
-  final bool throwOnRefresh;
+  final bool _throwOnRefresh;
 
   int refreshCalled = 0;
 
@@ -430,7 +436,7 @@ class _FakePositionRepository implements PositionRepository {
   @override
   Future<List<Position>> refreshPositions() async {
     refreshCalled++;
-    if (throwOnRefresh) throw StateError('positions refresh boom');
+    if (_throwOnRefresh) throw StateError('positions refresh boom');
     return const <Position>[];
   }
 

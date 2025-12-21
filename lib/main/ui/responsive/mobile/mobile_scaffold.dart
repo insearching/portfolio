@@ -10,8 +10,8 @@ class MobileScaffold extends StatefulWidget {
   const MobileScaffold({
     required this.name,
     required this.onMessageSend,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String name;
   final ValueChanged<SubmitContactForm> onMessageSend;

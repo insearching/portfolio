@@ -71,19 +71,13 @@ class _ContactState extends State<Contact> {
   }
 }
 
-class _ContactInfoContainer extends StatefulWidget {
+class _ContactInfoContainer extends StatelessWidget {
   const _ContactInfoContainer({
     required this.info,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final PersonalInfo info;
 
-  @override
-  State<_ContactInfoContainer> createState() => _ContactInfoContainerState();
-}
-
-class _ContactInfoContainerState extends State<_ContactInfoContainer> {
   @override
   Widget build(BuildContext context) {
     return ElevatedContainer(
@@ -91,31 +85,31 @@ class _ContactInfoContainerState extends State<_ContactInfoContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (widget.info.image.isNotEmpty) ...[
+          if (info.image.isNotEmpty) ...[
             ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
               child: Image.asset(
-                widget.info.image,
+                info.image,
               ),
             ),
             const SizedBox(height: 32.0),
           ],
           Text(
-            widget.info.title,
+            info.title,
             style: Theme.of(context).textTheme.bodyLarge,
             softWrap: true,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16.0),
           Text(
-            widget.info.description,
+            info.description,
             style: Theme.of(context).textTheme.bodyMedium,
             softWrap: true,
             maxLines: 10,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 16.0),
-          Socials(socials: widget.info.socials)
+          Socials(socials: info.socials)
         ],
       ),
     );
@@ -141,8 +135,7 @@ class InputForm {
 class _ContactForm extends StatefulWidget {
   const _ContactForm({
     required this.onMessageSend,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final ValueChanged<SubmitContactForm> onMessageSend;
 

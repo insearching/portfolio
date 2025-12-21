@@ -7,10 +7,10 @@ import 'package:portfolio/main/ui/responsive/tablet/tablet_content.dart';
 
 class TabletScaffold extends StatefulWidget {
   const TabletScaffold({
-    Key? key,
+    super.key,
     required this.name,
     required this.onMessageSend,
-  }) : super(key: key);
+  });
 
   final String name;
   final ValueChanged<SubmitContactForm> onMessageSend;

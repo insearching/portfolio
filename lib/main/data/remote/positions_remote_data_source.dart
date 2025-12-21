@@ -2,6 +2,7 @@ import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
 import 'package:portfolio/main/data/mapper/position_remote_model_mapper.dart';
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/position.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Remote static_data source for Positions
 /// Handles all Firebase Realtime Database operations for positions
@@ -13,10 +14,12 @@ abstract class PositionsRemoteDataSource {
 
 class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
   PositionsRemoteDataSourceImpl({
-    required this.firebaseDatabaseReference,
+required this.firebaseDatabaseReference,
+    required this.logger,
   });
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
+  final AppLogger logger;
   static const String _collectionName = 'positions';
 
   @override
@@ -27,9 +30,9 @@ class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
     try {
       final model = positionRemoteModelFromDomain(position);
       await positionsCollection.push().set(model.toJson());
-      print('Position added successfully to Firebase');
-    } catch (e) {
-      print('Error adding position to Firebase: $e');
+      logger.debug('Position added successfully to Firebase', 'PositionsRemoteDataSource');
+    } catch (e, stackTrace) {
+      logger.error('Error adding position to Firebase', e, stackTrace, 'PositionsRemoteDataSource');
       rethrow;
     }
   }
@@ -49,10 +52,10 @@ class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
           .map((m) => m.toDomain())
           .toList();
 
-      print('Loaded ${positions.length} positions from Firebase');
+      logger.debug('Loaded ${positions.length} positions from Firebase', 'PositionsRemoteDataSource');
       return positions;
-    } catch (e) {
-      print('Error parsing positions from Firebase: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error parsing positions from Firebase', e, stackTrace, 'PositionsRemoteDataSource');
       rethrow;
     }
   }

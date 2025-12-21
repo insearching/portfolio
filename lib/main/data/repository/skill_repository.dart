@@ -12,6 +12,7 @@ class SkillRepositoryImpl
   SkillRepositoryImpl({
     required super.remoteDataSource,
     required super.localDataSource,
+    required super.logger,
   });
 
   @override

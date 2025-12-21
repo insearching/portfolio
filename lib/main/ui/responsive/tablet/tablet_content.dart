@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
@@ -27,8 +28,8 @@ class TabletContent extends StatefulWidget {
   const TabletContent({
     required this.name,
     required this.onMessageSend,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String name;
   final ValueChanged<SubmitContactForm> onMessageSend;
@@ -51,103 +52,104 @@ class _TabletContentState extends State<TabletContent> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-                Home(
-                  key: keys[NavigationMenu.home],
-                  name: widget.name,
-                  onContactClicked: () {
-                    final context =
-                        keys[NavigationMenu.contact]?.currentContext;
-                    if (context != null) {
-                      Scrollable.ensureVisible(
-                        context,
-                        duration: animationDuration,
-                      );
-                    }
-                  },
-                ),
-                BlocProvider(
-                  create: (context) =>
-                      BlogBloc(blogRepository: locator<BlogRepository>())
-                        ..add(
-                          GetPosts(),
-                        ),
-                  child: BlocBuilder<BlogBloc, BlogState>(
-                    builder: (context, state) {
-                      return TabletBlogWidget(
-                        blogState: state,
-                      );
-                    },
+              Home(
+                key: keys[NavigationMenu.home],
+                name: widget.name,
+                onContactClicked: () {
+                  final context = keys[NavigationMenu.contact]?.currentContext;
+                  if (context != null) {
+                    Scrollable.ensureVisible(
+                      context,
+                      duration: animationDuration,
+                    );
+                  }
+                },
+              ),
+              BlocProvider(
+                create: (context) => BlogBloc(
+                    blogRepository: locator<BlogRepository>(),
+                    logger: locator<AppLogger>())
+                  ..add(
+                    GetPosts(),
                   ),
-                ),
-                const HorizontalDivider(),
-                BlocProvider(
-                  create: (context) => PersonalInfoBloc(
-                      positionRepo: locator<PositionRepository>())
-                    ..add(
-                      GetPositions(),
-                    ),
-                  child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
-                    builder: (context, state) {
-                      return TabletFeatures(
-                        key: keys[NavigationMenu.features],
-                        state: state,
-                      );
-                    },
-                  ),
-                ),
-                const HorizontalDivider(),
-                BlocBuilder<PortfolioBloc, PortfolioState>(
+                child: BlocBuilder<BlogBloc, BlogState>(
                   builder: (context, state) {
-                    return Portfolio(
-                      key: keys[NavigationMenu.portfolio],
-                      projects: state.projects,
+                    return TabletBlogWidget(
+                      blogState: state,
                     );
                   },
                 ),
-                const HorizontalDivider(),
-                BlocBuilder<PortfolioBloc, PortfolioState>(
+              ),
+              const HorizontalDivider(),
+              BlocProvider(
+                create: (context) => PersonalInfoBloc(
+                  positionRepo: locator<PositionRepository>(),
+                  logger: locator<AppLogger>(),
+                )..add(
+                    GetPositions(),
+                  ),
+                child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
                   builder: (context, state) {
-                    return TabletResume(
-                      key: keys[NavigationMenu.resume],
-                      educations: state.education,
-                      skills: state.skills,
-                      tabs: state.resumeTabs,
+                    return TabletFeatures(
+                      key: keys[NavigationMenu.features],
+                      state: state,
                     );
                   },
                 ),
-                const HorizontalDivider(),
-                BlocBuilder<PortfolioBloc, PortfolioState>(
-                  builder: (context, state) {
-                    if (state.status.isError) {
-                      return Padding(
-                        padding: const EdgeInsets.all(64.0),
-                        child: Text(
-                          state.errorMessage ?? 'Failed to load personal info',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(color: Colors.redAccent),
-                        ),
-                      );
-                    }
+              ),
+              const HorizontalDivider(),
+              BlocBuilder<PortfolioBloc, PortfolioState>(
+                builder: (context, state) {
+                  return Portfolio(
+                    key: keys[NavigationMenu.portfolio],
+                    projects: state.projects,
+                  );
+                },
+              ),
+              const HorizontalDivider(),
+              BlocBuilder<PortfolioBloc, PortfolioState>(
+                builder: (context, state) {
+                  return TabletResume(
+                    key: keys[NavigationMenu.resume],
+                    educations: state.education,
+                    skills: state.skills,
+                    tabs: state.resumeTabs,
+                  );
+                },
+              ),
+              const HorizontalDivider(),
+              BlocBuilder<PortfolioBloc, PortfolioState>(
+                builder: (context, state) {
+                  if (state.status.isError) {
+                    return Padding(
+                      padding: const EdgeInsets.all(64.0),
+                      child: Text(
+                        state.errorMessage ?? 'Failed to load personal info',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(color: Colors.redAccent),
+                      ),
+                    );
+                  }
 
-                    if (state.personalInfo == null) {
-                      // Show loading indicator while personal info is loading
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(64.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-                    return Contact(
-                      key: keys[NavigationMenu.contact],
-                      info: state.personalInfo!,
-                      onMessageSend: widget.onMessageSend,
+                  if (state.personalInfo == null) {
+                    // Show loading indicator while personal info is loading
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(64.0),
+                        child: CircularProgressIndicator(),
+                      ),
                     );
-                  },
-                ),
+                  }
+                  return Contact(
+                    key: keys[NavigationMenu.contact],
+                    info: state.personalInfo!,
+                    onMessageSend: widget.onMessageSend,
+                  );
+                },
+              ),
             ],
           ),
         ),

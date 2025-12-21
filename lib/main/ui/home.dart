@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/ui/components/circle_image.dart';
@@ -38,11 +39,12 @@ class _HomeState extends State<Home> {
         ),
         const SizedBox(height: 16.0),
         BlocProvider(
-          create: (context) =>
-              PersonalInfoBloc(positionRepo: locator<PositionRepository>())
-                ..add(
-                  const GetPositions(),
-                ),
+          create: (context) => PersonalInfoBloc(
+            positionRepo: locator<PositionRepository>(),
+            logger: locator<AppLogger>(),
+          )..add(
+              const GetPositions(),
+            ),
           child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
             builder: (context, state) {
               return PositionLabel(state: state);
@@ -78,7 +80,9 @@ class _AvatarState extends State<_Avatar> {
 }
 
 class _AnimatedGradient extends StatefulWidget {
-  const _AnimatedGradient({required this.child, Key? key}) : super(key: key);
+  const _AnimatedGradient({
+    required this.child,
+  });
 
   final Widget child;
 

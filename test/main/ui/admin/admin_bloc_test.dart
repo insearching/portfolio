@@ -373,71 +373,51 @@ class _FakeAuthRepository implements AuthRepository {
 }
 
 class _FakeBlogRepo implements BlogRepository {
-  @override
   Future<void> addPost(Post post) async {}
 
-  @override
   Stream<List<Post>> getPosts() => Stream.value([]);
 
-  @override
   Future<List<Post>> refreshPosts() async => [];
 
-  @override
   Stream<List<Post>> get postsUpdateStream => Stream.value([]);
 }
 
 class _FakeProjectRepo implements ProjectRepository {
-  @override
   Future<void> addProject(Project project) async {}
 
-  @override
   Stream<List<Project>> getProjects() => Stream.value([]);
 
-  @override
   Future<List<Project>> refreshProjects() async => [];
 
-  @override
   Stream<List<Project>> get projectsUpdateStream => Stream.value([]);
 }
 
 class _FakeSkillRepo implements SkillRepository {
-  @override
   Future<void> addSkill(Skill skill) async {}
 
-  @override
   Stream<List<Skill>> getSkills() => Stream.value([]);
 
-  @override
   Future<List<Skill>> refreshSkills() async => [];
 
-  @override
   Stream<List<Skill>> get skillsUpdateStream => Stream.value([]);
 }
 
 class _FakeEducationRepo implements EducationRepository {
-  @override
   Future<void> addEducation(Education education) async {}
 
-  @override
   Stream<List<Education>> getEducation() => Stream.value([]);
 
-  @override
   Future<List<Education>> refreshEducation() async => [];
 
-  @override
   Stream<List<Education>> get educationUpdateStream => Stream.value([]);
 }
 
 class _FakePositionRepo implements PositionRepository {
-  @override
   Future<void> addPosition(Position position) async {}
 
-  @override
   Stream<List<Position>> getPositions() => Stream.value([]);
 
-  @override
   Future<List<Position>> refreshPositions() async => [];
 
-  @override
   Stream<List<Position>> get positionsUpdateStream => Stream.value([]);
 }

@@ -7,8 +7,8 @@ class ElevatedContainer extends StatefulWidget {
     this.onElevatedChanged,
     this.onTap,
     this.padding = const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Widget child;
   final ValueChanged<bool>? onElevatedChanged;
@@ -84,8 +84,7 @@ class _PressedWidget extends StatefulWidget {
     required this.child,
     required this.onTap,
     this.onElevatedChanged,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final VoidCallback onTap;

@@ -2,6 +2,7 @@ import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
 import 'package:portfolio/main/data/mapper/post_remote_model_mapper.dart';
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/post.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Remote static_data source for Posts
 /// Handles all Firebase Realtime Database operations for posts
@@ -13,10 +14,12 @@ abstract class PostsRemoteDataSource {
 
 class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
   PostsRemoteDataSourceImpl({
-    required this.firebaseDatabaseReference,
+required this.firebaseDatabaseReference,
+    required this.logger,
   });
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
+  final AppLogger logger;
   static const String _collectionName = 'posts';
 
   @override
@@ -26,9 +29,9 @@ class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
     try {
       final model = postRemoteModelFromDomain(post);
       await postsCollection.push().set(model.toJson());
-      print('Post added successfully to Firebase');
-    } catch (e) {
-      print('Error adding post to Firebase: $e');
+      logger.debug('Post added successfully to Firebase', 'PostsRemoteDataSource');
+    } catch (e, stackTrace) {
+      logger.error('Error adding post to Firebase', e, stackTrace, 'PostsRemoteDataSource');
       rethrow;
     }
   }
@@ -47,10 +50,10 @@ class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
           .map((m) => m.toDomain())
           .toList();
 
-      print('Loaded ${posts.length} posts from Firebase');
+      logger.debug('Loaded ${posts.length} posts from Firebase', 'PostsRemoteDataSource');
       return posts;
-    } catch (e) {
-      print('Error parsing posts from Firebase: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error parsing posts from Firebase', e, stackTrace, 'PostsRemoteDataSource');
       rethrow;
     }
   }

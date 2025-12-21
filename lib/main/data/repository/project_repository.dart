@@ -13,6 +13,7 @@ class ProjectRepositoryImpl extends BaseRepository<
   ProjectRepositoryImpl({
     required super.remoteDataSource,
     required super.localDataSource,
+    required super.logger,
   });
 
   @override

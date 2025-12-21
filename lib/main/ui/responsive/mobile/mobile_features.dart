@@ -5,8 +5,8 @@ import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 class MobileFeatures extends StatelessWidget {
   const MobileFeatures({
     required this.state,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final PersonalInfoState state;
 

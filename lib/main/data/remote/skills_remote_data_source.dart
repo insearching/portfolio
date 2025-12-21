@@ -2,6 +2,7 @@ import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
 import 'package:portfolio/main/data/mapper/skill_remote_model_mapper.dart';
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Remote data source for Skills
 /// Handles all Firebase Realtime Database operations for skills
@@ -13,10 +14,12 @@ abstract class SkillsRemoteDataSource {
 
 class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
   SkillsRemoteDataSourceImpl({
-    required this.firebaseDatabaseReference,
+required this.firebaseDatabaseReference,
+    required this.logger,
   });
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
+  final AppLogger logger;
   static const String _collectionName = 'skills';
 
   @override
@@ -26,9 +29,9 @@ class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
     try {
       final model = skillRemoteModelFromDomain(skill);
       await skillsCollection.push().set(model.toJson());
-      print('Skill added successfully to Firebase');
-    } catch (e) {
-      print('Error adding skill to Firebase: $e');
+      logger.debug('Skill added successfully to Firebase', 'SkillsRemoteDataSource');
+    } catch (e, stackTrace) {
+      logger.error('Error adding skill to Firebase', e, stackTrace, 'SkillsRemoteDataSource');
       rethrow;
     }
   }
@@ -47,10 +50,10 @@ class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
           .map((m) => m.toDomain())
           .toList();
 
-      print('Loaded ${skills.length} skills from Firebase');
+      logger.debug('Loaded ${skills.length} skills from Firebase', 'SkillsRemoteDataSource');
       return skills;
-    } catch (e) {
-      print('Error parsing skills from Firebase: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error parsing skills from Firebase', e, stackTrace, 'SkillsRemoteDataSource');
       rethrow;
     }
   }

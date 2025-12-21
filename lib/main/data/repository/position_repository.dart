@@ -13,6 +13,7 @@ class PositionRepositoryImpl extends BaseRepository<
   PositionRepositoryImpl({
     required super.remoteDataSource,
     required super.localDataSource,
+    required super.logger,
   });
 
   @override

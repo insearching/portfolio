@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/project.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,10 +17,13 @@ abstract class ProjectsLocalDataSource {
 class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
   ProjectsLocalDataSourceImpl({
     required this.database,
+    required this.logger,
   });
 
   final Database database;
+  final AppLogger logger;
   static const String _tableName = 'projects';
+  static const String _tag = 'ProjectsLocalDataSource';
 
   @override
   Future<void> saveProject(Project project) async {
@@ -35,9 +39,9 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Project cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching project in SQLite: $e');
+      logger.debug('Project cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching project in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -66,9 +70,10 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
       }
 
       await batch.commit(noResult: true);
-      print('${projects.length} projects cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching projects in SQLite: $e');
+      logger.debug(
+          '${projects.length} projects cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching projects in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -87,8 +92,9 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
           link: maps[i]['link'] as String?,
         );
       });
-    } catch (e) {
-      print('Error getting cached projects from SQLite: $e');
+    } catch (e, stackTrace) {
+      logger.error(
+          'Error getting cached projects from SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -97,9 +103,9 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
   Future<void> clearCache() async {
     try {
       await database.delete(_tableName);
-      print('Projects cache cleared successfully');
-    } catch (e) {
-      print('Error clearing projects cache: $e');
+      logger.debug('Projects cache cleared successfully', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error clearing projects cache', e, stackTrace, _tag);
       rethrow;
     }
   }

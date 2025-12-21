@@ -1,4 +1,5 @@
 import 'package:portfolio/main/domain/model/post.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Web-compatible local static_data source for Posts
 /// Uses in-memory caching since SQLite is not available on web
@@ -13,7 +14,10 @@ abstract class PostsLocalDataSourceWeb {
 }
 
 class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
-  PostsLocalDataSourceWebImpl();
+  final AppLogger logger;
+  PostsLocalDataSourceWebImpl({
+    required this.logger,
+  });
 
   // In-memory cache for web
   final List<Post> _cache = [];
@@ -24,9 +28,9 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
       // Remove existing post with same title if exists
       _cache.removeWhere((p) => p.title == post.title);
       _cache.add(post);
-      print('Post cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching post in memory: $e');
+      logger.debug('Post cached successfully in memory (web)', 'PostsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching post in memory', e, stackTrace, 'PostsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -36,9 +40,9 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(posts);
-      print('${posts.length} posts cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching posts in memory: $e');
+      logger.debug('${posts.length} posts cached successfully in memory (web)', 'PostsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching posts in memory', e, stackTrace, 'PostsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -47,8 +51,8 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
   Future<List<Post>> getCachedPosts() async {
     try {
       return List.from(_cache);
-    } catch (e) {
-      print('Error getting cached posts from memory: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached posts from memory', e, stackTrace, 'PostsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -57,9 +61,9 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      print('Posts cache cleared successfully (web)');
-    } catch (e) {
-      print('Error clearing posts cache: $e');
+      logger.debug('Posts cache cleared successfully (web)', 'PostsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing posts cache', e, stackTrace, 'PostsLocalDataSourceWeb');
       rethrow;
     }
   }

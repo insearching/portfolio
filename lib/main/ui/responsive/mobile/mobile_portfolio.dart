@@ -49,7 +49,7 @@ class MobilePortfolio extends StatelessWidget {
     );
   }
 
-  _showDataDialog(
+  void _showDataDialog(
     BuildContext context,
     String image,
     String title,

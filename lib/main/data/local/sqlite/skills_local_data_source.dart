@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,10 +17,13 @@ abstract class SkillsLocalDataSource {
 class SkillsLocalDataSourceImpl implements SkillsLocalDataSource {
   SkillsLocalDataSourceImpl({
     required this.database,
+    required this.logger,
   });
 
   final Database database;
+  final AppLogger logger;
   static const String _tableName = 'skills';
+  static const String _tag = 'SkillsLocalDataSource';
 
   @override
   Future<void> saveSkill(Skill skill) async {
@@ -33,9 +37,9 @@ class SkillsLocalDataSourceImpl implements SkillsLocalDataSource {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Skill cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching skill in SQLite: $e');
+      logger.debug('Skill cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching skill in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -62,9 +66,10 @@ class SkillsLocalDataSourceImpl implements SkillsLocalDataSource {
       }
 
       await batch.commit(noResult: true);
-      print('${skills.length} skills cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching skills in SQLite: $e');
+      logger.debug(
+          '${skills.length} skills cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching skills in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -86,8 +91,9 @@ class SkillsLocalDataSourceImpl implements SkillsLocalDataSource {
           type: type,
         );
       });
-    } catch (e) {
-      print('Error getting cached skills from SQLite: $e');
+    } catch (e, stackTrace) {
+      logger.error(
+          'Error getting cached skills from SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -96,9 +102,9 @@ class SkillsLocalDataSourceImpl implements SkillsLocalDataSource {
   Future<void> clearCache() async {
     try {
       await database.delete(_tableName);
-      print('Skills cache cleared successfully');
-    } catch (e) {
-      print('Error clearing skills cache: $e');
+      logger.debug('Skills cache cleared successfully', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error clearing skills cache', e, stackTrace, _tag);
       rethrow;
     }
   }

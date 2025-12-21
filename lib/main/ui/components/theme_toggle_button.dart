@@ -3,7 +3,7 @@ import 'package:portfolio/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ThemeToggleButton extends StatelessWidget {
-  const ThemeToggleButton({Key? key}) : super(key: key);
+  const ThemeToggleButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +34,9 @@ class AnimatedThemeToggleButton extends StatelessWidget {
   final double size;
 
   const AnimatedThemeToggleButton({
-    Key? key,
+    super.key,
     this.size = 24.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +89,7 @@ class AnimatedThemeToggleButton extends StatelessWidget {
 
 /// A switch-style theme toggle
 class ThemeToggleSwitch extends StatelessWidget {
-  const ThemeToggleSwitch({Key? key}) : super(key: key);
+  const ThemeToggleSwitch({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -11,13 +11,14 @@ import 'package:portfolio/main/domain/usecases/get_skills_stream.dart';
 import 'package:portfolio/main/domain/usecases/refresh_all.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_event.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_state.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Main BLoC for managing portfolio data
 /// Automatically subscribes to repository streams and emits states as data arrives
 /// Supports progressive loading: cached data appears first, then remote updates
 class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
   PortfolioBloc({
-    required this.portfolioRepository,
+required this.portfolioRepository,
     required this.getEducationStream,
     required this.getProjectsStream,
     required this.getPostsStream,
@@ -25,6 +26,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     required this.getSkillsStream,
     required this.getPersonalInfoStream,
     required this.refreshAll,
+    required this.logger,
   }) : super(const PortfolioState(
           // Data will be loaded from streams - start with null to show loading
           personalInfo: null,
@@ -53,6 +55,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
   final GetSkillsStream getSkillsStream;
   final GetPersonalInfoStream getPersonalInfoStream;
   final RefreshAll refreshAll;
+  final AppLogger logger;
 
   /// Sets up stream subscriptions that trigger internal events
   /// This approach properly follows BLoC pattern by using events
@@ -61,7 +64,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     getPersonalInfoStream().listen(
       (personalInfo) => add(PersonalInfoUpdated(personalInfo)),
       onError: (error) {
-        print('Error loading personal info: $error');
+        logger.error('Error loading personal info: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -69,7 +72,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     getPostsStream().listen(
       (posts) => add(PostsUpdated(posts)),
       onError: (error) {
-        print('Error loading posts: $error');
+        logger.error('Error loading posts: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -77,7 +80,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     getPositionsStream().listen(
       (positions) => add(PositionsUpdated(positions)),
       onError: (error) {
-        print('Error loading positions: $error');
+        logger.error('Error loading positions: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -85,7 +88,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     getProjectsStream().listen(
       (projects) => add(ProjectsUpdated(projects)),
       onError: (error) {
-        print('Error loading projects: $error');
+        logger.error('Error loading projects: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -93,7 +96,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     getEducationStream().listen(
       (education) => add(EducationUpdated(education)),
       onError: (error) {
-        print('Error loading education: $error');
+        logger.error('Error loading education: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -101,7 +104,7 @@ class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
     getSkillsStream().listen(
       (skills) => add(SkillsUpdated(skills)),
       onError: (error) {
-        print('Error loading skills: $error');
+        logger.error('Error loading skills: $error', null, null, 'PortfolioBloc');
       },
     );
   }

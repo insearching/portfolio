@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 
 class CircleImage extends StatelessWidget {
-  const CircleImage({required this.imageAsset, required this.radius, Key? key})
-      : super(key: key);
+  const CircleImage({
+    required this.imageAsset,
+    required this.radius,
+    super.key,
+  });
 
   final String imageAsset;
   final double radius;

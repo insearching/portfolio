@@ -3,8 +3,10 @@ import 'package:portfolio/main/ui/blog/blog_container.dart';
 import 'package:portfolio/main/ui/blog/blog_state.dart';
 
 class DesktopBlogWidget extends StatelessWidget {
-  const DesktopBlogWidget({required this.blogState, Key? key})
-      : super(key: key);
+  const DesktopBlogWidget({
+    required this.blogState,
+    super.key,
+  });
 
   final BlogState blogState;
 

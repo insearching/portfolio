@@ -60,7 +60,7 @@ class _PortfolioState extends State<Portfolio> {
     );
   }
 
-  _showDataDialog(
+  void _showDataDialog(
     String image,
     String title,
     String subtitle,

@@ -97,8 +97,6 @@ class DatabaseHelper {
         socials TEXT NOT NULL
       )
     ''');
-
-    print('Database tables created successfully');
   }
 
   /// Handle database upgrades
@@ -120,8 +118,6 @@ class DatabaseHelper {
           socials TEXT NOT NULL
         )
       ''');
-      print('Added personal_info table in database upgrade');
     }
-    print('Database upgraded from version $oldVersion to $newVersion');
   }
 }

@@ -47,8 +47,7 @@ class _ResumeTabs extends StatefulWidget {
     required this.educations,
     required this.skills,
     required this.tabs,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final List<Education> educations;
   final List<Skill> skills;

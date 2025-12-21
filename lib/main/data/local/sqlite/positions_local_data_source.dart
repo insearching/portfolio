@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/position.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,10 +17,13 @@ abstract class PositionsLocalDataSource {
 class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
   PositionsLocalDataSourceImpl({
     required this.database,
+    required this.logger,
   });
 
   final Database database;
+  final AppLogger logger;
   static const String _tableName = 'positions';
+  static const String _tag = 'PositionsLocalDataSource';
 
   @override
   Future<void> savePosition(Position position) async {
@@ -34,9 +38,9 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Position cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching position in SQLite: $e');
+      logger.debug('Position cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching position in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -64,9 +68,10 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
       }
 
       await batch.commit(noResult: true);
-      print('${positions.length} positions cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching positions in SQLite: $e');
+      logger.debug(
+          '${positions.length} positions cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error caching positions in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -84,8 +89,9 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
           icon: maps[i]['icon'] as String? ?? 'assets/img/android.png',
         );
       });
-    } catch (e) {
-      print('Error getting cached positions from SQLite: $e');
+    } catch (e, stackTrace) {
+      logger.error(
+          'Error getting cached positions from SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -94,9 +100,9 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
   Future<void> clearCache() async {
     try {
       await database.delete(_tableName);
-      print('Positions cache cleared successfully');
-    } catch (e) {
-      print('Error clearing positions cache: $e');
+      logger.debug('Positions cache cleared successfully', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error clearing positions cache', e, stackTrace, _tag);
       rethrow;
     }
   }

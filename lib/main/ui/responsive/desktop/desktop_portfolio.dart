@@ -52,7 +52,7 @@ class _DesktopPortfolioState extends State<DesktopPortfolio> {
     );
   }
 
-  _showDataDialog(
+  void _showDataDialog(
     String image,
     String title,
     String subtitle,

@@ -1,4 +1,5 @@
 import 'package:portfolio/main/domain/model/skill.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Web-compatible local data source for Skills
 /// Uses in-memory caching since SQLite is not available on web
@@ -13,7 +14,10 @@ abstract class SkillsLocalDataSourceWeb {
 }
 
 class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
-  SkillsLocalDataSourceWebImpl();
+  final AppLogger logger;
+  SkillsLocalDataSourceWebImpl({
+    required this.logger,
+  });
 
   // In-memory cache for web
   final List<Skill> _cache = [];
@@ -24,9 +28,9 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
       // Remove existing skill with same title if exists
       _cache.removeWhere((s) => s.title == skill.title);
       _cache.add(skill);
-      print('Skill cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching skill in memory: $e');
+      logger.debug('Skill cached successfully in memory (web)', 'SkillsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching skill in memory', e, stackTrace, 'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -36,9 +40,9 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(skills);
-      print('${skills.length} skills cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching skills in memory: $e');
+      logger.debug('${skills.length} skills cached successfully in memory (web)', 'SkillsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching skills in memory', e, stackTrace, 'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -47,8 +51,8 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
   Future<List<Skill>> getCachedSkills() async {
     try {
       return List.from(_cache);
-    } catch (e) {
-      print('Error getting cached skills from memory: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached skills from memory', e, stackTrace, 'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -57,9 +61,9 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      print('Skills cache cleared successfully (web)');
-    } catch (e) {
-      print('Error clearing skills cache: $e');
+      logger.debug('Skills cache cleared successfully (web)', 'SkillsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing skills cache', e, stackTrace, 'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }

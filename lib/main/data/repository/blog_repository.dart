@@ -12,6 +12,7 @@ class BlogRepositoryImpl
   BlogRepositoryImpl({
     required super.remoteDataSource,
     required super.localDataSource,
+    required super.logger,
   });
 
   @override

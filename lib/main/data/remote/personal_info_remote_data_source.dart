@@ -3,6 +3,7 @@ import 'package:portfolio/main/data/mapper/personal_info_remote_model_mapper.dar
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
 import 'package:portfolio/utils/env_config.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Remote data source for PersonalInfo
 /// Handles all Firebase Realtime Database operations for personal info
@@ -14,15 +15,17 @@ abstract class PersonalInfoRemoteDataSource {
 
 class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
   PersonalInfoRemoteDataSourceImpl({
-    required this.firebaseDatabaseReference,
+required this.firebaseDatabaseReference,
     FirebaseAuth? firebaseAuth,
     String? firebaseEmail,
     String? firebasePassword,
+    required this.logger,
   })  : _firebaseAuth = firebaseAuth,
         _firebaseEmail = firebaseEmail,
         _firebasePassword = firebasePassword;
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
+  final AppLogger logger;
   final FirebaseAuth? _firebaseAuth;
   final String? _firebaseEmail;
   final String? _firebasePassword;
@@ -41,16 +44,16 @@ class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
 
       if (rawData is Map) {
         final data = Map<String, dynamic>.from(rawData);
-        print('Loaded personal info from Firebase');
+        logger.debug('Loaded personal info from Firebase', 'PersonalInfoRemoteDataSource');
 
         final model = personalInfoRemoteModelFromJson(data);
         return model.toDomain();
       }
 
-      print('Unexpected data format for personal info in Firebase');
+      logger.debug('Unexpected data format for personal info in Firebase', 'PersonalInfoRemoteDataSource');
       return null;
-    } catch (e) {
-      print('Error parsing personal info from Firebase: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error parsing personal info from Firebase', e, stackTrace, 'PersonalInfoRemoteDataSource');
       rethrow;
     }
   }
@@ -64,25 +67,25 @@ class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
 
       // If not authenticated, sign in with credentials from .env
       if (currentUser == null) {
-        print('Authenticating with Firebase...');
+        logger.debug('Authenticating with Firebase...', 'PersonalInfoRemoteDataSource');
         await auth.signInWithEmailAndPassword(
           email: _firebaseEmail ?? EnvConfig.firebaseEmail,
           password: _firebasePassword ?? EnvConfig.firebasePassword,
         );
-        print('Firebase authentication successful');
+        logger.debug('Firebase authentication successful', 'PersonalInfoRemoteDataSource');
       }
 
       // Write data to Firebase Realtime Database
       final personalInfoRef = firebaseDatabaseReference.child(_collectionName);
       final model = personalInfoRemoteModelFromDomain(info);
       await personalInfoRef.set(model.toJson());
-      print('Personal info written to Firebase successfully');
+      logger.debug('Personal info written to Firebase successfully', 'PersonalInfoRemoteDataSource');
 
       // Sign out after writing for security
       await auth.signOut();
-      print('Signed out from Firebase');
-    } catch (e) {
-      print('Error writing personal info to Firebase: $e');
+      logger.debug('Signed out from Firebase', 'PersonalInfoRemoteDataSource');
+    } catch (e, stackTrace) {
+      logger.error('Error writing personal info to Firebase', e, stackTrace, 'PersonalInfoRemoteDataSource');
       rethrow;
     }
   }

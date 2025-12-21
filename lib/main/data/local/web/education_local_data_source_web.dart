@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 
 /// Web-compatible local data source for Education
@@ -13,7 +14,10 @@ abstract class EducationLocalDataSourceWeb {
 }
 
 class EducationLocalDataSourceWebImpl implements EducationLocalDataSourceWeb {
-  EducationLocalDataSourceWebImpl();
+  final AppLogger logger;
+  EducationLocalDataSourceWebImpl({
+    required this.logger,
+  });
 
   // In-memory cache for web
   final List<Education> _cache = [];
@@ -24,9 +28,11 @@ class EducationLocalDataSourceWebImpl implements EducationLocalDataSourceWeb {
       // Remove existing education record with same title if exists
       _cache.removeWhere((e) => e.title == education.title);
       _cache.add(education);
-      print('Education record cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching education record in memory: $e');
+      logger.debug('Education record cached successfully in memory (web)',
+          'EducationLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching education record in memory', e, stackTrace,
+          'EducationLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -36,10 +42,12 @@ class EducationLocalDataSourceWebImpl implements EducationLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(educationList);
-      print(
-          '${educationList.length} education records cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching education records in memory: $e');
+      logger.debug(
+          '${educationList.length} education records cached successfully in memory (web)',
+          'EducationLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching education records in memory', e, stackTrace,
+          'EducationLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -48,8 +56,9 @@ class EducationLocalDataSourceWebImpl implements EducationLocalDataSourceWeb {
   Future<List<Education>> getCachedEducation() async {
     try {
       return List.from(_cache);
-    } catch (e) {
-      print('Error getting cached education records from memory: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached education records from memory', e,
+          stackTrace, 'EducationLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -58,9 +67,11 @@ class EducationLocalDataSourceWebImpl implements EducationLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      print('Education cache cleared successfully (web)');
-    } catch (e) {
-      print('Error clearing education cache: $e');
+      logger.debug('Education cache cleared successfully (web)',
+          'EducationLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing education cache', e, stackTrace,
+          'EducationLocalDataSourceWeb');
       rethrow;
     }
   }

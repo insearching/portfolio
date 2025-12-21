@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
@@ -27,8 +28,8 @@ class MobileContent extends StatefulWidget {
   const MobileContent({
     required this.name,
     required this.onMessageSend,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String name;
   final ValueChanged<SubmitContactForm> onMessageSend;
@@ -70,11 +71,12 @@ class _MobileContentState extends State<MobileContent> {
               ),
               const HorizontalDivider(),
               BlocProvider(
-                create: (context) =>
-                    BlogBloc(blogRepository: locator<BlogRepository>())
-                      ..add(
-                        const GetPosts(),
-                      ),
+                create: (context) => BlogBloc(
+                    blogRepository: locator<BlogRepository>(),
+                    logger: locator<AppLogger>())
+                  ..add(
+                    const GetPosts(),
+                  ),
                 child: BlocBuilder<BlogBloc, BlogState>(
                   builder: (context, state) {
                     return MobileBlogWidget(
@@ -87,8 +89,9 @@ class _MobileContentState extends State<MobileContent> {
               const HorizontalDivider(),
               BlocProvider(
                 create: (context) => PersonalInfoBloc(
-                    positionRepo: locator<PositionRepository>())
-                  ..add(
+                  positionRepo: locator<PositionRepository>(),
+                  logger: locator<AppLogger>(),
+                )..add(
                     const GetPositions(),
                   ),
                 child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(

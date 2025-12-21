@@ -5,8 +5,8 @@ import 'package:portfolio/main/ui/blog/blog_state.dart';
 class MobileBlogWidget extends StatelessWidget {
   const MobileBlogWidget({
     required this.blogState,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BlogState blogState;
 

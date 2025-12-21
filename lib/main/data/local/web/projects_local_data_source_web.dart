@@ -1,4 +1,5 @@
 import 'package:portfolio/main/domain/model/project.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Web-compatible local data source for Projects
 /// Uses in-memory caching since SQLite is not available on web
@@ -13,7 +14,10 @@ abstract class ProjectsLocalDataSourceWeb {
 }
 
 class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
-  ProjectsLocalDataSourceWebImpl();
+  final AppLogger logger;
+  ProjectsLocalDataSourceWebImpl({
+    required this.logger,
+  });
 
   // In-memory cache for web
   final List<Project> _cache = [];
@@ -24,9 +28,9 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
       // Remove existing project with same title if exists
       _cache.removeWhere((p) => p.title == project.title);
       _cache.add(project);
-      print('Project cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching project in memory: $e');
+      logger.debug('Project cached successfully in memory (web)', 'ProjectsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching project in memory', e, stackTrace, 'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -36,9 +40,9 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(projects);
-      print('${projects.length} projects cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching projects in memory: $e');
+      logger.debug('${projects.length} projects cached successfully in memory (web)', 'ProjectsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching projects in memory', e, stackTrace, 'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -47,8 +51,8 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
   Future<List<Project>> getCachedProjects() async {
     try {
       return List.from(_cache);
-    } catch (e) {
-      print('Error getting cached projects from memory: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached projects from memory', e, stackTrace, 'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -57,9 +61,9 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      print('Projects cache cleared successfully (web)');
-    } catch (e) {
-      print('Error clearing projects cache: $e');
+      logger.debug('Projects cache cleared successfully (web)', 'ProjectsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing projects cache', e, stackTrace, 'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }

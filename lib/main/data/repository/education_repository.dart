@@ -13,6 +13,7 @@ class EducationRepositoryImpl extends BaseRepository<
   EducationRepositoryImpl({
     required super.remoteDataSource,
     required super.localDataSource,
+    required super.logger,
   });
 
   @override

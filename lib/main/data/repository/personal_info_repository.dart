@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
 import 'package:portfolio/main/data/remote/personal_info_remote_data_source.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
@@ -11,10 +12,12 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
   PersonalInfoRepositoryImpl({
     required this.remoteDataSource,
     required this.localDataSource,
+    required this.logger,
   });
 
   final PersonalInfoRemoteDataSource remoteDataSource;
   final PersonalInfoLocalDataSource localDataSource;
+  final AppLogger logger;
 
   // In-memory cache for fastest access
   PersonalInfo? _memoryCache;
@@ -32,7 +35,7 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
 
     // 1. Check in-memory cache first (fastest)
     if (_memoryCache != null) {
-      print('Emitting personal info from memory cache');
+      logger.debug('Emitting personal info from memory cache', 'PersonalInfoRepository');
       yield _memoryCache;
       hasEmittedData = true;
     }
@@ -41,13 +44,13 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
     try {
       final localData = await localDataSource.getPersonalInfo();
       if (localData != null) {
-        print('Emitting personal info from local storage');
+        logger.debug('Emitting personal info from local storage', 'PersonalInfoRepository');
         _memoryCache = localData; // Cache in memory for next time
         yield localData;
         hasEmittedData = true;
       }
-    } catch (e) {
-      print('Error reading personal info from local storage: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error reading personal info from local storage', e, stackTrace, 'PersonalInfoRepository');
     }
 
     // 3. Fetch from remote data source (slowest, but most up-to-date)
@@ -55,16 +58,17 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
       final remoteData = await remoteDataSource.readPersonalInfo();
 
       if (remoteData != null) {
-        print('Emitting personal info from remote source');
+        logger.debug('Emitting personal info from remote source', 'PersonalInfoRepository');
 
         // Cache the remote data in both memory and local storage
         _memoryCache = remoteData;
 
         try {
           await localDataSource.savePersonalInfo(remoteData);
-          print('Cached personal info to local storage');
-        } catch (e) {
-          print('Warning: Failed to cache personal info locally: $e');
+          logger.debug('Cached personal info to local storage', 'PersonalInfoRepository');
+        } catch (e, stackTrace) {
+          logger.warning('Failed to cache personal info locally', 'PersonalInfoRepository');
+          logger.error('Cache failure details', e, stackTrace, 'PersonalInfoRepository');
           // Don't fail the operation if caching fails
         }
 
@@ -77,8 +81,8 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
         // If nothing was emitted and remote is empty, emit null
         yield null;
       }
-    } catch (e) {
-      print('Error fetching personal info from remote data source: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error fetching personal info from remote data source', e, stackTrace, 'PersonalInfoRepository');
       // If everything fails and nothing was emitted, return null
       if (!hasEmittedData) {
         yield null;
@@ -98,9 +102,9 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
     _memoryCache = null;
     try {
       await localDataSource.clearCache();
-      print('Personal info caches cleared');
-    } catch (e) {
-      print('Error clearing personal info local cache: $e');
+      logger.debug('Personal info caches cleared', 'PersonalInfoRepository');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing personal info local cache', e, stackTrace, 'PersonalInfoRepository');
     }
   }
 

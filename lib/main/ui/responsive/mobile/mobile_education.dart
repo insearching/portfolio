@@ -5,8 +5,8 @@ import 'package:portfolio/main/ui/components/education_container.dart';
 class MobileEducationWidget extends StatelessWidget {
   const MobileEducationWidget({
     required this.educations,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<Education> educations;
 

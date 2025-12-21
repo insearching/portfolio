@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/position.dart';
 
 /// Web-compatible local static_data source for Positions
@@ -13,7 +14,10 @@ abstract class PositionsLocalDataSourceWeb {
 }
 
 class PositionsLocalDataSourceWebImpl implements PositionsLocalDataSourceWeb {
-  PositionsLocalDataSourceWebImpl();
+  final AppLogger logger;
+  PositionsLocalDataSourceWebImpl({
+    required this.logger,
+  });
 
   // In-memory cache for web
   final List<Position> _cache = [];
@@ -24,9 +28,11 @@ class PositionsLocalDataSourceWebImpl implements PositionsLocalDataSourceWeb {
       // Remove existing position with same title if exists
       _cache.removeWhere((p) => p.title == position.title);
       _cache.add(position);
-      print('Position cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching position in memory: $e');
+      logger.debug('Position cached successfully in memory (web)',
+          'PositionsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching position in memory', e, stackTrace,
+          'PositionsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -36,10 +42,12 @@ class PositionsLocalDataSourceWebImpl implements PositionsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(positions);
-      print(
-          '${positions.length} positions cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching positions in memory: $e');
+      logger.debug(
+          '${positions.length} positions cached successfully in memory (web)',
+          'PositionsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching positions in memory', e, stackTrace,
+          'PositionsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -48,8 +56,9 @@ class PositionsLocalDataSourceWebImpl implements PositionsLocalDataSourceWeb {
   Future<List<Position>> getCachedPositions() async {
     try {
       return List.from(_cache);
-    } catch (e) {
-      print('Error getting cached positions from memory: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached positions from memory', e, stackTrace,
+          'PositionsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -58,9 +67,11 @@ class PositionsLocalDataSourceWebImpl implements PositionsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      print('Positions cache cleared successfully (web)');
-    } catch (e) {
-      print('Error clearing positions cache: $e');
+      logger.debug('Positions cache cleared successfully (web)',
+          'PositionsLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing positions cache', e, stackTrace,
+          'PositionsLocalDataSourceWeb');
       rethrow;
     }
   }

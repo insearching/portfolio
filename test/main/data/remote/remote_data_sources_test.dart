@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/data/remote/education_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/personal_info_remote_data_source.dart';
 import 'package:portfolio/main/data/remote/positions_remote_data_source.dart';
@@ -11,8 +12,19 @@ import 'package:portfolio/main/domain/model/social_info.dart';
 
 import '../../../helpers/fake_firebase_auth.dart';
 import '../../../helpers/fake_firebase_database.dart';
+import '../../../helpers/test_service_locator.dart';
 
 void main() {
+  // Setup test dependencies before all tests
+  setUpAll(() async {
+    await setupTestLocator();
+  });
+
+  // Clean up after all tests
+  tearDownAll(() async {
+    await tearDownTestLocator();
+  });
+
   group('Remote data sources (Firebase)', () {
     test('EducationRemoteDataSourceImpl.readEducation parses map snapshots',
         () async {
@@ -33,7 +45,8 @@ void main() {
         },
       );
 
-      final ds = EducationRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = EducationRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
       final items = await ds.readEducation();
 
       expect(items.length, 2);
@@ -52,7 +65,8 @@ void main() {
         },
       );
 
-      final ds = SkillsRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = SkillsRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
       final items = await ds.readSkills();
 
       expect(items.length, 2);
@@ -65,7 +79,8 @@ void main() {
         'ProjectsRemoteDataSourceImpl.readProjects returns [] on null snapshot',
         () async {
       final root = FakeDatabaseReference.root(initialValue: {'projects': null});
-      final ds = ProjectsRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = ProjectsRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
 
       final items = await ds.readProjects();
       expect(items, isEmpty);
@@ -86,7 +101,8 @@ void main() {
         },
       );
 
-      final ds = PositionsRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = PositionsRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
       final items = await ds.readPositions();
 
       expect(items.length, 1);
@@ -107,7 +123,8 @@ void main() {
         },
       );
 
-      final ds = PostsRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = PostsRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
       final posts = await ds.readPosts();
 
       expect(posts.length, 1);
@@ -116,7 +133,8 @@ void main() {
 
     test('PostsRemoteDataSourceImpl.addPost pushes to /posts', () async {
       final root = FakeDatabaseReference.root(initialValue: {});
-      final ds = PostsRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = PostsRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
 
       await ds.addPost(
         const Post(
@@ -142,8 +160,8 @@ void main() {
         () async {
       final root =
           FakeDatabaseReference.root(initialValue: {'personal_info': null});
-      final ds =
-          PersonalInfoRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = PersonalInfoRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
 
       final info = await ds.readPersonalInfo();
       expect(info, isNull);
@@ -166,8 +184,8 @@ void main() {
         },
       );
 
-      final ds =
-          PersonalInfoRemoteDataSourceImpl(firebaseDatabaseReference: root);
+      final ds = PersonalInfoRemoteDataSourceImpl(
+          firebaseDatabaseReference: root, logger: testLocator<AppLogger>());
       final info = await ds.readPersonalInfo();
 
       expect(info, isNotNull);
@@ -185,6 +203,7 @@ void main() {
         firebaseAuth: auth,
         firebaseEmail: 'e',
         firebasePassword: 'p',
+        logger: testLocator<AppLogger>(),
       );
 
       await ds.writePersonalInfo(

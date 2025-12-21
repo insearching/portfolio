@@ -4,8 +4,8 @@ class RippleButton extends StatefulWidget {
   const RippleButton({
     required this.text,
     this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String text;
 

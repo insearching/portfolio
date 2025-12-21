@@ -5,8 +5,8 @@ import 'package:portfolio/main/ui/components/skill_progress_bar.dart';
 class MobileProfessionalSkillsWidget extends StatelessWidget {
   const MobileProfessionalSkillsWidget({
     required this.skills,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<Skill> skills;
 

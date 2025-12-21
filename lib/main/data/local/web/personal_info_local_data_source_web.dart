@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
 
 /// Web-compatible local data source for PersonalInfo
@@ -12,7 +13,11 @@ abstract class PersonalInfoLocalDataSourceWeb {
 
 class PersonalInfoLocalDataSourceWebImpl
     implements PersonalInfoLocalDataSourceWeb {
-  PersonalInfoLocalDataSourceWebImpl();
+  PersonalInfoLocalDataSourceWebImpl({
+    required this.logger,
+  });
+
+  final AppLogger logger;
 
   // In-memory cache for web
   PersonalInfo? _cache;
@@ -21,9 +26,11 @@ class PersonalInfoLocalDataSourceWebImpl
   Future<void> cachePersonalInfo(PersonalInfo info) async {
     try {
       _cache = info;
-      print('Personal info cached successfully in memory (web)');
-    } catch (e) {
-      print('Error caching personal info in memory: $e');
+      logger.debug('Personal info cached successfully in memory (web)',
+          'PersonalInfoLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error caching personal info in memory', e, stackTrace,
+          'PersonalInfoLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -32,8 +39,9 @@ class PersonalInfoLocalDataSourceWebImpl
   Future<PersonalInfo?> getCachedPersonalInfo() async {
     try {
       return _cache;
-    } catch (e) {
-      print('Error getting cached personal info from memory: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached personal info from memory', e,
+          stackTrace, 'PersonalInfoLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -42,9 +50,11 @@ class PersonalInfoLocalDataSourceWebImpl
   Future<void> clearCache() async {
     try {
       _cache = null;
-      print('Personal info cache cleared successfully (web)');
-    } catch (e) {
-      print('Error clearing personal info cache: $e');
+      logger.debug('Personal info cache cleared successfully (web)',
+          'PersonalInfoLocalDataSourceWeb');
+    } catch (e, stackTrace) {
+      logger.error('Error clearing personal info cache', e, stackTrace,
+          'PersonalInfoLocalDataSourceWeb');
       rethrow;
     }
   }

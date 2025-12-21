@@ -1,3 +1,4 @@
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,10 +17,13 @@ abstract class EducationLocalDataSource {
 class EducationLocalDataSourceImpl implements EducationLocalDataSource {
   EducationLocalDataSourceImpl({
     required this.database,
+    required this.logger,
   });
 
   final Database database;
+  final AppLogger logger;
   static const String _tableName = 'education';
+  static const String _tag = 'EducationLocalDataSource';
 
   @override
   Future<void> saveEducation(Education education) async {
@@ -36,9 +40,10 @@ class EducationLocalDataSourceImpl implements EducationLocalDataSource {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      print('Education record cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching education record in SQLite: $e');
+      logger.debug('Education record cached successfully in SQLite', _tag);
+    } catch (e, stackTrace) {
+      logger.error(
+          'Error caching education record in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -68,10 +73,12 @@ class EducationLocalDataSourceImpl implements EducationLocalDataSource {
       }
 
       await batch.commit(noResult: true);
-      print(
-          '${educationList.length} education records cached successfully in SQLite');
-    } catch (e) {
-      print('Error caching education records in SQLite: $e');
+      logger.debug(
+          '${educationList.length} education records cached successfully in SQLite',
+          _tag);
+    } catch (e, stackTrace) {
+      logger.error(
+          'Error caching education records in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -94,8 +101,9 @@ class EducationLocalDataSourceImpl implements EducationLocalDataSource {
           imageUrl: maps[i]['imageUrl'] as String?,
         );
       });
-    } catch (e) {
-      print('Error getting cached education records from SQLite: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error getting cached education records from SQLite', e,
+          stackTrace, _tag);
       rethrow;
     }
   }
@@ -104,9 +112,9 @@ class EducationLocalDataSourceImpl implements EducationLocalDataSource {
   Future<void> clearCache() async {
     try {
       await database.delete(_tableName);
-      print('Education cache cleared successfully');
-    } catch (e) {
-      print('Error clearing education cache: $e');
+      logger.debug('Education cache cleared successfully', _tag);
+    } catch (e, stackTrace) {
+      logger.error('Error clearing education cache', e, stackTrace, _tag);
       rethrow;
     }
   }

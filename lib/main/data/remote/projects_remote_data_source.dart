@@ -2,6 +2,7 @@ import 'package:portfolio/main/data/mapper/firebase_raw_data_mapper.dart';
 import 'package:portfolio/main/data/mapper/project_remote_model_mapper.dart';
 import 'package:portfolio/main/data/utils/typedefs.dart';
 import 'package:portfolio/main/domain/model/project.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 
 /// Remote data source for Projects
 /// Handles all Firebase Realtime Database operations for projects
@@ -13,10 +14,12 @@ abstract class ProjectsRemoteDataSource {
 
 class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
   ProjectsRemoteDataSourceImpl({
-    required this.firebaseDatabaseReference,
+required this.firebaseDatabaseReference,
+    required this.logger,
   });
 
   final FirebaseDatabaseReference firebaseDatabaseReference;
+  final AppLogger logger;
   static const String _collectionName = 'projects';
 
   @override
@@ -26,9 +29,9 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
     try {
       final model = projectRemoteModelFromDomain(project);
       await projectsCollection.push().set(model.toJson());
-      print('Project added successfully to Firebase');
-    } catch (e) {
-      print('Error adding project to Firebase: $e');
+      logger.debug('Project added successfully to Firebase', 'ProjectsRemoteDataSource');
+    } catch (e, stackTrace) {
+      logger.error('Error adding project to Firebase', e, stackTrace, 'ProjectsRemoteDataSource');
       rethrow;
     }
   }
@@ -47,10 +50,10 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
           .map((m) => m.toDomain())
           .toList();
 
-      print('Loaded ${projects.length} projects from Firebase');
+      logger.debug('Loaded ${projects.length} projects from Firebase', 'ProjectsRemoteDataSource');
       return projects;
-    } catch (e) {
-      print('Error parsing projects from Firebase: $e');
+    } catch (e, stackTrace) {
+      logger.error('Error parsing projects from Firebase', e, stackTrace, 'ProjectsRemoteDataSource');
       rethrow;
     }
   }

@@ -9,8 +9,8 @@ class CustomDialog extends StatelessWidget {
     required this.subtitle,
     required this.description,
     this.link,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final String image;
   final String title;

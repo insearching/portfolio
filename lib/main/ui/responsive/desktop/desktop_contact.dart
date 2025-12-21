@@ -55,8 +55,7 @@ class DesktopContact extends StatelessWidget {
 class _ContactInfoContainer extends StatefulWidget {
   const _ContactInfoContainer({
     required this.info,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final PersonalInfo info;
 
@@ -122,8 +121,7 @@ class InputForm {
 class _ContactForm extends StatefulWidget {
   const _ContactForm({
     required this.onMessageSend,
-    Key? key,
-  }) : super(key: key);
+  });
 
   final ValueChanged<SubmitContactForm> onMessageSend;
 

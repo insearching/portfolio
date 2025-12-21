@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/data/local/sqlite/education_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/personal_info_local_data_source.dart';
 import 'package:portfolio/main/data/local/sqlite/positions_local_data_source.dart';
@@ -14,12 +15,24 @@ import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/domain/model/social_info.dart';
 
 import '../../../../helpers/fake_sqflite.dart';
+import '../../../../helpers/test_service_locator.dart';
 
 void main() {
+  // Setup test dependencies before all tests
+  setUpAll(() async {
+    await setupTestLocator();
+  });
+
+  // Clean up after all tests
+  tearDownAll(() async {
+    await tearDownTestLocator();
+  });
+
   group('SQLite local data sources', () {
     test('PostsLocalDataSourceImpl caches and reads posts', () async {
       final db = FakeDatabase();
-      final ds = PostsLocalDataSourceImpl(database: db);
+      final ds = PostsLocalDataSourceImpl(
+          database: db, logger: testLocator<AppLogger>());
 
       await ds.cachePosts(
         const [
@@ -38,7 +51,8 @@ void main() {
 
     test('ProjectsLocalDataSourceImpl caches and reads projects', () async {
       final db = FakeDatabase();
-      final ds = ProjectsLocalDataSourceImpl(database: db);
+      final ds = ProjectsLocalDataSourceImpl(
+          database: db, logger: testLocator<AppLogger>());
 
       await ds.saveProjects(
         const [
@@ -63,7 +77,8 @@ void main() {
     test('SkillsLocalDataSourceImpl caches and reads skills (type mapping)',
         () async {
       final db = FakeDatabase();
-      final ds = SkillsLocalDataSourceImpl(database: db);
+      final ds = SkillsLocalDataSourceImpl(
+          database: db, logger: testLocator<AppLogger>());
 
       await ds.saveSkills(
         const [
@@ -83,7 +98,8 @@ void main() {
 
     test('PositionsLocalDataSourceImpl caches and reads positions', () async {
       final db = FakeDatabase();
-      final ds = PositionsLocalDataSourceImpl(database: db);
+      final ds = PositionsLocalDataSourceImpl(
+          database: db, logger: testLocator<AppLogger>());
 
       await ds.savePositions(
         const [
@@ -106,7 +122,8 @@ void main() {
 
     test('EducationLocalDataSourceImpl caches and reads education', () async {
       final db = FakeDatabase();
-      final ds = EducationLocalDataSourceImpl(database: db);
+      final ds = EducationLocalDataSourceImpl(
+          database: db, logger: testLocator<AppLogger>());
 
       await ds.saveEducationList(
         const [
@@ -132,7 +149,8 @@ void main() {
     test('PersonalInfoLocalDataSourceImpl saves and reads personal info',
         () async {
       final db = FakeDatabase();
-      final ds = PersonalInfoLocalDataSourceImpl(database: db);
+      final ds = PersonalInfoLocalDataSourceImpl(
+          database: db, logger: testLocator<AppLogger>());
 
       await ds.savePersonalInfo(
         const PersonalInfo(

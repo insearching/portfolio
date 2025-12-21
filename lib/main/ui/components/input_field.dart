@@ -21,8 +21,8 @@ class InputState {
 class InputField extends StatefulWidget {
   const InputField({
     required this.state,
-    key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final InputState state;
 

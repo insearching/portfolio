@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/data/local/web/education_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/personal_info_local_data_source_web.dart';
 import 'package:portfolio/main/data/local/web/positions_local_data_source_web.dart';
@@ -13,10 +14,22 @@ import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/domain/model/social_info.dart';
 
+import '../../../../helpers/test_service_locator.dart';
+
 void main() {
+  // Setup test dependencies before all tests (web mode)
+  setUpAll(() async {
+    await setupTestLocator(useWeb: true);
+  });
+
+  // Clean up after all tests
+  tearDownAll(() async {
+    await tearDownTestLocator();
+  });
+
   group('Web local data sources (in-memory)', () {
     test('PostsLocalDataSourceWebImpl caches list and clears', () async {
-      final ds = PostsLocalDataSourceWebImpl();
+      final ds = PostsLocalDataSourceWebImpl(logger: testLocator<AppLogger>());
 
       await ds.cachePosts(
         const [
@@ -31,7 +44,7 @@ void main() {
     });
 
     test('SkillsLocalDataSourceWebImpl caches list and clears', () async {
-      final ds = SkillsLocalDataSourceWebImpl();
+      final ds = SkillsLocalDataSourceWebImpl(logger: testLocator<AppLogger>());
 
       await ds.cacheSkills(
         const [Skill(title: 't', value: 1, type: SkillType.hard)],
@@ -44,7 +57,8 @@ void main() {
     });
 
     test('ProjectsLocalDataSourceWebImpl caches list and clears', () async {
-      final ds = ProjectsLocalDataSourceWebImpl();
+      final ds =
+          ProjectsLocalDataSourceWebImpl(logger: testLocator<AppLogger>());
 
       await ds.cacheProjects(
         const [
@@ -65,7 +79,8 @@ void main() {
     });
 
     test('PositionsLocalDataSourceWebImpl caches list and clears', () async {
-      final ds = PositionsLocalDataSourceWebImpl();
+      final ds =
+          PositionsLocalDataSourceWebImpl(logger: testLocator<AppLogger>());
 
       await ds.cachePositions(
         const [
@@ -80,7 +95,8 @@ void main() {
     });
 
     test('EducationLocalDataSourceWebImpl caches list and clears', () async {
-      final ds = EducationLocalDataSourceWebImpl();
+      final ds =
+          EducationLocalDataSourceWebImpl(logger: testLocator<AppLogger>());
 
       await ds.cacheEducationList(
         const [
@@ -102,7 +118,8 @@ void main() {
     });
 
     test('PersonalInfoLocalDataSourceWebImpl caches item and clears', () async {
-      final ds = PersonalInfoLocalDataSourceWebImpl();
+      final ds =
+          PersonalInfoLocalDataSourceWebImpl(logger: testLocator<AppLogger>());
 
       await ds.cachePersonalInfo(
         const PersonalInfo(
