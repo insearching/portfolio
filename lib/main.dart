@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/domain/usecases/get_education_stream.dart';
@@ -24,6 +23,7 @@ import 'package:portfolio/utils/theme.dart';
 import 'package:portfolio/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 
+import 'core/platform/platform_config_factory.dart';
 import 'firebase_options.dart';
 import 'main/di/service_locator.dart';
 import 'main/domain/model/device_info.dart';
@@ -35,8 +35,9 @@ void main() async {
   ErrorWidget.builder = (_) => const AppErrorWidget();
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Use path-based URL strategy for web (removes the # from URLs)
-  setUrlStrategy(PathUrlStrategy());
+  // Initialize platform-specific configuration (e.g., URL strategy for web)
+  final platformConfig = PlatformConfigFactory.create();
+  await platformConfig.initialize();
 
   await EnvConfig.load();
   await setupLocator();
