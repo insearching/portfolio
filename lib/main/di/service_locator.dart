@@ -39,6 +39,8 @@ import 'package:portfolio/main/data/repository/project_repository.dart'
 import 'package:portfolio/main/data/repository/skill_repository.dart'
     as skill_repo_impl;
 import 'package:portfolio/main/data/utils/typedefs.dart';
+import 'package:portfolio/main/domain/model/device_info.dart';
+import 'package:portfolio/main/domain/model/device_type.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
 import 'package:portfolio/main/domain/model/position.dart';
@@ -347,6 +349,20 @@ Future<void> setupLocator() async {
 
   locator.registerLazySingleton<AddPosition>(
     () => AddPosition(positionRepository: locator<PositionRepository>()),
+  );
+}
+
+/// Initialize DeviceInfo with the current device type
+/// This should be called from the UI layer when the device type is determined
+void setupDeviceInfo(DeviceType deviceType) {
+  // Unregister existing instance if it exists
+  if (locator.isRegistered<DeviceInfo>()) {
+    locator.unregister<DeviceInfo>();
+  }
+
+  // Register the new DeviceInfo instance
+  locator.registerLazySingleton<DeviceInfo>(
+    () => DeviceInfo(deviceType),
   );
 }
 

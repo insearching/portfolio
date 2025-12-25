@@ -19,13 +19,11 @@ class DesktopScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onLongPress: kIsWeb
-            ? null
-            : () {
-                if (kDebugMode) {
-                  context.go('/admin');
-                }
-              },
+        onLongPress: () {
+          if (kDebugMode && kIsWeb) {
+            context.go('/admin');
+          }
+        },
         child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
           child: Row(

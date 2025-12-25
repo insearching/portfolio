@@ -1,3 +1,5 @@
+import 'dart:ui' show PlatformDispatcher;
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
@@ -33,7 +35,6 @@ import 'main/ui/components/app_error_widget.dart';
 import 'utils/env_config.dart';
 
 void main() async {
-  ErrorWidget.builder = (_) => const AppErrorWidget();
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize platform-specific configuration (e.g., URL strategy for web)
@@ -46,7 +47,71 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Get the logger instance
+  final logger = locator<AppLogger>();
+
+  // Set up global error handlers
+  _setupErrorHandlers(logger);
+
   runApp(const RootProvider());
+}
+
+/// Sets up global error handlers for Flutter framework and rendering errors
+void _setupErrorHandlers(AppLogger logger) {
+  // Handle Flutter framework errors (including rendering errors)
+  FlutterError.onError = (FlutterErrorDetails details) {
+    // Log the error with full details
+    logger.error(
+      _formatFlutterError(details),
+      details.exception,
+      details.stack,
+      'FlutterError',
+    );
+  };
+
+  // Replace the default error widget with our custom one
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return const AppErrorWidget();
+  };
+
+  // Handle errors outside Flutter framework (async errors, etc.)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    logger.error(
+      'Uncaught platform error',
+      error,
+      stack,
+      'PlatformError',
+    );
+    return true; // Indicates we handled the error
+  };
+}
+
+/// Formats FlutterError details into a readable message
+String _formatFlutterError(FlutterErrorDetails details) {
+  final buffer = StringBuffer();
+
+  // Add error summary
+  buffer.write(details.exceptionAsString());
+
+  // Add context information if available
+  if (details.context != null) {
+    buffer.write('\n');
+    buffer.write(details.context!.toDescription());
+  }
+
+  // Add informationCollector details (like the widget that caused the error)
+  if (details.informationCollector != null) {
+    final information = details.informationCollector!();
+    if (information.isNotEmpty) {
+      buffer.write('\n');
+      for (final info in information) {
+        buffer.write(info.toDescription());
+        buffer.write('\n');
+      }
+    }
+  }
+
+  return buffer.toString().trim();
 }
 
 DeviceType _getDeviceType(BuildContext context) {
@@ -66,6 +131,9 @@ class RootProvider extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final deviceType = _getDeviceType(context);
+
+          // Initialize DeviceInfo in service locator
+          setupDeviceInfo(deviceType);
 
           return Provider<DeviceInfo>(
             create: (_) => DeviceInfo(deviceType),

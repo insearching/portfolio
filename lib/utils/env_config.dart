@@ -1,58 +1,60 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:portfolio/utils/debug_config.dart';
 
 /// Environment configuration class for accessing environment variables.
-/// This class provides type-safe access to environment variables loaded from .env file.
+/// This class provides type-safe access to environment variables.
+///
+/// In debug mode: Uses debug_config.dart (gitignored, local only)
+/// In release mode: Uses --dart-define values at build time
 class EnvConfig {
   /// Loads environment variables.
-  ///
-  /// Preferred: provide values via build-time defines:
-  /// - `--dart-define=FIREBASE_EMAIL=...`
-  /// - `--dart-define=FIREBASE_PASSWORD=...`
-  ///
-  /// Backwards-compatible: attempts to load `.env` via `flutter_dotenv` if it
-  /// exists/was bundled. This is optional and will be ignored if missing.
   static Future<void> load() async {
-    try {
-      await dotenv.load(fileName: '.env');
-    } catch (_) {
-      // Ignore missing/invalid .env (e.g. CI/web builds).
-    }
+    // No-op: credentials are now compile-time or debug-time constants
   }
 
+  // Production credentials (provided via --dart-define)
   static const String _dartDefineFirebaseEmail =
       String.fromEnvironment('FIREBASE_EMAIL');
   static const String _dartDefineFirebasePassword =
       String.fromEnvironment('FIREBASE_PASSWORD');
 
   /// Firebase email credential.
+  /// In debug mode, uses debug_config.dart (gitignored).
+  /// In release/profile mode, requires --dart-define=FIREBASE_EMAIL=...
   static String get firebaseEmail {
+    // Production/release build: use dart-define
     if (_dartDefineFirebaseEmail.isNotEmpty) return _dartDefineFirebaseEmail;
 
-    final email = dotenv.env['FIREBASE_EMAIL'];
-    if (email == null || email.isEmpty) {
-      throw Exception(
-        'FIREBASE_EMAIL is not configured. '
-        'Provide it via --dart-define=FIREBASE_EMAIL=... (recommended), '
-        'or via a .env file when running locally.',
-      );
+    // Debug mode: use debug_config.dart
+    if (kDebugMode) {
+      return DebugConfig.firebaseEmail;
     }
-    return email;
+
+    // Release mode without configuration
+    throw Exception(
+      'FIREBASE_EMAIL is not configured for production. '
+      'Provide it via --dart-define=FIREBASE_EMAIL=... when building for release.',
+    );
   }
 
   /// Firebase password credential.
+  /// In debug mode, uses debug_config.dart (gitignored).
+  /// In release/profile mode, requires --dart-define=FIREBASE_PASSWORD=...
   static String get firebasePassword {
+    // Production/release build: use dart-define
     if (_dartDefineFirebasePassword.isNotEmpty) {
       return _dartDefineFirebasePassword;
     }
 
-    final password = dotenv.env['FIREBASE_PASSWORD'];
-    if (password == null || password.isEmpty) {
-      throw Exception(
-        'FIREBASE_PASSWORD is not configured. '
-        'Provide it via --dart-define=FIREBASE_PASSWORD=... (recommended), '
-        'or via a .env file when running locally.',
-      );
+    // Debug mode: use debug_config.dart
+    if (kDebugMode) {
+      return DebugConfig.firebasePassword;
     }
-    return password;
+
+    // Release mode without configuration
+    throw Exception(
+      'FIREBASE_PASSWORD is not configured for production. '
+      'Provide it via --dart-define=FIREBASE_PASSWORD=... when building for release.',
+    );
   }
 }

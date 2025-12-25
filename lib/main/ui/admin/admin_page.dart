@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/usecases/add_blog_post.dart';
 import 'package:portfolio/main/domain/usecases/add_education.dart';
@@ -20,6 +21,7 @@ class AdminPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final logger = locator<AppLogger>();
     return BlocProvider(
       create: (context) => AdminBloc(
         authenticateAdmin: locator<AuthenticateAdmin>(),
@@ -30,13 +32,17 @@ class AdminPage extends StatelessWidget {
         addEducation: locator<AddEducation>(),
         addPosition: locator<AddPosition>(),
       )..add(const CheckAdminAuth()),
-      child: const _AdminPageContent(),
+      child: _AdminPageContent(logger: logger),
     );
   }
 }
 
 class _AdminPageContent extends StatelessWidget {
-  const _AdminPageContent();
+  const _AdminPageContent({
+    required this.logger,
+  });
+
+  final AppLogger logger;
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +61,23 @@ class _AdminPageContent extends StatelessWidget {
               context.read<AdminBloc>().add(
                     AuthenticateAdminEvent(email: email, password: password),
                   );
-            } catch (e) {
+            } catch (e, stackTrace) {
+              final errorMessage = e is Exception
+                  ? e.toString().replaceFirst('Exception: ', '')
+                  : 'Authentication configuration error: $e';
+
+              logger.error(
+                errorMessage,
+                e,
+                stackTrace,
+                'AdminPage',
+              );
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Auth config error: $e'),
+                  content: Text(errorMessage),
                   backgroundColor: Colors.red,
+                  duration: const Duration(seconds: 5),
                 ),
               );
             }

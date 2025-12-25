@@ -61,7 +61,9 @@ abstract class BaseRepository<T, RemoteDataSource, LocalDataSource> {
 
     // 1. Check in-memory cache first (fastest)
     if (_memoryCache != null && _memoryCache!.isNotEmpty) {
-      logger.debug('Emitting ${_memoryCache!.length} $entityName from memory cache', 'BaseRepository');
+      logger.debug(
+          'Emitting ${_memoryCache!.length} $entityName from memory cache',
+          'BaseRepository');
       yield _memoryCache!;
       hasEmittedData = true;
     }
@@ -70,13 +72,16 @@ abstract class BaseRepository<T, RemoteDataSource, LocalDataSource> {
     try {
       final localData = await fetchFromLocal();
       if (localData.isNotEmpty) {
-        logger.debug('Emitting ${localData.length} $entityName from local storage', 'BaseRepository');
+        logger.debug(
+            'Emitting ${localData.length} $entityName from local storage',
+            'BaseRepository');
         _memoryCache = localData; // Cache in memory for next time
         yield localData;
         hasEmittedData = true;
       }
     } catch (e, stackTrace) {
-      logger.error('Error reading $entityName from local storage', e, stackTrace, 'BaseRepository');
+      logger.error('Error reading $entityName from local storage', e,
+          stackTrace, 'BaseRepository');
     }
 
     // 3. Fetch from remote static_data source (slowest, but most up-to-date)
@@ -84,17 +89,20 @@ abstract class BaseRepository<T, RemoteDataSource, LocalDataSource> {
       final remoteData = await fetchFromRemote();
 
       if (remoteData.isNotEmpty) {
-        logger.debug('Emitting ${remoteData.length} $entityName from remote source', 'BaseRepository');
+        logger.debug(
+            'Emitting ${remoteData.length} $entityName from remote source',
+            'BaseRepository');
 
         // Cache the remote static_data in both memory and local storage
         _memoryCache = remoteData;
 
         try {
           await saveToLocal(remoteData);
-          logger.debug('Cached ${remoteData.length} $entityName to local storage', 'BaseRepository');
         } catch (e, stackTrace) {
-          logger.warning('Failed to cache $entityName locally', 'BaseRepository');
-          logger.error('Cache failure details', e, stackTrace, 'BaseRepository');
+          logger.warning(
+              'Failed to cache $entityName locally', 'BaseRepository');
+          logger.error(
+              'Cache failure details', e, stackTrace, 'BaseRepository');
           // Don't fail the operation if caching fails
         }
 
@@ -108,7 +116,8 @@ abstract class BaseRepository<T, RemoteDataSource, LocalDataSource> {
         yield [];
       }
     } catch (e, stackTrace) {
-      logger.error('Error fetching $entityName from remote static_data source', e, stackTrace, 'BaseRepository');
+      logger.error('Error fetching $entityName from remote static_data source',
+          e, stackTrace, 'BaseRepository');
       // If everything fails and nothing was emitted, return empty list
       if (!hasEmittedData) {
         yield [];
@@ -125,9 +134,9 @@ abstract class BaseRepository<T, RemoteDataSource, LocalDataSource> {
     _memoryCache = null;
     try {
       await clearLocalCache();
-      logger.debug('All caches cleared', 'BaseRepository');
     } catch (e, stackTrace) {
-      logger.error('Error clearing local cache', e, stackTrace, 'BaseRepository');
+      logger.error(
+          'Error clearing local cache', e, stackTrace, 'BaseRepository');
     }
   }
 
