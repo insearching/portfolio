@@ -28,9 +28,11 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
       // Remove existing post with same title if exists
       _cache.removeWhere((p) => p.title == post.title);
       _cache.add(post);
-      logger.debug('Post cached successfully in memory (web)', 'PostsLocalDataSourceWeb');
+      logger.debug('Post cached successfully in memory (web)',
+          'PostsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error caching post in memory', e, stackTrace, 'PostsLocalDataSourceWeb');
+      logger.error('Error caching post in memory', e, stackTrace,
+          'PostsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -40,9 +42,11 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(posts);
-      logger.debug('${posts.length} posts cached successfully in memory (web)', 'PostsLocalDataSourceWeb');
+      logger.debug('${posts.length} posts cached successfully in memory (web)',
+          'PostsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error caching posts in memory', e, stackTrace, 'PostsLocalDataSourceWeb');
+      logger.error('Error caching posts in memory', e, stackTrace,
+          'PostsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -52,7 +56,8 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
     try {
       return List.from(_cache);
     } catch (e, stackTrace) {
-      logger.error('Error getting cached posts from memory', e, stackTrace, 'PostsLocalDataSourceWeb');
+      logger.error('Error getting cached posts from memory', e, stackTrace,
+          'PostsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -61,9 +66,11 @@ class PostsLocalDataSourceWebImpl implements PostsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      logger.debug('Posts cache cleared successfully (web)', 'PostsLocalDataSourceWeb');
+      logger.debug(
+          'Posts cache cleared successfully (web)', 'PostsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error clearing posts cache', e, stackTrace, 'PostsLocalDataSourceWeb');
+      logger.error('Error clearing posts cache', e, stackTrace,
+          'PostsLocalDataSourceWeb');
       rethrow;
     }
   }

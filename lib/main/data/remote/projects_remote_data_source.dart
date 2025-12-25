@@ -14,7 +14,7 @@ abstract class ProjectsRemoteDataSource {
 
 class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
   ProjectsRemoteDataSourceImpl({
-required this.firebaseDatabaseReference,
+    required this.firebaseDatabaseReference,
     required this.logger,
   });
 
@@ -29,9 +29,11 @@ required this.firebaseDatabaseReference,
     try {
       final model = projectRemoteModelFromDomain(project);
       await projectsCollection.push().set(model.toJson());
-      logger.debug('Project added successfully to Firebase', 'ProjectsRemoteDataSource');
+      logger.debug(
+          'Project added successfully to Firebase', 'ProjectsRemoteDataSource');
     } catch (e, stackTrace) {
-      logger.error('Error adding project to Firebase', e, stackTrace, 'ProjectsRemoteDataSource');
+      logger.error('Error adding project to Firebase', e, stackTrace,
+          'ProjectsRemoteDataSource');
       rethrow;
     }
   }
@@ -50,10 +52,12 @@ required this.firebaseDatabaseReference,
           .map((m) => m.toDomain())
           .toList();
 
-      logger.debug('Loaded ${projects.length} projects from Firebase', 'ProjectsRemoteDataSource');
+      logger.debug('Loaded ${projects.length} projects from Firebase',
+          'ProjectsRemoteDataSource');
       return projects;
     } catch (e, stackTrace) {
-      logger.error('Error parsing projects from Firebase', e, stackTrace, 'ProjectsRemoteDataSource');
+      logger.error('Error parsing projects from Firebase', e, stackTrace,
+          'ProjectsRemoteDataSource');
       rethrow;
     }
   }

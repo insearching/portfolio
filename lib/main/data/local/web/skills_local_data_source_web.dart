@@ -28,9 +28,11 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
       // Remove existing skill with same title if exists
       _cache.removeWhere((s) => s.title == skill.title);
       _cache.add(skill);
-      logger.debug('Skill cached successfully in memory (web)', 'SkillsLocalDataSourceWeb');
+      logger.debug('Skill cached successfully in memory (web)',
+          'SkillsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error caching skill in memory', e, stackTrace, 'SkillsLocalDataSourceWeb');
+      logger.error('Error caching skill in memory', e, stackTrace,
+          'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -40,9 +42,12 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(skills);
-      logger.debug('${skills.length} skills cached successfully in memory (web)', 'SkillsLocalDataSourceWeb');
+      logger.debug(
+          '${skills.length} skills cached successfully in memory (web)',
+          'SkillsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error caching skills in memory', e, stackTrace, 'SkillsLocalDataSourceWeb');
+      logger.error('Error caching skills in memory', e, stackTrace,
+          'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -52,7 +57,8 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
     try {
       return List.from(_cache);
     } catch (e, stackTrace) {
-      logger.error('Error getting cached skills from memory', e, stackTrace, 'SkillsLocalDataSourceWeb');
+      logger.error('Error getting cached skills from memory', e, stackTrace,
+          'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -61,9 +67,11 @@ class SkillsLocalDataSourceWebImpl implements SkillsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      logger.debug('Skills cache cleared successfully (web)', 'SkillsLocalDataSourceWeb');
+      logger.debug('Skills cache cleared successfully (web)',
+          'SkillsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error clearing skills cache', e, stackTrace, 'SkillsLocalDataSourceWeb');
+      logger.error('Error clearing skills cache', e, stackTrace,
+          'SkillsLocalDataSourceWeb');
       rethrow;
     }
   }

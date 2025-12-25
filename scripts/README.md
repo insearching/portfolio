@@ -1,6 +1,37 @@
+# Scripts Directory
+
+This directory contains utility scripts and Git hooks for the Portfolio project.
+
+## Git Hooks
+
+### Installing Git Hooks
+
+To install the Git hooks for this project, run:
+
+```bash
+./scripts/install-hooks.sh
+```
+
+Or from the project root:
+
+```bash
+bash scripts/install-hooks.sh
+```
+
+### Available Hooks
+
+**pre-commit**: Checks Dart code formatting before allowing commits. The hook will:
+- Run `dart format --output=none --set-exit-if-changed .`
+- Block the commit if any files need formatting
+- Allow the commit if all files are properly formatted
+
+If the commit is blocked, simply run `dart format .`, stage the changes, and commit again.
+
+---
+
 # Firebase Skills Seeding
 
-This directory contains documentation for seeding skills data to Firebase Realtime Database.
+This section contains documentation for seeding skills data to Firebase Realtime Database.
 
 ## Quick Start
 

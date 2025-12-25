@@ -15,7 +15,7 @@ abstract class PersonalInfoRemoteDataSource {
 
 class PersonalInfoRemoteDataSourceImpl implements PersonalInfoRemoteDataSource {
   PersonalInfoRemoteDataSourceImpl({
-required this.firebaseDatabaseReference,
+    required this.firebaseDatabaseReference,
     FirebaseAuth? firebaseAuth,
     String? firebaseEmail,
     String? firebasePassword,
@@ -44,16 +44,19 @@ required this.firebaseDatabaseReference,
 
       if (rawData is Map) {
         final data = Map<String, dynamic>.from(rawData);
-        logger.debug('Loaded personal info from Firebase', 'PersonalInfoRemoteDataSource');
+        logger.debug('Loaded personal info from Firebase',
+            'PersonalInfoRemoteDataSource');
 
         final model = personalInfoRemoteModelFromJson(data);
         return model.toDomain();
       }
 
-      logger.debug('Unexpected data format for personal info in Firebase', 'PersonalInfoRemoteDataSource');
+      logger.debug('Unexpected data format for personal info in Firebase',
+          'PersonalInfoRemoteDataSource');
       return null;
     } catch (e, stackTrace) {
-      logger.error('Error parsing personal info from Firebase', e, stackTrace, 'PersonalInfoRemoteDataSource');
+      logger.error('Error parsing personal info from Firebase', e, stackTrace,
+          'PersonalInfoRemoteDataSource');
       rethrow;
     }
   }
@@ -67,25 +70,29 @@ required this.firebaseDatabaseReference,
 
       // If not authenticated, sign in with credentials from .env
       if (currentUser == null) {
-        logger.debug('Authenticating with Firebase...', 'PersonalInfoRemoteDataSource');
+        logger.debug(
+            'Authenticating with Firebase...', 'PersonalInfoRemoteDataSource');
         await auth.signInWithEmailAndPassword(
           email: _firebaseEmail ?? EnvConfig.firebaseEmail,
           password: _firebasePassword ?? EnvConfig.firebasePassword,
         );
-        logger.debug('Firebase authentication successful', 'PersonalInfoRemoteDataSource');
+        logger.debug('Firebase authentication successful',
+            'PersonalInfoRemoteDataSource');
       }
 
       // Write data to Firebase Realtime Database
       final personalInfoRef = firebaseDatabaseReference.child(_collectionName);
       final model = personalInfoRemoteModelFromDomain(info);
       await personalInfoRef.set(model.toJson());
-      logger.debug('Personal info written to Firebase successfully', 'PersonalInfoRemoteDataSource');
+      logger.debug('Personal info written to Firebase successfully',
+          'PersonalInfoRemoteDataSource');
 
       // Sign out after writing for security
       await auth.signOut();
       logger.debug('Signed out from Firebase', 'PersonalInfoRemoteDataSource');
     } catch (e, stackTrace) {
-      logger.error('Error writing personal info to Firebase', e, stackTrace, 'PersonalInfoRemoteDataSource');
+      logger.error('Error writing personal info to Firebase', e, stackTrace,
+          'PersonalInfoRemoteDataSource');
       rethrow;
     }
   }

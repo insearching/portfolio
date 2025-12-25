@@ -35,7 +35,8 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
 
     // 1. Check in-memory cache first (fastest)
     if (_memoryCache != null) {
-      logger.debug('Emitting personal info from memory cache', 'PersonalInfoRepository');
+      logger.debug(
+          'Emitting personal info from memory cache', 'PersonalInfoRepository');
       yield _memoryCache;
       hasEmittedData = true;
     }
@@ -44,13 +45,15 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
     try {
       final localData = await localDataSource.getPersonalInfo();
       if (localData != null) {
-        logger.debug('Emitting personal info from local storage', 'PersonalInfoRepository');
+        logger.debug('Emitting personal info from local storage',
+            'PersonalInfoRepository');
         _memoryCache = localData; // Cache in memory for next time
         yield localData;
         hasEmittedData = true;
       }
     } catch (e, stackTrace) {
-      logger.error('Error reading personal info from local storage', e, stackTrace, 'PersonalInfoRepository');
+      logger.error('Error reading personal info from local storage', e,
+          stackTrace, 'PersonalInfoRepository');
     }
 
     // 3. Fetch from remote data source (slowest, but most up-to-date)
@@ -58,17 +61,21 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
       final remoteData = await remoteDataSource.readPersonalInfo();
 
       if (remoteData != null) {
-        logger.debug('Emitting personal info from remote source', 'PersonalInfoRepository');
+        logger.debug('Emitting personal info from remote source',
+            'PersonalInfoRepository');
 
         // Cache the remote data in both memory and local storage
         _memoryCache = remoteData;
 
         try {
           await localDataSource.savePersonalInfo(remoteData);
-          logger.debug('Cached personal info to local storage', 'PersonalInfoRepository');
+          logger.debug('Cached personal info to local storage',
+              'PersonalInfoRepository');
         } catch (e, stackTrace) {
-          logger.warning('Failed to cache personal info locally', 'PersonalInfoRepository');
-          logger.error('Cache failure details', e, stackTrace, 'PersonalInfoRepository');
+          logger.warning('Failed to cache personal info locally',
+              'PersonalInfoRepository');
+          logger.error(
+              'Cache failure details', e, stackTrace, 'PersonalInfoRepository');
           // Don't fail the operation if caching fails
         }
 
@@ -82,7 +89,8 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
         yield null;
       }
     } catch (e, stackTrace) {
-      logger.error('Error fetching personal info from remote data source', e, stackTrace, 'PersonalInfoRepository');
+      logger.error('Error fetching personal info from remote data source', e,
+          stackTrace, 'PersonalInfoRepository');
       // If everything fails and nothing was emitted, return null
       if (!hasEmittedData) {
         yield null;
@@ -104,7 +112,8 @@ class PersonalInfoRepositoryImpl implements PersonalInfoRepository {
       await localDataSource.clearCache();
       logger.debug('Personal info caches cleared', 'PersonalInfoRepository');
     } catch (e, stackTrace) {
-      logger.error('Error clearing personal info local cache', e, stackTrace, 'PersonalInfoRepository');
+      logger.error('Error clearing personal info local cache', e, stackTrace,
+          'PersonalInfoRepository');
     }
   }
 

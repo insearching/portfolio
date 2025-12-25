@@ -9,18 +9,20 @@ class FakeDatabase implements Database {
       _tables.putIfAbsent(name, () => <Map<String, Object?>>[]);
 
   @override
-  Future<int> insert(String table,
-      Map<String, Object?> values, {
-        String? nullColumnHack,
-        ConflictAlgorithm? conflictAlgorithm,
-      }) async {
+  Future<int> insert(
+    String table,
+    Map<String, Object?> values, {
+    String? nullColumnHack,
+    ConflictAlgorithm? conflictAlgorithm,
+  }) async {
     _autoId++;
     _table(table).add(Map<String, Object?>.from(values));
     return _autoId;
   }
 
   @override
-  Future<int> delete(String table, {
+  Future<int> delete(
+    String table, {
     String? where,
     List<Object?>? whereArgs,
   }) async {
@@ -31,7 +33,8 @@ class FakeDatabase implements Database {
   }
 
   @override
-  Future<List<Map<String, Object?>>> query(String table, {
+  Future<List<Map<String, Object?>>> query(
+    String table, {
     bool? distinct,
     List<String>? columns,
     String? where,
@@ -72,7 +75,8 @@ class FakeBatch implements Batch {
   final List<void Function()> _ops = [];
 
   @override
-  void delete(String table, {
+  void delete(
+    String table, {
     String? where,
     List<Object?>? whereArgs,
   }) {
@@ -80,11 +84,12 @@ class FakeBatch implements Batch {
   }
 
   @override
-  void insert(String table,
-      Map<String, Object?> values, {
-        String? nullColumnHack,
-        ConflictAlgorithm? conflictAlgorithm,
-      }) {
+  void insert(
+    String table,
+    Map<String, Object?> values, {
+    String? nullColumnHack,
+    ConflictAlgorithm? conflictAlgorithm,
+  }) {
     _ops.add(() => _db._applyBatchInsert(table, values));
   }
 

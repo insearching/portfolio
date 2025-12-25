@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ContainerTitle extends StatelessWidget {
-  const ContainerTitle({required this.title, required this.subtitle, super.key});
+  const ContainerTitle(
+      {required this.title, required this.subtitle, super.key});
 
   final String title;
 
@@ -11,7 +12,8 @@ class ContainerTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(subtitle.toUpperCase(), style: Theme.of(context).textTheme.headlineMedium),
+        Text(subtitle.toUpperCase(),
+            style: Theme.of(context).textTheme.headlineMedium),
         const SizedBox(height: 32.0),
         Text(
           title,

@@ -49,7 +49,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '178608639812',
     projectId: 'serhii-hrabas',
     authDomain: 'serhii-hrabas.firebaseapp.com',
-    databaseURL: 'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'serhii-hrabas.firebasestorage.app',
     measurementId: 'G-44355B5T6V',
   );
@@ -59,7 +60,8 @@ class DefaultFirebaseOptions {
     appId: '1:178608639812:android:e8aacdc1e658e2a474d111',
     messagingSenderId: '178608639812',
     projectId: 'serhii-hrabas',
-    databaseURL: 'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'serhii-hrabas.firebasestorage.app',
   );
 
@@ -68,7 +70,8 @@ class DefaultFirebaseOptions {
     appId: '1:178608639812:ios:302b23c862cc4c1d74d111',
     messagingSenderId: '178608639812',
     projectId: 'serhii-hrabas',
-    databaseURL: 'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'serhii-hrabas.firebasestorage.app',
     iosBundleId: 'com.insearching.portfolio',
   );
@@ -78,7 +81,8 @@ class DefaultFirebaseOptions {
     appId: '1:178608639812:ios:302b23c862cc4c1d74d111',
     messagingSenderId: '178608639812',
     projectId: 'serhii-hrabas',
-    databaseURL: 'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://serhii-hrabas-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'serhii-hrabas.firebasestorage.app',
     iosBundleId: 'com.insearching.portfolio',
   );

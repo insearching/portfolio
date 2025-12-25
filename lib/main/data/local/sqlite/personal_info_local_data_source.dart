@@ -49,7 +49,8 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
       );
       logger.debug('Personal info cached successfully in SQLite', _tag);
     } catch (e, stackTrace) {
-      logger.error('Error caching personal info in SQLite', e, stackTrace, _tag);
+      logger.error(
+          'Error caching personal info in SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }
@@ -82,7 +83,8 @@ class PersonalInfoLocalDataSourceImpl implements PersonalInfoLocalDataSource {
         socials: socials,
       );
     } catch (e, stackTrace) {
-      logger.error('Error getting cached personal info from SQLite', e, stackTrace, _tag);
+      logger.error('Error getting cached personal info from SQLite', e,
+          stackTrace, _tag);
       rethrow;
     }
   }

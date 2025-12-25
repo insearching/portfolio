@@ -14,7 +14,7 @@ abstract class PositionsRemoteDataSource {
 
 class PositionsRemoteDataSourceImpl implements PositionsRemoteDataSource {
   PositionsRemoteDataSourceImpl({
-required this.firebaseDatabaseReference,
+    required this.firebaseDatabaseReference,
     required this.logger,
   });
 
@@ -30,9 +30,11 @@ required this.firebaseDatabaseReference,
     try {
       final model = positionRemoteModelFromDomain(position);
       await positionsCollection.push().set(model.toJson());
-      logger.debug('Position added successfully to Firebase', 'PositionsRemoteDataSource');
+      logger.debug('Position added successfully to Firebase',
+          'PositionsRemoteDataSource');
     } catch (e, stackTrace) {
-      logger.error('Error adding position to Firebase', e, stackTrace, 'PositionsRemoteDataSource');
+      logger.error('Error adding position to Firebase', e, stackTrace,
+          'PositionsRemoteDataSource');
       rethrow;
     }
   }
@@ -52,10 +54,12 @@ required this.firebaseDatabaseReference,
           .map((m) => m.toDomain())
           .toList();
 
-      logger.debug('Loaded ${positions.length} positions from Firebase', 'PositionsRemoteDataSource');
+      logger.debug('Loaded ${positions.length} positions from Firebase',
+          'PositionsRemoteDataSource');
       return positions;
     } catch (e, stackTrace) {
-      logger.error('Error parsing positions from Firebase', e, stackTrace, 'PositionsRemoteDataSource');
+      logger.error('Error parsing positions from Firebase', e, stackTrace,
+          'PositionsRemoteDataSource');
       rethrow;
     }
   }

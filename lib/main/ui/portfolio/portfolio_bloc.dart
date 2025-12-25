@@ -18,7 +18,7 @@ import 'package:portfolio/core/logger/app_logger.dart';
 /// Supports progressive loading: cached data appears first, then remote updates
 class PortfolioBloc extends Bloc<PortfolioEvent, PortfolioState> {
   PortfolioBloc({
-required this.portfolioRepository,
+    required this.portfolioRepository,
     required this.getEducationStream,
     required this.getProjectsStream,
     required this.getPostsStream,
@@ -64,7 +64,8 @@ required this.portfolioRepository,
     getPersonalInfoStream().listen(
       (personalInfo) => add(PersonalInfoUpdated(personalInfo)),
       onError: (error) {
-        logger.error('Error loading personal info: $error', null, null, 'PortfolioBloc');
+        logger.error(
+            'Error loading personal info: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -72,7 +73,8 @@ required this.portfolioRepository,
     getPostsStream().listen(
       (posts) => add(PostsUpdated(posts)),
       onError: (error) {
-        logger.error('Error loading posts: $error', null, null, 'PortfolioBloc');
+        logger.error(
+            'Error loading posts: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -80,7 +82,8 @@ required this.portfolioRepository,
     getPositionsStream().listen(
       (positions) => add(PositionsUpdated(positions)),
       onError: (error) {
-        logger.error('Error loading positions: $error', null, null, 'PortfolioBloc');
+        logger.error(
+            'Error loading positions: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -88,7 +91,8 @@ required this.portfolioRepository,
     getProjectsStream().listen(
       (projects) => add(ProjectsUpdated(projects)),
       onError: (error) {
-        logger.error('Error loading projects: $error', null, null, 'PortfolioBloc');
+        logger.error(
+            'Error loading projects: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -96,7 +100,8 @@ required this.portfolioRepository,
     getEducationStream().listen(
       (education) => add(EducationUpdated(education)),
       onError: (error) {
-        logger.error('Error loading education: $error', null, null, 'PortfolioBloc');
+        logger.error(
+            'Error loading education: $error', null, null, 'PortfolioBloc');
       },
     );
 
@@ -104,7 +109,8 @@ required this.portfolioRepository,
     getSkillsStream().listen(
       (skills) => add(SkillsUpdated(skills)),
       onError: (error) {
-        logger.error('Error loading skills: $error', null, null, 'PortfolioBloc');
+        logger.error(
+            'Error loading skills: $error', null, null, 'PortfolioBloc');
       },
     );
   }

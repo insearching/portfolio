@@ -14,7 +14,7 @@ abstract class SkillsRemoteDataSource {
 
 class SkillsRemoteDataSourceImpl implements SkillsRemoteDataSource {
   SkillsRemoteDataSourceImpl({
-required this.firebaseDatabaseReference,
+    required this.firebaseDatabaseReference,
     required this.logger,
   });
 
@@ -29,9 +29,11 @@ required this.firebaseDatabaseReference,
     try {
       final model = skillRemoteModelFromDomain(skill);
       await skillsCollection.push().set(model.toJson());
-      logger.debug('Skill added successfully to Firebase', 'SkillsRemoteDataSource');
+      logger.debug(
+          'Skill added successfully to Firebase', 'SkillsRemoteDataSource');
     } catch (e, stackTrace) {
-      logger.error('Error adding skill to Firebase', e, stackTrace, 'SkillsRemoteDataSource');
+      logger.error('Error adding skill to Firebase', e, stackTrace,
+          'SkillsRemoteDataSource');
       rethrow;
     }
   }
@@ -50,10 +52,12 @@ required this.firebaseDatabaseReference,
           .map((m) => m.toDomain())
           .toList();
 
-      logger.debug('Loaded ${skills.length} skills from Firebase', 'SkillsRemoteDataSource');
+      logger.debug('Loaded ${skills.length} skills from Firebase',
+          'SkillsRemoteDataSource');
       return skills;
     } catch (e, stackTrace) {
-      logger.error('Error parsing skills from Firebase', e, stackTrace, 'SkillsRemoteDataSource');
+      logger.error('Error parsing skills from Firebase', e, stackTrace,
+          'SkillsRemoteDataSource');
       rethrow;
     }
   }

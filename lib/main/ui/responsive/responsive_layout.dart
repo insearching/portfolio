@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ResponsiveLayout extends StatelessWidget {
   final Widget mobileScaffold;
-  final Widget tabletScaffold; 
+  final Widget tabletScaffold;
   final Widget desktopScaffold;
 
   const ResponsiveLayout({

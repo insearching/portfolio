@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Pre-commit hook to check Dart formatting
+# This hook will fail the commit if any Dart files need formatting
+
+echo "Running dart format check..."
+
+# Check if any files need formatting without modifying them
+# --output=none: Don't output formatted code
+# --set-exit-if-changed: Exit with code 1 if formatting would change files
+if ! dart format --output=none --set-exit-if-changed .; then
+  echo "❌ Commit rejected: Code is not properly formatted!"
+  echo ""
+  echo "Please run 'dart format .' to format your code, then commit again:"
+  echo "  dart format ."
+  echo "  git add ."
+  echo "  git commit"
+  exit 1
+fi
+
+echo "✅ All Dart files are properly formatted"
+exit 0

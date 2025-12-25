@@ -2,11 +2,11 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import '../platform_config.dart';
 
 /// Web-specific platform configuration
-/// 
+///
 /// This implementation handles web-specific initialization such as:
 /// - URL strategy configuration (removes # from URLs)
 /// - Web-specific plugins setup
-/// 
+///
 /// This class should only be instantiated on web platforms.
 class WebPlatformConfig implements PlatformConfig {
   @override

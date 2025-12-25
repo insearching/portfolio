@@ -14,7 +14,7 @@ abstract class EducationRemoteDataSource {
 
 class EducationRemoteDataSourceImpl implements EducationRemoteDataSource {
   EducationRemoteDataSourceImpl({
-required this.firebaseDatabaseReference,
+    required this.firebaseDatabaseReference,
     required this.logger,
   });
 
@@ -30,9 +30,11 @@ required this.firebaseDatabaseReference,
     try {
       final model = educationRemoteModelFromDomain(education);
       await educationCollection.push().set(model.toJson());
-      logger.debug('Education record added successfully to Firebase', 'EducationRemoteDataSource');
+      logger.debug('Education record added successfully to Firebase',
+          'EducationRemoteDataSource');
     } catch (e, stackTrace) {
-      logger.error('Error adding education record to Firebase', e, stackTrace, 'EducationRemoteDataSource');
+      logger.error('Error adding education record to Firebase', e, stackTrace,
+          'EducationRemoteDataSource');
       rethrow;
     }
   }
@@ -52,10 +54,13 @@ required this.firebaseDatabaseReference,
           .map((m) => m.toDomain())
           .toList();
 
-      logger.debug('Loaded ${educationList.length} education records from Firebase', 'EducationRemoteDataSource');
+      logger.debug(
+          'Loaded ${educationList.length} education records from Firebase',
+          'EducationRemoteDataSource');
       return educationList;
     } catch (e, stackTrace) {
-      logger.error('Error parsing education records from Firebase', e, stackTrace, 'EducationRemoteDataSource');
+      logger.error('Error parsing education records from Firebase', e,
+          stackTrace, 'EducationRemoteDataSource');
       rethrow;
     }
   }

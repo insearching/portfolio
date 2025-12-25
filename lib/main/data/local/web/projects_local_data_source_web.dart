@@ -28,9 +28,11 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
       // Remove existing project with same title if exists
       _cache.removeWhere((p) => p.title == project.title);
       _cache.add(project);
-      logger.debug('Project cached successfully in memory (web)', 'ProjectsLocalDataSourceWeb');
+      logger.debug('Project cached successfully in memory (web)',
+          'ProjectsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error caching project in memory', e, stackTrace, 'ProjectsLocalDataSourceWeb');
+      logger.error('Error caching project in memory', e, stackTrace,
+          'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -40,9 +42,12 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
     try {
       _cache.clear();
       _cache.addAll(projects);
-      logger.debug('${projects.length} projects cached successfully in memory (web)', 'ProjectsLocalDataSourceWeb');
+      logger.debug(
+          '${projects.length} projects cached successfully in memory (web)',
+          'ProjectsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error caching projects in memory', e, stackTrace, 'ProjectsLocalDataSourceWeb');
+      logger.error('Error caching projects in memory', e, stackTrace,
+          'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -52,7 +57,8 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
     try {
       return List.from(_cache);
     } catch (e, stackTrace) {
-      logger.error('Error getting cached projects from memory', e, stackTrace, 'ProjectsLocalDataSourceWeb');
+      logger.error('Error getting cached projects from memory', e, stackTrace,
+          'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }
@@ -61,9 +67,11 @@ class ProjectsLocalDataSourceWebImpl implements ProjectsLocalDataSourceWeb {
   Future<void> clearCache() async {
     try {
       _cache.clear();
-      logger.debug('Projects cache cleared successfully (web)', 'ProjectsLocalDataSourceWeb');
+      logger.debug('Projects cache cleared successfully (web)',
+          'ProjectsLocalDataSourceWeb');
     } catch (e, stackTrace) {
-      logger.error('Error clearing projects cache', e, stackTrace, 'ProjectsLocalDataSourceWeb');
+      logger.error('Error clearing projects cache', e, stackTrace,
+          'ProjectsLocalDataSourceWeb');
       rethrow;
     }
   }

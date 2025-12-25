@@ -89,7 +89,8 @@ class PostsLocalDataSourceImpl implements PostsLocalDataSource {
         );
       });
     } catch (e, stackTrace) {
-      logger.error('Error getting cached posts from SQLite', e, stackTrace, _tag);
+      logger.error(
+          'Error getting cached posts from SQLite', e, stackTrace, _tag);
       rethrow;
     }
   }

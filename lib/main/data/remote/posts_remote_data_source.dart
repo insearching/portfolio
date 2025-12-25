@@ -14,7 +14,7 @@ abstract class PostsRemoteDataSource {
 
 class PostsRemoteDataSourceImpl implements PostsRemoteDataSource {
   PostsRemoteDataSourceImpl({
-required this.firebaseDatabaseReference,
+    required this.firebaseDatabaseReference,
     required this.logger,
   });
 
@@ -29,9 +29,11 @@ required this.firebaseDatabaseReference,
     try {
       final model = postRemoteModelFromDomain(post);
       await postsCollection.push().set(model.toJson());
-      logger.debug('Post added successfully to Firebase', 'PostsRemoteDataSource');
+      logger.debug(
+          'Post added successfully to Firebase', 'PostsRemoteDataSource');
     } catch (e, stackTrace) {
-      logger.error('Error adding post to Firebase', e, stackTrace, 'PostsRemoteDataSource');
+      logger.error('Error adding post to Firebase', e, stackTrace,
+          'PostsRemoteDataSource');
       rethrow;
     }
   }
@@ -50,10 +52,12 @@ required this.firebaseDatabaseReference,
           .map((m) => m.toDomain())
           .toList();
 
-      logger.debug('Loaded ${posts.length} posts from Firebase', 'PostsRemoteDataSource');
+      logger.debug('Loaded ${posts.length} posts from Firebase',
+          'PostsRemoteDataSource');
       return posts;
     } catch (e, stackTrace) {
-      logger.error('Error parsing posts from Firebase', e, stackTrace, 'PostsRemoteDataSource');
+      logger.error('Error parsing posts from Firebase', e, stackTrace,
+          'PostsRemoteDataSource');
       rethrow;
     }
   }
