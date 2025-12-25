@@ -50,5 +50,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-lib/utils/debug_config.dart
-/lib/utils/debug_config.example.dart
+
+# Firebase Remote Config - Debug implementation (gitignored, contains real credentials)
+lib/core/config/debug_firebase_remote_config.dart
