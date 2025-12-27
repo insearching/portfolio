@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
@@ -5,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:portfolio/core/config/debug_firebase_remote_config.dart';
 import 'package:portfolio/core/config/firebase_remote_config.dart';
 import 'package:portfolio/core/config/stub_firebase_remote_config.dart';
-// Import debug config using try-catch pattern at registration time
 import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/core/logger/debug_logger.dart';
 import 'package:portfolio/core/logger/release_logger.dart';
@@ -77,19 +78,67 @@ import 'package:sqflite/sqflite.dart';
 
 final GetIt locator = GetIt.instance;
 
+/// Detects if the app is running in a CI/CD environment
+///
+/// Checks common CI environment variables to determine if running in CI:
+/// - CI (generic)
+/// - CONTINUOUS_INTEGRATION (generic)
+/// - GITHUB_ACTIONS (GitHub Actions)
+/// - GITLAB_CI (GitLab CI)
+/// - CIRCLECI (CircleCI)
+/// - TRAVIS (Travis CI)
+/// - JENKINS_HOME (Jenkins)
+bool _isRunningInCI() {
+  if (kIsWeb) return false; // Web doesn't have access to environment variables
+
+  try {
+    final env = Platform.environment;
+    return env['CI'] == 'true' ||
+        env['CONTINUOUS_INTEGRATION'] == 'true' ||
+        env['GITHUB_ACTIONS'] == 'true' ||
+        env['GITLAB_CI'] == 'true' ||
+        env['CIRCLECI'] == 'true' ||
+        env['TRAVIS'] == 'true' ||
+        env.containsKey('JENKINS_HOME');
+  } catch (e) {
+    // If we can't access environment variables, assume not in CI
+    return false;
+  }
+}
+
 Future<void> setupLocator() async {
   // Register Logger (Debug or Release implementation based on build mode)
   locator.registerLazySingleton<AppLogger>(
     () => kDebugMode ? DebugLogger() : ReleaseLogger(),
   );
 
-  // Register FirebaseRemoteConfig based on build mode
+  // Register FirebaseRemoteConfig based on build mode and environment
+  // In CI: Always uses StubFirebaseRemoteConfig (committed)
   // In debug mode: uses DebugFirebaseRemoteConfig (gitignored, local only)
-  // In release/CI: uses StubFirebaseRemoteConfig (committed)
+  //                Falls back to StubFirebaseRemoteConfig if placeholders detected
+  // In release (non-CI): uses StubFirebaseRemoteConfig (committed)
   locator.registerLazySingleton<FirebaseRemoteConfig>(
-    () => kDebugMode
-        ? const DebugFirebaseRemoteConfig()
-        : const StubFirebaseRemoteConfig(),
+    () {
+      // Always use stub config in CI environments
+      if (_isRunningInCI()) {
+        return const StubFirebaseRemoteConfig();
+      }
+
+      // In debug mode, try to use debug config if properly configured
+      if (kDebugMode) {
+        const debugConfig = DebugFirebaseRemoteConfig();
+        // Check if debug config has placeholder values
+        if (debugConfig.firebaseEmail.contains('YOUR_FIREBASE') ||
+            debugConfig.firebasePassword.contains('YOUR_FIREBASE')) {
+          // Placeholders detected - use stub config instead
+          return const StubFirebaseRemoteConfig();
+        }
+        return debugConfig;
+      }
+
+      // Release mode (non-CI) - use stub config
+      return const StubFirebaseRemoteConfig();
+    },
   );
 
   // Register SharedPreferences

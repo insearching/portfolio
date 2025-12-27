@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/domain/model/education.dart';
+import 'package:portfolio/main/ui/components/cached_image.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -60,21 +61,19 @@ class EducationContainer extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.0),
                 child: InkWell(
                   onTap: link != null ? () => launchUrlString(link) : null,
-                  child: Image.asset(
-                    imagePath,
+                  child: CachedImage(
+                    imageUrl: imagePath,
                     fit: BoxFit.contain,
                     width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const SizedBox(
-                        height: 80,
-                        child: Center(
-                          child: Icon(
-                            Icons.image_not_supported,
-                            size: 32,
-                          ),
+                    errorWidget: const SizedBox(
+                      height: 80,
+                      child: Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 32,
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   ),
                 ),
               ),

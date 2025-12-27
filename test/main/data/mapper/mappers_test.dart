@@ -44,7 +44,7 @@ void main() {
 
     test('positionRemoteModelFromJson uses default icon when blank', () {
       final model = positionRemoteModelFromJson({'icon': '   '});
-      expect(model.icon, 'assets/img/android.png');
+      expect(model.icon, 'assets/icons/android.png');
     });
 
     test('projectRemoteModelFromJson uses default image when blank', () {

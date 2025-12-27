@@ -23,9 +23,9 @@ class _PortfolioState extends State<Portfolio> {
   @override
   Widget build(BuildContext context) {
     final deviceType = context.read<DeviceInfo>().deviceType;
-    final isPhone = deviceType == DeviceType.phone;
     return Padding(
-      padding: EdgeInsets.only(top: isPhone ? 16.0 : 64.0, bottom: 64.0),
+      padding:
+          EdgeInsets.only(top: deviceType.isPhone ? 16.0 : 64.0, bottom: 64.0),
       child: Column(
         children: [
           Text(
@@ -35,9 +35,9 @@ class _PortfolioState extends State<Portfolio> {
           const SizedBox(height: 32.0),
           GridView.count(
               shrinkWrap: true,
-              crossAxisCount: deviceType == DeviceType.desktop
+              crossAxisCount: deviceType.isDesktop
                   ? 3
-                  : deviceType == DeviceType.tablet
+                  : deviceType.isTablet
                       ? 2
                       : 1,
               children: widget.projects
@@ -45,6 +45,7 @@ class _PortfolioState extends State<Portfolio> {
                     (project) => PortfolioContainer(
                       image: project.image,
                       title: project.title,
+                      showArrow: deviceType.isDesktop,
                       onTap: () => _showDataDialog(
                         project.image,
                         project.title,

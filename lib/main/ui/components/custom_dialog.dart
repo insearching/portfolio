@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
-import 'package:portfolio/main/domain/model/device_type.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 import 'package:portfolio/utils/colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -24,8 +23,7 @@ class CustomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceInfo = locator<DeviceInfo>();
-    final deviceType = deviceInfo.deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
 
     return Dialog(
       shape: const RoundedRectangleBorder(
@@ -36,7 +34,7 @@ class CustomDialog extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       child: Stack(
         children: [
-          deviceType == DeviceType.desktop
+          deviceType.isDesktop
               ? _DesktopDialogContent(
                   image: image,
                   title: title,
@@ -44,7 +42,7 @@ class CustomDialog extends StatelessWidget {
                   description: description,
                   link: link,
                 )
-              : deviceType == DeviceType.tablet
+              : deviceType.isTablet
                   ? _TabletDialogContent(
                       image: image,
                       title: title,

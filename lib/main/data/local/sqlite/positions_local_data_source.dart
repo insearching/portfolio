@@ -86,7 +86,7 @@ class PositionsLocalDataSourceImpl implements PositionsLocalDataSource {
           title: maps[i]['title'] as String? ?? '',
           position: maps[i]['position'] as String? ?? '',
           description: maps[i]['description'] as String? ?? '',
-          icon: maps[i]['icon'] as String? ?? 'assets/img/android.png',
+          icon: maps[i]['icon'] as String? ?? 'assets/icons/android.png',
         );
       });
     } catch (e, stackTrace) {

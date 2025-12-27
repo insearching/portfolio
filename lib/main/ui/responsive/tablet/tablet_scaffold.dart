@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/content.dart';
 import 'package:portfolio/main/ui/menu/drawing_menu.dart';
-import 'package:portfolio/main/ui/responsive/tablet/tablet_content.dart';
 
 class TabletScaffold extends StatefulWidget {
   const TabletScaffold({
@@ -49,7 +49,7 @@ class _TabletScaffoldState extends State<TabletScaffold> {
         behavior: HitTestBehavior.translucent,
         child: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
-          child: TabletContent(
+          child: Content(
             name: widget.name,
             onMessageSend: widget.onMessageSend,
           ),

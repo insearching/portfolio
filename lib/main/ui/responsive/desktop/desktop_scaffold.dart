@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/content.dart';
 import 'package:portfolio/main/ui/menu/drawing_menu.dart';
-import 'package:portfolio/main/ui/responsive/desktop/desktop_content.dart';
 
 class DesktopScaffold extends StatelessWidget {
   const DesktopScaffold({
@@ -33,7 +33,7 @@ class DesktopScaffold extends StatelessWidget {
                 width: 1.0,
                 color: Theme.of(context).dividerColor,
               ),
-              DesktopContent(
+              Content(
                 name: name,
                 onMessageSend: onMessageSend,
               )

@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/core/logger/app_logger.dart';
 import 'package:portfolio/main/di/service_locator.dart';
+import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/domain/repositories/blog_repository.dart';
 import 'package:portfolio/main/domain/repositories/position_repository.dart';
 import 'package:portfolio/main/ui/blog/blog_bloc.dart';
 import 'package:portfolio/main/ui/blog/blog_event.dart';
 import 'package:portfolio/main/ui/blog/blog_state.dart';
+import 'package:portfolio/main/ui/blog/blog_widget.dart';
 import 'package:portfolio/main/ui/components/horizontal_divider.dart';
 import 'package:portfolio/main/ui/contact/contact.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/features/features_widget.dart';
 import 'package:portfolio/main/ui/home.dart';
 import 'package:portfolio/main/ui/menu/keys.dart';
 import 'package:portfolio/main/ui/menu/navigation_menu.dart';
@@ -19,13 +22,11 @@ import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_bloc.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_state.dart';
-import 'package:portfolio/main/ui/responsive/tablet/tablet_blog.dart';
-import 'package:portfolio/main/ui/responsive/tablet/tablet_features.dart';
-import 'package:portfolio/main/ui/responsive/tablet/tablet_resume.dart';
+import 'package:portfolio/main/ui/resume/resume_widget.dart';
 import 'package:portfolio/utils/constants.dart';
 
-class TabletContent extends StatefulWidget {
-  const TabletContent({
+class Content extends StatefulWidget {
+  const Content({
     required this.name,
     required this.onMessageSend,
     super.key,
@@ -35,14 +36,16 @@ class TabletContent extends StatefulWidget {
   final ValueChanged<SubmitContactForm> onMessageSend;
 
   @override
-  State<TabletContent> createState() => _TabletContentState();
+  State<Content> createState() => _ContentState();
 }
 
-class _TabletContentState extends State<TabletContent> {
+class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     final ScrollController controller = ScrollController();
-    return Container(
+    final deviceType = context.read<DeviceInfo>().deviceType;
+
+    final content = Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: SingleChildScrollView(
         controller: controller,
@@ -52,29 +55,38 @@ class _TabletContentState extends State<TabletContent> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Home(
-                key: keys[NavigationMenu.home],
-                name: widget.name,
-                onContactClicked: () {
-                  final context = keys[NavigationMenu.contact]?.currentContext;
-                  if (context != null) {
-                    Scrollable.ensureVisible(
-                      context,
-                      duration: animationDuration,
-                    );
-                  }
-                },
+              Padding(
+                padding: EdgeInsets.only(
+                  top: deviceType.isDesktop ? 64.0 : 16.0,
+                  bottom: deviceType.isDesktop ? 64.0 : 32.0,
+                ),
+                child: Home(
+                  key: keys[NavigationMenu.home],
+                  name: widget.name,
+                  onContactClicked: () {
+                    final context =
+                        keys[NavigationMenu.contact]?.currentContext;
+                    if (context != null) {
+                      Scrollable.ensureVisible(
+                        context,
+                        duration: animationDuration,
+                      );
+                    }
+                  },
+                ),
               ),
+              const HorizontalDivider(),
               BlocProvider(
                 create: (context) => BlogBloc(
                     blogRepository: locator<BlogRepository>(),
                     logger: locator<AppLogger>())
                   ..add(
-                    GetPosts(),
+                    const GetPosts(),
                   ),
                 child: BlocBuilder<BlogBloc, BlogState>(
                   builder: (context, state) {
-                    return TabletBlogWidget(
+                    return BlogWidget(
+                      key: keys[NavigationMenu.blog],
                       blogState: state,
                     );
                   },
@@ -86,11 +98,11 @@ class _TabletContentState extends State<TabletContent> {
                   positionRepo: locator<PositionRepository>(),
                   logger: locator<AppLogger>(),
                 )..add(
-                    GetPositions(),
+                    const GetPositions(),
                   ),
                 child: BlocBuilder<PersonalInfoBloc, PersonalInfoState>(
                   builder: (context, state) {
-                    return TabletFeatures(
+                    return FeaturesWidget(
                       key: keys[NavigationMenu.features],
                       state: state,
                     );
@@ -109,7 +121,7 @@ class _TabletContentState extends State<TabletContent> {
               const HorizontalDivider(),
               BlocBuilder<PortfolioBloc, PortfolioState>(
                 builder: (context, state) {
-                  return TabletResume(
+                  return ResumeWidget(
                     key: keys[NavigationMenu.resume],
                     educations: state.education,
                     skills: state.skills,
@@ -155,5 +167,8 @@ class _TabletContentState extends State<TabletContent> {
         ),
       ),
     );
+
+    // Desktop needs Expanded wrapper
+    return deviceType.isDesktop ? Expanded(child: content) : content;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/utils/colors.dart';
 
+import '../components/cached_image.dart';
 import '../components/elevated_container.dart';
 
 class PortfolioContainer extends StatefulWidget {
@@ -43,14 +44,12 @@ class _PortfolioContainerState extends State<PortfolioContainer> {
               child: Center(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4.0),
-                  child: Image.asset(
-                    widget.image,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(
-                        Icons.image_not_supported,
-                        size: 64.0,
-                      );
-                    },
+                  child: CachedImage(
+                    imageUrl: widget.image,
+                    errorWidget: const Icon(
+                      Icons.image_not_supported,
+                      size: 64.0,
+                    ),
                   ),
                 ),
               ),

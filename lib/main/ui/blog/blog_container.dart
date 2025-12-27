@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/domain/model/post.dart';
+import 'package:portfolio/main/ui/components/cached_image.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -46,15 +46,13 @@ class BlogContainer extends StatelessWidget {
             Flexible(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: CachedNetworkImage(
+                child: CachedImage(
                   imageUrl: post.imageLink,
                   height: imageHeight,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      const Center(child: CircularProgressIndicator()),
-                  errorWidget: (context, url, error) =>
-                      const Icon(Icons.error, size: 150),
+                  placeholder: const Center(child: CircularProgressIndicator()),
+                  errorWidget: const Icon(Icons.error, size: 150),
                 ),
               ),
             ),

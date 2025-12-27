@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
+import 'package:portfolio/main/ui/content.dart';
 import 'package:portfolio/main/ui/menu/drawing_menu.dart';
-
-import 'mobile_content.dart';
 
 class MobileScaffold extends StatefulWidget {
   const MobileScaffold({
@@ -48,7 +47,7 @@ class _MobileScaffoldState extends State<MobileScaffold> {
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        child: MobileContent(
+        child: Content(
           name: widget.name,
           onMessageSend: widget.onMessageSend,
         ),

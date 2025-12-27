@@ -3,8 +3,11 @@ enum DeviceType {
   tablet,
   phone;
 
-  bool get isLargeScreen =>
-      this == DeviceType.desktop || this == DeviceType.tablet;
+  bool get isDesktop => this == DeviceType.desktop;
+
+  bool get isTablet => this == DeviceType.tablet;
+
+  bool get isPhone => this == DeviceType.phone;
 
   bool get isSmallDevice =>
       this == DeviceType.phone || this == DeviceType.tablet;

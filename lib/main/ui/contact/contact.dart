@@ -32,7 +32,8 @@ class Contact extends StatefulWidget {
 class _ContactState extends State<Contact> {
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
+
     return Padding(
       padding: const EdgeInsets.only(top: 64.0, bottom: 64.0),
       child: Column(
@@ -42,7 +43,7 @@ class _ContactState extends State<Contact> {
             style: Theme.of(context).textTheme.displayLarge,
           ),
           const SizedBox(height: 32.0),
-          deviceType == DeviceType.desktop
+          deviceType.isDesktop
               ? IntrinsicHeight(
                   child: Row(
                     children: [

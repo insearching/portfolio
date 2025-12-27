@@ -38,7 +38,7 @@ class _PositionFormState extends State<PositionForm> {
         title: _title,
         position: _position,
         description: _description,
-        icon: _icon.isEmpty ? 'assets/img/android.png' : _icon,
+        icon: _icon.isEmpty ? 'assets/icons/android.png' : _icon,
       );
 
       context.read<AdminBloc>().add(AddPositionEvent(positionObj));

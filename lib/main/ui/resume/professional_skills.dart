@@ -20,10 +20,10 @@ class ProfessionalSkillsWidget extends StatefulWidget {
 class _ProfessionalSkillsState extends State<ProfessionalSkillsWidget> {
   @override
   Widget build(BuildContext context) {
-    final isPhone = context.read<DeviceInfo>().deviceType == DeviceType.phone;
+    final deviceType = context.read<DeviceInfo>().deviceType;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
-      child: isPhone
+      child: deviceType.isPhone
           ? Column(
               children: [
                 ...widget.skills

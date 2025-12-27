@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/domain/model/position.dart';
+import 'package:portfolio/main/ui/components/cached_image.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/utils/colors.dart';
 
@@ -27,17 +28,11 @@ class FeatureContainer extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (position.icon.isNotEmpty)
-                Image.asset(
-                  position.icon,
-                  color: UIColors.accent,
+                CachedImage(
+                  imageUrl: position.icon,
                   height: 32.0,
                   fit: BoxFit.fitHeight,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.image_not_supported,
-                      size: 32.0,
-                    );
-                  },
+                  color: UIColors.accent,
                 ),
               const SizedBox(width: 16.0),
               Flexible(
@@ -76,23 +71,20 @@ class _FeatureBody extends StatefulWidget {
 class _FeatureBodyState extends State<_FeatureBody> {
   @override
   Widget build(BuildContext context) {
-    return widget.isScrollable
-        ? Flexible(
-            child: SingleChildScrollView(
+    final textWidget = Text(
+      widget.body,
+      style: Theme.of(context).textTheme.bodyMedium,
+      overflow: widget.isScrollable ? null : TextOverflow.fade,
+      maxLines: widget.isScrollable ? null : 10,
+    );
+
+    return Flexible(
+      child: widget.isScrollable
+          ? SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              child: Text(
-                widget.body,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          )
-        : Flexible(
-            child: Text(
-              widget.body,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.fade,
-              maxLines: 10,
-            ),
-          );
+              child: textWidget,
+            )
+          : textWidget,
+    );
   }
 }

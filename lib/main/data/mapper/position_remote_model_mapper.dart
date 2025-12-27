@@ -1,7 +1,7 @@
 import 'package:portfolio/main/data/remote/model/position_remote_model.dart';
 import 'package:portfolio/main/domain/model/position.dart';
 
-const _defaultPositionIcon = 'assets/img/android.png';
+const _defaultPositionIcon = 'assets/icons/android.png';
 
 PositionRemoteModel positionRemoteModelFromJson(Map<String, dynamic> json) {
   final icon = (json['icon']?.toString() ?? _defaultPositionIcon).trim();
