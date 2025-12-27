@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:get_it/get_it.dart';
+import 'package:portfolio/core/config/debug_firebase_remote_config.dart';
 import 'package:portfolio/core/config/firebase_remote_config.dart';
 import 'package:portfolio/core/config/stub_firebase_remote_config.dart';
 // Import debug config using try-catch pattern at registration time
@@ -87,7 +88,7 @@ Future<void> setupLocator() async {
   // In release/CI: uses StubFirebaseRemoteConfig (committed)
   locator.registerLazySingleton<FirebaseRemoteConfig>(
     () => kDebugMode
-        ? _createDebugFirebaseRemoteConfig()
+        ? const DebugFirebaseRemoteConfig()
         : const StubFirebaseRemoteConfig(),
   );
 
@@ -490,20 +491,4 @@ class _SkillsLocalDataSourceWebAdapter implements SkillsLocalDataSource {
 
   @override
   Future<void> clearCache() => _webImpl.clearCache();
-}
-
-/// Creates DebugFirebaseRemoteConfig in debug mode.
-/// Falls back to StubFirebaseRemoteConfig if debug config is not available (e.g., in CI).
-///
-/// IMPORTANT FOR LOCAL DEVELOPMENT:
-/// To use real credentials locally, uncomment the line below and comment out the stub return:
-/// ```dart
-/// // return const DebugFirebaseRemoteConfig();
-/// ```
-FirebaseRemoteConfig _createDebugFirebaseRemoteConfig() {
-  // Uncomment this line for local development with real credentials:
-  // return const DebugFirebaseRemoteConfig();
-
-  // Default: Use stub (safe for CI/CD)
-  return const StubFirebaseRemoteConfig();
 }
