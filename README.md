@@ -40,7 +40,15 @@ cd Portfolio
 # Get dependencies
 flutter pub get
 
-# Run the application
+# (Optional) Create .env file with Firebase credentials for local development
+echo "FIREBASE_EMAIL=your-email@example.com" > .env
+echo "FIREBASE_PASSWORD=your-password" >> .env
+
+# Run the application with credentials
+flutter run -d chrome --dart-define-from-file=.env  # For web
+flutter run --dart-define-from-file=.env             # For desktop/mobile
+
+# Or run without credentials (uses stub config)
 flutter run -d chrome  # For web
 flutter run            # For desktop/mobile
 ```

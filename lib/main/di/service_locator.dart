@@ -113,24 +113,25 @@ Future<void> setupLocator() async {
   );
 
   // Register FirebaseRemoteConfig based on build mode and environment
-  // In CI: Always uses StubFirebaseRemoteConfig (committed)
-  // In debug mode: uses DebugFirebaseRemoteConfig (gitignored, local only)
-  //                Falls back to StubFirebaseRemoteConfig if placeholders detected
-  // In release (non-CI): uses StubFirebaseRemoteConfig (committed)
+  // Credentials are provided via --dart-define at compile time
+  // In CI: Always uses StubFirebaseRemoteConfig (no credentials needed for tests)
+  // In debug mode: uses DebugFirebaseRemoteConfig if credentials provided via --dart-define
+  //                Falls back to StubFirebaseRemoteConfig if no credentials
+  // In release: uses credentials from --dart-define (GitHub Actions)
   locator.registerLazySingleton<FirebaseRemoteConfig>(
     () {
-      // Always use stub config in CI environments
+      // Always use stub config in CI environments (for tests)
       if (_isRunningInCI()) {
         return const StubFirebaseRemoteConfig();
       }
 
-      // In debug mode, try to use debug config if properly configured
+      // Try to use debug config if credentials are provided
       if (kDebugMode) {
         const debugConfig = DebugFirebaseRemoteConfig();
-        // Check if debug config has placeholder values
-        if (debugConfig.firebaseEmail.contains('YOUR_FIREBASE') ||
-            debugConfig.firebasePassword.contains('YOUR_FIREBASE')) {
-          // Placeholders detected - use stub config instead
+        // Check if credentials were provided via --dart-define
+        if (debugConfig.firebaseEmail.isEmpty ||
+            debugConfig.firebasePassword.isEmpty) {
+          // No credentials provided - use stub config
           return const StubFirebaseRemoteConfig();
         }
         return debugConfig;
