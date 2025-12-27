@@ -44,36 +44,38 @@ flutter:
   uses-material-design: true
   assets:
     - assets/img/avatar.jpg
-    - assets/img/android.png
-    - assets/img/flutter.png
-    - assets/img/kmp.png
-    - assets/img/home.png
-    - assets/img/blog.png
-    - assets/img/features.png
-    - assets/img/portfolio.png
-    - assets/img/resume.png
-    - assets/img/contact.png
-    - assets/img/linkedin.png
-    - assets/img/github.png
-    - assets/img/medium.png
-    - assets/img/sbb-app.jpg
-    - assets/img/sumex.png
-    - assets/img/medically-home.png
-    - assets/img/cashplus.jpg
-    - assets/img/minimed.jpg
-    - assets/img/mechanic-advisor.jpg
-    - assets/img/unlimited-biking.jpg
-    - assets/img/daimler-app.png
-    - assets/img/development.jpg
-    - assets/img/loro-sst.jpeg
-    - assets/img/loro-retail.jpeg
     - assets/img/default.png
-    - assets/certificates/coursera_kotlin.jpeg
-    - assets/certificates/java_data_structures.jpg
-    - assets/certificates/jetpack_compose.jpg
-    - assets/certificates/kotlin_coroutines.jpg
-    - assets/certificates/mastering_system_design_interview.jpg
-    - assets/certificates/software_architecture.jpg
+    - assets/img/development.jpg
+    - assets/icons/android.png
+    - assets/icons/blog.png
+    - assets/icons/contact.png
+    - assets/icons/facebook.png
+    - assets/icons/features.png
+    - assets/icons/flutter.png
+    - assets/icons/github.png
+    - assets/icons/home.png
+    - assets/icons/kmp.png
+    - assets/icons/linkedin.png
+    - assets/icons/medium.png
+    - assets/icons/portfolio.png
+    - assets/icons/resume.png
+    - assets/icons/twitter.png
+    - assets/projects/cashplus.jpg
+    - assets/projects/daimler-app.png
+    - assets/projects/loro-retail.jpeg
+    - assets/projects/loro-sst.jpeg
+    - assets/projects/mechanic-advisor.jpg
+    - assets/projects/medically-home.png
+    - assets/projects/minimed.jpg
+    - assets/projects/sbb-app.jpg
+    - assets/projects/sumex.png
+    - assets/projects/unlimited-biking.jpg
+    - assets/certificates/coursera-kotlin.jpeg
+    - assets/certificates/java-data-structures.jpg
+    - assets/certificates/jetpack-compose.jpg
+    - assets/certificates/kotlin-coroutines.jpg
+    - assets/certificates/mastering-system-design-interview.jpg
+    - assets/certificates/software-architecture.jpg
   fonts:
     - family: Montserrat
       fonts:
