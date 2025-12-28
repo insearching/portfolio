@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
+import 'package:portfolio/main/ui/components/cached_image.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 import 'package:portfolio/utils/colors.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -108,9 +109,25 @@ class _DesktopDialogContent extends StatelessWidget {
             flex: 1,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(radius),
-              child: Image.asset(
-                image,
+              child: CachedImage(
+                imageUrl: image,
                 fit: BoxFit.contain,
+                placeholder: Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      size: 48,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
@@ -184,9 +201,25 @@ class _TabletDialogContent extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(radius),
-              child: Image.asset(
-                image,
+              child: CachedImage(
+                imageUrl: image,
                 fit: BoxFit.contain,
+                placeholder: Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      size: 48,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 24),
@@ -253,9 +286,25 @@ class _MobileDialogContent extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(radius),
-              child: Image.asset(
-                image,
+              child: CachedImage(
+                imageUrl: image,
                 fit: BoxFit.contain,
+                placeholder: Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                errorWidget: Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image,
+                      size: 48,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
