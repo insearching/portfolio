@@ -1,6 +1,7 @@
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,10 +48,22 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // Initialize Firebase Crashlytics
+  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  if (!kIsWeb) {
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+    // Pass all uncaught asynchronous errors to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  }
+
   // Get the logger instance
   final logger = locator<AppLogger>();
 
-  // Set up global error handlers
+  // Set up global error handlers (for logging and custom error widget)
   _setupErrorHandlers(logger);
 
   runApp(const RootProvider());
@@ -59,8 +72,14 @@ void main() async {
 /// Sets up global error handlers for Flutter framework and rendering errors
 void _setupErrorHandlers(AppLogger logger) {
   // Handle Flutter framework errors (including rendering errors)
+  // Note: For non-web platforms, Crashlytics is already handling fatal errors
+  // We chain our logger to also log these errors
+  final originalOnError = FlutterError.onError;
   FlutterError.onError = (FlutterErrorDetails details) {
-    // Log the error with full details
+    // First, let Crashlytics handle it (if initialized)
+    originalOnError?.call(details);
+
+    // Then log to our custom logger
     logger.error(
       _formatFlutterError(details),
       details.exception,
@@ -74,16 +93,19 @@ void _setupErrorHandlers(AppLogger logger) {
     return const AppErrorWidget();
   };
 
-  // Handle errors outside Flutter framework (async errors, etc.)
-  PlatformDispatcher.instance.onError = (error, stack) {
-    logger.error(
-      'Uncaught platform error',
-      error,
-      stack,
-      'PlatformError',
-    );
-    return true; // Indicates we handled the error
-  };
+  // For web platform, we need to handle async errors manually
+  // For native platforms, Crashlytics already handles this via PlatformDispatcher.instance.onError
+  if (kIsWeb) {
+    PlatformDispatcher.instance.onError = (error, stack) {
+      logger.error(
+        'Uncaught platform error',
+        error,
+        stack,
+        'PlatformError',
+      );
+      return true; // Indicates we handled the error
+    };
+  }
 }
 
 /// Formats FlutterError details into a readable message

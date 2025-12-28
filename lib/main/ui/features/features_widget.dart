@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
-import 'package:portfolio/main/ui/features/feature_content.dart';
+import 'package:portfolio/main/ui/features/feature_container.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
 import 'package:provider/provider.dart';
 

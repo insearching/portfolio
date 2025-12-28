@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart' show kDebugMode, kIsWeb;
 import 'package:get_it/get_it.dart';
@@ -8,6 +9,7 @@ import 'package:portfolio/core/config/debug_firebase_remote_config.dart';
 import 'package:portfolio/core/config/firebase_remote_config.dart';
 import 'package:portfolio/core/config/stub_firebase_remote_config.dart';
 import 'package:portfolio/core/logger/app_logger.dart';
+import 'package:portfolio/core/logger/crashlytics_logger.dart';
 import 'package:portfolio/core/logger/debug_logger.dart';
 import 'package:portfolio/core/logger/release_logger.dart';
 import 'package:portfolio/main/data/local/sqlite/database_helper.dart';
@@ -107,9 +109,22 @@ bool _isRunningInCI() {
 }
 
 Future<void> setupLocator() async {
-  // Register Logger (Debug or Release implementation based on build mode)
+  // Register Logger based on build mode and platform
+  // Debug mode: Use DebugLogger for detailed console logging
+  // Release mode on native platforms: Use CrashlyticsLogger for crash reporting
+  // Release mode on web: Use ReleaseLogger (Crashlytics not supported on web)
   locator.registerLazySingleton<AppLogger>(
-    () => kDebugMode ? DebugLogger() : ReleaseLogger(),
+    () {
+      if (kDebugMode) {
+        return DebugLogger();
+      } else if (!kIsWeb) {
+        // Use Crashlytics logger for native platforms in release mode
+        return CrashlyticsLogger(FirebaseCrashlytics.instance);
+      } else {
+        // Use release logger (no-op) for web in release mode
+        return ReleaseLogger();
+      }
+    },
   );
 
   // Register FirebaseRemoteConfig based on build mode and environment
