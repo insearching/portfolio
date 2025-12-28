@@ -11,6 +11,7 @@ ProjectRemoteModel projectRemoteModelFromJson(Map<String, dynamic> json) {
     role: json['role']?.toString() ?? '',
     description: json['description']?.toString() ?? '',
     link: json['link']?.toString(),
+    order: json['order'] as int? ?? 0,
   );
 }
 
@@ -21,6 +22,7 @@ Map<String, dynamic> projectRemoteModelToJson(ProjectRemoteModel model) {
     'role': model.role,
     'description': model.description,
     'link': model.link,
+    'order': model.order,
   };
 }
 
@@ -34,6 +36,7 @@ extension ProjectRemoteModelJson on ProjectRemoteModel {
       role: role,
       description: description,
       link: link,
+      order: order,
     );
   }
 }
@@ -45,5 +48,6 @@ ProjectRemoteModel projectRemoteModelFromDomain(Project project) {
     role: project.role,
     description: project.description,
     link: project.link,
+    order: project.order,
   );
 }

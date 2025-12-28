@@ -5,6 +5,7 @@ class Project {
     required this.role,
     required this.description,
     this.link,
+    this.order = 0,
   });
 
   final String image;
@@ -12,4 +13,5 @@ class Project {
   final String role;
   final String description;
   final String? link;
+  final int order;
 }

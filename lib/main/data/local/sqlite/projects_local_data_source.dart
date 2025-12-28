@@ -36,6 +36,7 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
           'role': project.role,
           'description': project.description,
           'link': project.link,
+          'order': project.order,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -64,6 +65,7 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
             'role': project.role,
             'description': project.description,
             'link': project.link,
+            'order': project.order,
           },
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
@@ -90,6 +92,7 @@ class ProjectsLocalDataSourceImpl implements ProjectsLocalDataSource {
           role: maps[i]['role'] as String? ?? '',
           description: maps[i]['description'] as String? ?? '',
           link: maps[i]['link'] as String?,
+          order: maps[i]['order'] as int? ?? 0,
         );
       });
     } catch (e, stackTrace) {

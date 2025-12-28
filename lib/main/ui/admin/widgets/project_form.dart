@@ -21,6 +21,7 @@ class _ProjectFormState extends State<ProjectForm> {
   String _role = '';
   String _description = '';
   String _link = '';
+  String _order = '0';
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -30,6 +31,7 @@ class _ProjectFormState extends State<ProjectForm> {
         role: _role.trim(),
         description: _description.trim(),
         link: _link.trim().isEmpty ? null : _link.trim(),
+        order: int.tryParse(_order) ?? 0,
       );
 
       context.read<AdminBloc>().add(AddProjectEvent(project));
@@ -75,6 +77,7 @@ class _ProjectFormState extends State<ProjectForm> {
       _role = '';
       _description = '';
       _link = '';
+      _order = '0';
     });
     context.read<AdminBloc>().add(const ResetAddOperationState());
   }
@@ -171,6 +174,30 @@ class _ProjectFormState extends State<ProjectForm> {
                 onChanged: (value) => _link = value,
                 validator: (value) =>
                     _validateUrl(value, 'Project link', optional: true),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Display Order',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: '0',
+                  helperText: 'Lower numbers appear first (0, 1, 2, ...)',
+                ),
+                keyboardType: TextInputType.number,
+                initialValue: '0',
+                onChanged: (value) => _order = value,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Order cannot be empty';
+                  }
+                  final order = int.tryParse(value);
+                  if (order == null || order < 0) {
+                    return 'Order must be a positive number';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 32),
               BlocBuilder<AdminBloc, AdminState>(

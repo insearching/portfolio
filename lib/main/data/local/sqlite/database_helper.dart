@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 /// Helper class to manage SQLite database
 class DatabaseHelper {
   static const String _databaseName = 'portfolio_cache.db';
-  static const int _databaseVersion = 2;
+  static const int _databaseVersion = 3;
 
   // Table names
   static const String postsTable = 'posts';
@@ -59,7 +59,8 @@ class DatabaseHelper {
         title TEXT NOT NULL,
         role TEXT NOT NULL,
         description TEXT NOT NULL,
-        link TEXT
+        link TEXT,
+        order INTEGER NOT NULL DEFAULT 0
       )
     ''');
 
@@ -117,6 +118,13 @@ class DatabaseHelper {
           email TEXT NOT NULL,
           socials TEXT NOT NULL
         )
+      ''');
+    }
+
+    if (oldVersion < 3) {
+      // Add 'order' column to projects table in version 3
+      await db.execute('''
+        ALTER TABLE $projectsTable ADD COLUMN order INTEGER NOT NULL DEFAULT 0
       ''');
     }
   }

@@ -38,9 +38,14 @@ class ProjectRepositoryImpl extends BaseRepository<
 
   /// Stream that emits projects progressively from cache layers
   /// Emits from: memory -> local -> remote
+  /// Projects are sorted by their 'order' field in ascending order
   @override
   Stream<List<Project>> get projectsUpdateStream =>
-      fetchWithCache(entityName: 'projects');
+      fetchWithCache(entityName: 'projects').map((projects) {
+        final sortedProjects = List<Project>.from(projects)
+          ..sort((a, b) => a.order.compareTo(b.order));
+        return sortedProjects;
+      });
 
   // Implement abstract methods from BaseRepository
 
