@@ -4,7 +4,6 @@ import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/ui/admin/admin_bloc.dart';
 import 'package:portfolio/main/ui/admin/admin_event.dart';
 import 'package:portfolio/main/ui/admin/admin_state.dart';
-import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 
 /// Form for adding education records
@@ -26,27 +25,48 @@ class _EducationFormState extends State<EducationForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      if (_title.isEmpty || _description.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Title and description are required'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-        return;
-      }
-
       final education = Education(
-        title: _title,
-        description: _description,
+        title: _title.trim(),
+        description: _description.trim(),
         type: _type,
-        text: _text.isEmpty ? null : _text,
-        link: _link.isEmpty ? null : _link,
-        imageUrl: _imageUrl.isEmpty ? null : _imageUrl,
+        text: _text.trim().isEmpty ? null : _text.trim(),
+        link: _link.trim().isEmpty ? null : _link.trim(),
+        imageUrl: _imageUrl.trim().isEmpty ? null : _imageUrl.trim(),
       );
 
       context.read<AdminBloc>().add(AddEducationEvent(education));
     }
+  }
+
+  /// Validates if a string is a valid URL with http/https scheme
+  String? _validateUrl(String? value, String fieldName,
+      {bool optional = false}) {
+    if (value == null || value.trim().isEmpty) {
+      if (optional) return null;
+      return '$fieldName cannot be empty';
+    }
+
+    try {
+      final uri = Uri.parse(value.trim());
+      if (!uri.hasScheme || (uri.scheme != 'http' && uri.scheme != 'https')) {
+        return '$fieldName must start with http:// or https://';
+      }
+      if (!uri.hasAuthority) {
+        return '$fieldName must be a valid URL';
+      }
+    } catch (e) {
+      return '$fieldName is not a valid URL';
+    }
+
+    return null;
+  }
+
+  /// Validates non-empty text fields
+  String? _validateNotEmpty(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName cannot be empty';
+    }
+    return null;
   }
 
   void _resetForm() {
@@ -95,26 +115,36 @@ class _EducationFormState extends State<EducationForm> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 24),
-              InputField(
-                state: InputState(
-                  text: 'Title',
-                  onTextChanged: (value) => _title = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                onChanged: (value) => _title = value,
+                validator: (value) => _validateNotEmpty(value, 'Title'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Description',
-                  maxLines: 3,
-                  onTextChanged: (value) => _description = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                maxLines: 3,
+                onChanged: (value) => _description = value,
+                validator: (value) => _validateNotEmpty(value, 'Description'),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<EducationType>(
-                value: _type,
-                decoration: const InputDecoration(
+                initialValue: _type,
+                decoration: InputDecoration(
                   labelText: 'Education Type',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 items: const [
                   DropdownMenuItem(
@@ -133,26 +163,43 @@ class _EducationFormState extends State<EducationForm> {
                 },
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Text (optional)',
-                  maxLines: 3,
-                  onTextChanged: (value) => _text = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Text (optional)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                maxLines: 3,
+                onChanged: (value) => _text = value,
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Link (optional)',
-                  onTextChanged: (value) => _link = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Link (optional)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: 'https://example.com/certificate',
                 ),
+                keyboardType: TextInputType.url,
+                onChanged: (value) => _link = value,
+                validator: (value) =>
+                    _validateUrl(value, 'Link', optional: true),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Image URL (optional)',
-                  onTextChanged: (value) => _imageUrl = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Image URL (optional)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: 'https://example.com/image.jpg',
                 ),
+                keyboardType: TextInputType.url,
+                onChanged: (value) => _imageUrl = value,
+                validator: (value) =>
+                    _validateUrl(value, 'Image URL', optional: true),
               ),
               const SizedBox(height: 32),
               BlocBuilder<AdminBloc, AdminState>(

@@ -4,7 +4,6 @@ import 'package:portfolio/main/domain/model/post.dart';
 import 'package:portfolio/main/ui/admin/admin_bloc.dart';
 import 'package:portfolio/main/ui/admin/admin_event.dart';
 import 'package:portfolio/main/ui/admin/admin_state.dart';
-import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 
 /// Form for adding blog posts
@@ -25,14 +24,43 @@ class _BlogFormState extends State<BlogForm> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       final post = Post(
-        title: _title,
-        description: _description,
-        imageLink: _imageLink,
-        link: _link,
+        title: _title.trim(),
+        description: _description.trim(),
+        imageLink: _imageLink.trim(),
+        link: _link.trim(),
       );
 
       context.read<AdminBloc>().add(AddBlogPostEvent(post));
     }
+  }
+
+  /// Validates if a string is a valid URL with http/https scheme
+  String? _validateUrl(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName cannot be empty';
+    }
+
+    try {
+      final uri = Uri.parse(value.trim());
+      if (!uri.hasScheme || (uri.scheme != 'http' && uri.scheme != 'https')) {
+        return '$fieldName must start with http:// or https://';
+      }
+      if (!uri.hasAuthority) {
+        return '$fieldName must be a valid URL';
+      }
+    } catch (e) {
+      return '$fieldName is not a valid URL';
+    }
+
+    return null;
+  }
+
+  /// Validates non-empty text fields
+  String? _validateNotEmpty(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName cannot be empty';
+    }
+    return null;
   }
 
   void _resetForm() {
@@ -79,33 +107,53 @@ class _BlogFormState extends State<BlogForm> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 24),
-              InputField(
-                state: InputState(
-                  text: 'Title',
-                  onTextChanged: (value) => _title = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                onChanged: (value) => _title = value,
+                validator: (value) => _validateNotEmpty(value, 'Title'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Description',
-                  maxLines: 5,
-                  onTextChanged: (value) => _description = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                maxLines: 5,
+                onChanged: (value) => _description = value,
+                validator: (value) => _validateNotEmpty(value, 'Description'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Image Link (URL)',
-                  onTextChanged: (value) => _imageLink = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Image Link (URL)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: 'https://example.com/image.jpg',
                 ),
+                keyboardType: TextInputType.url,
+                onChanged: (value) => _imageLink = value,
+                validator: (value) => _validateUrl(value, 'Image link'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Post Link (URL)',
-                  onTextChanged: (value) => _link = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Post Link (URL)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: 'https://example.com/post',
                 ),
+                keyboardType: TextInputType.url,
+                onChanged: (value) => _link = value,
+                validator: (value) => _validateUrl(value, 'Post link'),
               ),
               const SizedBox(height: 32),
               BlocBuilder<AdminBloc, AdminState>(

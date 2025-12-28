@@ -4,7 +4,6 @@ import 'package:portfolio/main/domain/model/position.dart';
 import 'package:portfolio/main/ui/admin/admin_bloc.dart';
 import 'package:portfolio/main/ui/admin/admin_event.dart';
 import 'package:portfolio/main/ui/admin/admin_state.dart';
-import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 
 /// Form for adding positions
@@ -24,25 +23,44 @@ class _PositionFormState extends State<PositionForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      if (_title.isEmpty || _position.isEmpty || _description.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Title, position, and description are required'),
-            backgroundColor: Colors.orange,
-          ),
-        );
-        return;
-      }
-
       final positionObj = Position(
-        title: _title,
-        position: _position,
-        description: _description,
-        icon: _icon.isEmpty ? 'assets/icons/android.png' : _icon,
+        title: _title.trim(),
+        position: _position.trim(),
+        description: _description.trim(),
+        icon: _icon.trim(),
       );
 
       context.read<AdminBloc>().add(AddPositionEvent(positionObj));
     }
+  }
+
+  /// Validates if a string is a valid URL with http/https scheme
+  String? _validateUrl(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName cannot be empty';
+    }
+
+    try {
+      final uri = Uri.parse(value.trim());
+      if (!uri.hasScheme || (uri.scheme != 'http' && uri.scheme != 'https')) {
+        return '$fieldName must start with http:// or https://';
+      }
+      if (!uri.hasAuthority) {
+        return '$fieldName must be a valid URL';
+      }
+    } catch (e) {
+      return '$fieldName is not a valid URL';
+    }
+
+    return null;
+  }
+
+  /// Validates non-empty text fields
+  String? _validateNotEmpty(String? value, String fieldName) {
+    if (value == null || value.trim().isEmpty) {
+      return '$fieldName cannot be empty';
+    }
+    return null;
   }
 
   void _resetForm() {
@@ -89,33 +107,51 @@ class _PositionFormState extends State<PositionForm> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               const SizedBox(height: 24),
-              InputField(
-                state: InputState(
-                  text: 'Company/Organization Title',
-                  onTextChanged: (value) => _title = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Company/Organization Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                onChanged: (value) => _title = value,
+                validator: (value) => _validateNotEmpty(value, 'Title'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Position/Role',
-                  onTextChanged: (value) => _position = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Position/Role',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                onChanged: (value) => _position = value,
+                validator: (value) => _validateNotEmpty(value, 'Position'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Description',
-                  maxLines: 5,
-                  onTextChanged: (value) => _description = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
+                maxLines: 5,
+                onChanged: (value) => _description = value,
+                validator: (value) => _validateNotEmpty(value, 'Description'),
               ),
               const SizedBox(height: 16),
-              InputField(
-                state: InputState(
-                  text: 'Icon URL (optional)',
-                  onTextChanged: (value) => _icon = value,
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Icon URL',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  hintText: 'https://example.com/icon.png',
                 ),
+                keyboardType: TextInputType.url,
+                onChanged: (value) => _icon = value,
+                validator: (value) => _validateUrl(value, 'Icon URL'),
               ),
               const SizedBox(height: 32),
               BlocBuilder<AdminBloc, AdminState>(

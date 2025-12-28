@@ -110,8 +110,8 @@ void main() {
       const post = Post(
         title: 'Test',
         description: 'Test',
-        imageLink: '',
-        link: '',
+        imageLink: 'https://example.com/image.jpg',
+        link: 'https://example.com/post',
       );
 
       expect(
@@ -119,6 +119,167 @@ void main() {
         throwsA(
           predicate(
             (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when title is empty', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: '',
+        description: 'Test Description',
+        imageLink: 'https://example.com/image.jpg',
+        link: 'https://example.com/post',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when description is empty', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test Title',
+        description: '',
+        imageLink: 'https://example.com/image.jpg',
+        link: 'https://example.com/post',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Description cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when image link is empty', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test Title',
+        description: 'Test Description',
+        imageLink: '',
+        link: 'https://example.com/post',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Image link cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when image link is invalid URL', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test Title',
+        description: 'Test Description',
+        imageLink: 'not-a-valid-url',
+        link: 'https://example.com/post',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Image link must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when post link is empty', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test Title',
+        description: 'Test Description',
+        imageLink: 'https://example.com/image.jpg',
+        link: '',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Post link cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when post link is invalid URL', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: 'Test Title',
+        description: 'Test Description',
+        imageLink: 'https://example.com/image.jpg',
+        link: 'invalid-url',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Post link must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('trims whitespace from fields before validation', () async {
+      final repo = _FakeBlogRepository();
+      final usecase = AddBlogPost(blogRepository: repo);
+
+      const post = Post(
+        title: '  ',
+        description: '  Test Description  ',
+        imageLink: 'https://example.com/image.jpg',
+        link: 'https://example.com/post',
+      );
+
+      expect(
+        () => usecase(post),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
           ),
         ),
       );
@@ -131,7 +292,7 @@ void main() {
       final usecase = AddProject(projectRepository: repo);
 
       const project = Project(
-        image: 'assets/img/test.png',
+        image: 'https://example.com/image.jpg',
         title: 'Test Project',
         role: 'Developer',
         description: 'Test Description',
@@ -147,7 +308,7 @@ void main() {
       final usecase = AddProject(projectRepository: repo);
 
       const project = Project(
-        image: '',
+        image: 'https://example.com/image.jpg',
         title: 'Test',
         role: 'Dev',
         description: 'Desc',
@@ -158,6 +319,202 @@ void main() {
         throwsA(
           predicate(
             (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when title is empty', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: '',
+        role: 'Developer',
+        description: 'Test Description',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when role is empty', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: 'Test Project',
+        role: '',
+        description: 'Test Description',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Role cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when description is empty', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: 'Test Project',
+        role: 'Developer',
+        description: '',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Description cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when image URL is empty', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: '',
+        title: 'Test Project',
+        role: 'Developer',
+        description: 'Test Description',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Image URL cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when image URL is invalid', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'not-a-valid-url',
+        title: 'Test Project',
+        role: 'Developer',
+        description: 'Test Description',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Image URL must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when project link is invalid', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: 'Test Project',
+        role: 'Developer',
+        description: 'Test Description',
+        link: 'invalid-url',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Project link must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('allows null project link', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: 'Test Project',
+        role: 'Developer',
+        description: 'Test Description',
+        link: null,
+      );
+
+      await usecase(project);
+
+      expect(repo.addedProject, project);
+    });
+
+    test('allows valid project link', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: 'Test Project',
+        role: 'Developer',
+        description: 'Test Description',
+        link: 'https://github.com/user/project',
+      );
+
+      await usecase(project);
+
+      expect(repo.addedProject, project);
+    });
+
+    test('trims whitespace from fields before validation', () async {
+      final repo = _FakeProjectRepository();
+      final usecase = AddProject(projectRepository: repo);
+
+      const project = Project(
+        image: 'https://example.com/image.jpg',
+        title: '  ',
+        role: 'Developer',
+        description: 'Test Description',
+      );
+
+      expect(
+        () => usecase(project),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
           ),
         ),
       );
@@ -232,6 +589,153 @@ void main() {
         ),
       );
     });
+
+    test('throws ArgumentError when title is empty', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: '',
+        description: 'Test Description',
+        type: EducationType.college,
+      );
+
+      expect(
+        () => usecase(education),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when description is empty', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Computer Science',
+        description: '',
+        type: EducationType.college,
+      );
+
+      expect(
+        () => usecase(education),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Description cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when link is invalid URL', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Computer Science',
+        description: 'University Degree',
+        type: EducationType.college,
+        link: 'invalid-url',
+      );
+
+      expect(
+        () => usecase(education),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Link must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when image URL is invalid', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Computer Science',
+        description: 'University Degree',
+        type: EducationType.college,
+        imageUrl: 'not-a-valid-url',
+      );
+
+      expect(
+        () => usecase(education),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Image URL must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('allows null optional fields', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Computer Science',
+        description: 'University Degree',
+        type: EducationType.college,
+        text: null,
+        link: null,
+        imageUrl: null,
+      );
+
+      await usecase(education);
+
+      expect(repo.addedEducation, education);
+    });
+
+    test('allows valid optional link and image URL', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: 'Computer Science',
+        description: 'University Degree',
+        type: EducationType.college,
+        link: 'https://university.edu/cs',
+        imageUrl: 'https://example.com/logo.png',
+      );
+
+      await usecase(education);
+
+      expect(repo.addedEducation, education);
+    });
+
+    test('trims whitespace from fields before validation', () async {
+      final repo = _FakeEducationRepository();
+      final usecase = AddEducation(educationRepository: repo);
+
+      const education = Education(
+        title: '  ',
+        description: 'Test Description',
+        type: EducationType.certification,
+      );
+
+      expect(
+        () => usecase(education),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
+          ),
+        ),
+      );
+    });
   });
 
   group('AddPosition', () {
@@ -243,7 +747,7 @@ void main() {
         title: 'Tech Company',
         position: 'Senior Developer',
         description: 'Working on mobile apps',
-        icon: 'assets/img/flutter.png',
+        icon: 'https://example.com/icon.png',
       );
 
       await usecase(position);
@@ -259,7 +763,7 @@ void main() {
         title: 'Company',
         position: 'Dev',
         description: 'Desc',
-        icon: '',
+        icon: 'https://example.com/icon.png',
       );
 
       expect(
@@ -267,6 +771,144 @@ void main() {
         throwsA(
           predicate(
             (e) => e is Exception && e.toString().contains('Failed to add'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when title is empty', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: '',
+        position: 'Senior Developer',
+        description: 'Working on mobile apps',
+        icon: 'https://example.com/icon.png',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when position is empty', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: 'Tech Company',
+        position: '',
+        description: 'Working on mobile apps',
+        icon: 'https://example.com/icon.png',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Position cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when description is empty', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: 'Tech Company',
+        position: 'Senior Developer',
+        description: '',
+        icon: 'https://example.com/icon.png',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Description cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when icon URL is empty', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: 'Tech Company',
+        position: 'Senior Developer',
+        description: 'Working on mobile apps',
+        icon: '',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Icon URL cannot be empty'),
+          ),
+        ),
+      );
+    });
+
+    test('throws ArgumentError when icon URL is invalid', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: 'Tech Company',
+        position: 'Senior Developer',
+        description: 'Working on mobile apps',
+        icon: 'not-a-valid-url',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Icon URL must be a valid URL'),
+          ),
+        ),
+      );
+    });
+
+    test('trims whitespace from fields before validation', () async {
+      final repo = _FakePositionRepository();
+      final usecase = AddPosition(positionRepository: repo);
+
+      const position = Position(
+        title: '  ',
+        position: 'Senior Developer',
+        description: 'Working on mobile apps',
+        icon: 'https://example.com/icon.png',
+      );
+
+      expect(
+        () => usecase(position),
+        throwsA(
+          predicate(
+            (e) =>
+                e is ArgumentError &&
+                e.toString().contains('Title cannot be empty'),
           ),
         ),
       );

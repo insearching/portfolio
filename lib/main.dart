@@ -222,8 +222,7 @@ class _PortfolioApplicationState extends State<PortfolioApplication> {
 
   @override
   Widget build(BuildContext context) {
-    final deviceInfo = Provider.of<DeviceInfo>(context);
-    final isSmallDevice = deviceInfo.deviceType == DeviceType.phone;
+    final deviceType = Provider.of<DeviceInfo>(context).deviceType;
 
     // Create the PortfolioBloc - it automatically loads data via streams
     // On web, force refresh to get the latest data from remote
@@ -249,11 +248,11 @@ class _PortfolioApplicationState extends State<PortfolioApplication> {
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
           // Select themes based on device type
-          final darkTheme = isSmallDevice
+          final darkTheme = deviceType.isPhone
               ? PortfolioTheme.phoneDarkTheme
               : PortfolioTheme.desktopDarkTheme;
 
-          final lightTheme = isSmallDevice
+          final lightTheme = deviceType.isPhone
               ? PortfolioTheme.phoneLightTheme
               : PortfolioTheme.desktopLightTheme;
 
