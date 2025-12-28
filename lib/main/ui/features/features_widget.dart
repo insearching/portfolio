@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/ui/features/feature_container.dart';
 import 'package:portfolio/main/ui/personal_info/personal_info_state.dart';
-import 'package:provider/provider.dart';
 
 class FeaturesWidget extends StatelessWidget {
   const FeaturesWidget({
@@ -14,7 +14,7 @@ class FeaturesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 32.0),

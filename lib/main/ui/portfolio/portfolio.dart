@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/domain/model/project.dart';
 import 'package:portfolio/main/ui/components/custom_dialog.dart';
 import 'package:portfolio/main/ui/portfolio/portfolio_container.dart';
-import 'package:provider/provider.dart';
-
-import '../../domain/model/device_type.dart';
 
 class Portfolio extends StatefulWidget {
   const Portfolio({
@@ -22,7 +20,7 @@ class Portfolio extends StatefulWidget {
 class _PortfolioState extends State<Portfolio> {
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
     return Padding(
       padding:
           EdgeInsets.only(top: deviceType.isPhone ? 16.0 : 64.0, bottom: 64.0),

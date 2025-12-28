@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/domain/model/device_type.dart';
 import 'package:portfolio/main/ui/blog/blog_container.dart';
 import 'package:portfolio/main/ui/blog/blog_state.dart';
-import 'package:provider/provider.dart';
 
 class BlogWidget extends StatelessWidget {
   const BlogWidget({
@@ -15,8 +15,7 @@ class BlogWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
-    final isPhone = deviceType == DeviceType.phone;
+    final deviceType = locator<DeviceInfo>().deviceType;
     final isDesktop = deviceType == DeviceType.desktop;
 
     return Padding(

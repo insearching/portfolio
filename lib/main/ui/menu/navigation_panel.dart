@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/ui/menu/navigation_menu.dart';
 import 'package:portfolio/utils/collections.dart';
 import 'package:portfolio/utils/colors.dart';
-import 'package:provider/provider.dart';
 
 class NavigationPanel extends StatefulWidget {
   const NavigationPanel({
@@ -22,7 +22,7 @@ class _NavigationPanelState extends State<NavigationPanel> {
 
   @override
   Widget build(BuildContext context) {
-    final isSmallDevice = context.read<DeviceInfo>().deviceType.isSmallDevice;
+    final isSmallDevice = locator<DeviceInfo>().deviceType.isSmallDevice;
 
     onMenuItemSelect(position) {
       widget.onMenuItemSelected(position);

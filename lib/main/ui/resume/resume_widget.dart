@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
-import 'package:portfolio/main/domain/model/device_type.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
@@ -8,7 +8,6 @@ import 'package:portfolio/main/ui/resume/education_widget.dart';
 import 'package:portfolio/main/ui/resume/professional_skills.dart';
 import 'package:portfolio/utils/colors.dart';
 import 'package:portfolio/utils/constants.dart';
-import 'package:provider/provider.dart';
 
 class ResumeWidget extends StatelessWidget {
   const ResumeWidget({
@@ -24,7 +23,7 @@ class ResumeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
 
     return Padding(
       padding: EdgeInsets.only(

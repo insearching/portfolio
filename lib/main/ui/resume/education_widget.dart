@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/domain/model/education.dart';
 import 'package:portfolio/main/ui/resume/education_container.dart';
-import 'package:provider/provider.dart';
 
 class EducationWidget extends StatelessWidget {
   const EducationWidget({
@@ -14,7 +14,7 @@ class EducationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
 
     if (deviceType.isPhone) {
       return ListView.builder(

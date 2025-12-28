@@ -43,7 +43,7 @@ class _ContentState extends State<Content> {
   @override
   Widget build(BuildContext context) {
     final ScrollController controller = ScrollController();
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
 
     final content = Container(
       color: Theme.of(context).scaffoldBackgroundColor,

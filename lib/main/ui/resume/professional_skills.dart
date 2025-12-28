@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
-import 'package:portfolio/main/domain/model/device_type.dart';
 import 'package:portfolio/main/domain/model/skill.dart';
 import 'package:portfolio/main/ui/components/skill_progress_bar.dart';
-import 'package:provider/provider.dart';
 
 class ProfessionalSkillsWidget extends StatefulWidget {
   const ProfessionalSkillsWidget({
@@ -20,7 +19,7 @@ class ProfessionalSkillsWidget extends StatefulWidget {
 class _ProfessionalSkillsState extends State<ProfessionalSkillsWidget> {
   @override
   Widget build(BuildContext context) {
-    final deviceType = context.read<DeviceInfo>().deviceType;
+    final deviceType = locator<DeviceInfo>().deviceType;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8.0),
       child: deviceType.isPhone
