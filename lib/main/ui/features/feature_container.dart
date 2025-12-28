@@ -45,46 +45,15 @@ class FeatureContainer extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16.0),
-          _FeatureBody(
-            body: position.description,
-            isScrollable: isPhone,
-          )
+          Flexible(
+            child: Text(
+              position.description,
+              style: Theme.of(context).textTheme.bodyMedium,
+              overflow: TextOverflow.fade,
+            ),
+          ),
         ],
       ),
-    );
-  }
-}
-
-class _FeatureBody extends StatefulWidget {
-  const _FeatureBody({
-    required this.body,
-    required this.isScrollable,
-  });
-
-  final String body;
-  final bool isScrollable;
-
-  @override
-  State<_FeatureBody> createState() => _FeatureBodyState();
-}
-
-class _FeatureBodyState extends State<_FeatureBody> {
-  @override
-  Widget build(BuildContext context) {
-    final textWidget = Text(
-      widget.body,
-      style: Theme.of(context).textTheme.bodyMedium,
-      overflow: widget.isScrollable ? null : TextOverflow.fade,
-      maxLines: widget.isScrollable ? null : 10,
-    );
-
-    return Flexible(
-      child: widget.isScrollable
-          ? SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: textWidget,
-            )
-          : textWidget,
     );
   }
 }

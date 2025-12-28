@@ -142,14 +142,7 @@ Future<void> setupLocator() async {
 
       // Try to use debug config if credentials are provided
       if (kDebugMode) {
-        const debugConfig = DebugFirebaseRemoteConfig();
-        // Check if credentials were provided via --dart-define
-        if (debugConfig.firebaseEmail.isEmpty ||
-            debugConfig.firebasePassword.isEmpty) {
-          // No credentials provided - use stub config
-          return const StubFirebaseRemoteConfig();
-        }
-        return debugConfig;
+        return const DebugFirebaseRemoteConfig();
       }
 
       // Release mode (non-CI) - use stub config

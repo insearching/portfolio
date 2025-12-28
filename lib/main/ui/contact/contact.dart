@@ -5,15 +5,13 @@ import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
+import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
 import 'package:portfolio/main/ui/contact/contact_form_bloc.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
 import 'package:portfolio/main/ui/contact/contact_form_state.dart';
 import 'package:portfolio/main/ui/contact/socials.dart';
-
-import '../../domain/model/device_type.dart';
-import '../components/elevated_container.dart';
 
 class Contact extends StatefulWidget {
   const Contact({
