@@ -14,6 +14,7 @@ import 'package:portfolio/main/ui/contact/contact_form_bloc.dart';
 import 'package:portfolio/main/ui/contact/contact_form_event.dart';
 import 'package:portfolio/main/ui/contact/contact_form_state.dart';
 import 'package:portfolio/main/ui/contact/socials.dart';
+import 'package:portfolio/utils/env_config.dart';
 
 class Contact extends StatefulWidget {
   const Contact({
@@ -69,10 +70,9 @@ class _ContactState extends State<Contact> {
           if (kIsWeb) ...[
             const SizedBox(height: 48.0),
             AppDownloadButtons(
-              // TODO: Update these URLs to your actual app store listings
-              appStoreUrl: 'https://apps.apple.com/app/your-app-id',
-              googlePlayUrl:
-                  'https://play.google.com/store/apps/details?id=your.package.name',
+              // APK download URL from CI/CD (GoFile direct link)
+              // Set via --dart-define=APK_DOWNLOAD_URL=... at build time
+              googlePlayUrl: EnvConfig.apkDownloadUrl,
             ),
           ],
         ],

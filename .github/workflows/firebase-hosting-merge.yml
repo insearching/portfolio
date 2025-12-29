@@ -20,25 +20,6 @@ jobs:
         with:
           flutter-version-file: .flutter-version
 
-      # Run Flutter pub get to install dependencies
-      - name: Install Dependencies
-        run: flutter pub get
-
-      # Run tests (fail fast before building)
-      - name: Run Tests
-        run: flutter test
-
-      # Build Flutter web
-      - name: Build Flutter Web
-        env:
-          FIREBASE_EMAIL: ${{ secrets.FIREBASE_EMAIL || vars.FIREBASE_EMAIL }}
-          FIREBASE_PASSWORD: ${{ secrets.FIREBASE_PASSWORD || vars.FIREBASE_PASSWORD }}
-        run: flutter build web --dart-define=FIREBASE_EMAIL=$FIREBASE_EMAIL --dart-define=FIREBASE_PASSWORD=$FIREBASE_PASSWORD
-
-      # Build Flutter Android APK
-      - name: Build Flutter Android
-        run: flutter build apk --release
-
       # Set up Python for upload script
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -50,6 +31,18 @@ jobs:
       - name: Install Python Dependencies
         run: pip install -r scripts/requirements.txt
 
+      # Run Flutter pub get to install dependencies
+      - name: Install Dependencies
+        run: flutter pub get
+
+      # Run tests (fail fast before building)
+      - name: Run Tests
+        run: flutter test
+
+      # Build Flutter Android APK first (to get the download link)
+      - name: Build Flutter Android APK
+        run: flutter build apk --release
+
       # Run Python script tests
       - name: Run Python Script Tests
         run: |
@@ -59,6 +52,7 @@ jobs:
 
       # Upload Android APK to Gofile.io and extract direct link
       - name: Upload Android APK to Gofile.io
+        id: upload_apk
         env:
           GOFILE_TOKEN: ${{ secrets.GOFILE_TOKEN }}
           GOFILE_ACCOUNT_ID: ${{ secrets.GOFILE_ACCOUNT_ID }}
@@ -69,6 +63,18 @@ jobs:
             --token "$GOFILE_TOKEN" \
             --account-id "$GOFILE_ACCOUNT_ID" \
             --github-output
+
+      # Build Flutter Web with APK download link
+      - name: Build Flutter Web
+        env:
+          FIREBASE_EMAIL: ${{ secrets.FIREBASE_EMAIL || vars.FIREBASE_EMAIL }}
+          FIREBASE_PASSWORD: ${{ secrets.FIREBASE_PASSWORD || vars.FIREBASE_PASSWORD }}
+          APK_DOWNLOAD_URL: ${{ steps.upload_apk.outputs.direct_link }}
+        run: |
+          flutter build web \
+            --dart-define=FIREBASE_EMAIL=$FIREBASE_EMAIL \
+            --dart-define=FIREBASE_PASSWORD=$FIREBASE_PASSWORD \
+            --dart-define=APK_DOWNLOAD_URL=$APK_DOWNLOAD_URL
 
       # (Optional) Upload the build artifacts for later use (e.g., deployment)
       - name: Upload Build Artifacts

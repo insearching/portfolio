@@ -18,6 +18,8 @@ class EnvConfig {
       String.fromEnvironment('FIREBASE_EMAIL');
   static const String _dartDefineFirebasePassword =
       String.fromEnvironment('FIREBASE_PASSWORD');
+  static const String _dartDefineApkDownloadUrl =
+      String.fromEnvironment('APK_DOWNLOAD_URL');
 
   /// Firebase email credential.
   /// In debug mode, uses FirebaseRemoteConfig from service locator.
@@ -61,5 +63,16 @@ class EnvConfig {
       'FIREBASE_PASSWORD is not configured for production. '
       'Provide it via --dart-define=FIREBASE_PASSWORD=... when building for release.',
     );
+  }
+
+  /// APK download URL (GoFile direct link).
+  /// Provided via --dart-define=APK_DOWNLOAD_URL=... at build time from CI/CD.
+  /// Returns null if not configured (optional for debug builds).
+  static String? get apkDownloadUrl {
+    if (_dartDefineApkDownloadUrl.isNotEmpty) {
+      return _dartDefineApkDownloadUrl;
+    }
+    // Return null in debug mode (APK URL not required for development)
+    return null;
   }
 }
