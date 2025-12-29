@@ -1,2 +1,5 @@
 # Python dependencies for GitHub Releases upload script
 PyGithub>=2.1.1,<3.0.0
+
+# Python dependencies for version extraction
+PyYAML>=6.0.0,<7.0.0

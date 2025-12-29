@@ -66,19 +66,37 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # Build Flutter Android APK first (to get the download link)
+      # Build Flutter Android APK
       - name: Build Flutter Android APK
         run: flutter build apk --release
 
-      # Publish APK to GitHub Releases (stable URL)
-      - name: Publish APK to GitHub Releases
+      # Prepare versioned APK files
+      - name: Prepare Versioned APK Files
+        id: prepare_apk
+        run: |
+          python scripts/prepare_apk.py \
+            build/app/outputs/flutter-apk/app-release.apk \
+            --github-output
+
+      # Publish versioned APK to GitHub Releases
+      - name: Publish Versioned APK to GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/upload_to_github_releases.py \
+            "${{ steps.prepare_apk.outputs.versioned_path }}" \
+            --asset-name "${{ steps.prepare_apk.outputs.versioned_name }}" \
+            --github-output
+
+      # Publish stable-name APK to GitHub Releases (stable URL)
+      - name: Publish Stable APK to GitHub Releases
         id: upload_apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python scripts/upload_to_github_releases.py \
-            build/app/outputs/flutter-apk/app-release.apk \
-            --asset-name app-release.apk \
+            "${{ steps.prepare_apk.outputs.stable_path }}" \
+            --asset-name "${{ steps.prepare_apk.outputs.stable_name }}" \
             --github-output
 
       # Build Flutter Web with stable APK download link
