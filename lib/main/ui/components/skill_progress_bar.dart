@@ -45,17 +45,11 @@ class _SkillProgressBarState extends State<SkillProgressBar> {
             children: [
               Text(
                 widget.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               Text(
                 percentString,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                ),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
           ),

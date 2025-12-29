@@ -49,12 +49,14 @@ flutter:
     - assets/img/default.png
     - assets/img/development.jpg
     - assets/icons/android.png
+    - assets/icons/apple-store.png
     - assets/icons/blog.png
     - assets/icons/contact.png
     - assets/icons/facebook.png
     - assets/icons/features.png
     - assets/icons/flutter.png
     - assets/icons/github.png
+    - assets/icons/google-play.png
     - assets/icons/home.png
     - assets/icons/kmp.png
     - assets/icons/linkedin.png

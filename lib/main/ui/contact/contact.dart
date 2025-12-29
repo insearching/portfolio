@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:portfolio/main/data/repository/portfolio_repository.dart';
 import 'package:portfolio/main/di/service_locator.dart';
 import 'package:portfolio/main/domain/model/device_info.dart';
 import 'package:portfolio/main/domain/model/personal_info.dart';
+import 'package:portfolio/main/ui/components/app_download_buttons.dart';
 import 'package:portfolio/main/ui/components/elevated_container.dart';
 import 'package:portfolio/main/ui/components/input_field.dart';
 import 'package:portfolio/main/ui/components/ripple_button.dart';
@@ -63,7 +65,16 @@ class _ContactState extends State<Contact> {
                       onMessageSend: widget.onMessageSend,
                     )
                   ],
-                )
+                ),
+          if (kIsWeb) ...[
+            const SizedBox(height: 48.0),
+            AppDownloadButtons(
+              // TODO: Update these URLs to your actual app store listings
+              appStoreUrl: 'https://apps.apple.com/app/your-app-id',
+              googlePlayUrl:
+                  'https://play.google.com/store/apps/details?id=your.package.name',
+            ),
+          ],
         ],
       ),
     );
