@@ -70,7 +70,7 @@ class _ContactState extends State<Contact> {
           if (kIsWeb) ...[
             const SizedBox(height: 48.0),
             AppDownloadButtons(
-              // APK download URL from CI/CD (GoFile direct link)
+              // APK download URL from CI/CD (GitHub Releases direct link)
               // Set via --dart-define=APK_DOWNLOAD_URL=... at build time
               googlePlayUrl: EnvConfig.apkDownloadUrl,
             ),
