@@ -35,6 +35,33 @@ jobs:
           FIREBASE_PASSWORD: ${{ secrets.FIREBASE_PASSWORD || vars.FIREBASE_PASSWORD }}
         run: flutter build web --dart-define=FIREBASE_EMAIL=$FIREBASE_EMAIL --dart-define=FIREBASE_PASSWORD=$FIREBASE_PASSWORD
 
+      # Build Flutter Android APK
+      - name: Build Flutter Android
+        run: flutter build apk --release
+
+      # Set up Python for upload script
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      # Install Python dependencies
+      - name: Install Python Dependencies
+        run: pip install -r scripts/requirements.txt
+
+      # Upload Android APK to Gofile.io using Python script
+      - name: Upload Android APK to Gofile.io
+        env:
+          GOFILE_TOKEN: ${{ secrets.GOFILE_TOKEN }}
+          GOFILE_ACCOUNT_ID: ${{ secrets.GOFILE_ACCOUNT_ID }}
+        run: |
+          python scripts/upload_to_gofile.py \
+            build/app/outputs/flutter-apk/app-release.apk \
+            --token "$GOFILE_TOKEN" \
+            --account-id "$GOFILE_ACCOUNT_ID" \
+            --github-output
+
       # (Optional) Upload the build artifacts for later use (e.g., deployment)
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
@@ -58,25 +85,3 @@ jobs:
           projectId: serhii-hrabas
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
-
-#      # Decode and set up Firebase service account credentials
-#      - name: Set up Firebase Authentication
-#        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > $HOME/firebase-key.json
-#        env:
-#          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-#
-#        # Deploy to Firebase Hosting
-#      - name: Deploy on Firebase
-#        run: firebase deploy --only hosting
-#        env:
-#           GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json
-
-      # Optional: Use FirebaseExtended Action with service account
-      # - uses: FirebaseExtended/action-hosting-deploy@v0
-      #   with:
-      #     repoToken: ${{ secrets.GITHUB_TOKEN }}
-      #     firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-      #     channelId: live
-      #     projectId: serhii-hrabas-potrfolio
-      #   env:
-      #     FIREBASE_CLI_EXPERIMENTS: webframeworks

@@ -1,237 +1,107 @@
 # Scripts
 
-This directory contains utility scripts for managing the Flutter portfolio project.
+This directory contains utility scripts for the Portfolio project.
 
-## 📋 Available Scripts
+## upload_to_gofile.py
 
-### Version Management
+Python script for uploading APK files to Gofile.io cloud storage.
 
-#### `get_version.py`
+### Features
 
-Python script to extract version information from `pubspec.yaml`.
+- Automatic server selection for optimal upload speed
+- Support for authentication tokens and account IDs
+- Folder organization support
+- GitHub Actions integration
+- Comprehensive error handling
+- JSON output option
 
-**Requirements:**
-```bash
-pip install pyyaml
-```
+### Usage
 
-**Usage:**
-```bash
-# Get Dart SDK version
-python3 scripts/get_version.py dart
-
-# Get app version
-python3 scripts/get_version.py version
-
-# Get app name
-python3 scripts/get_version.py name
-
-# Get any nested value using dot notation
-python3 scripts/get_version.py environment.sdk
-```
-
-**Common Use Cases:**
-- CI/CD pipelines needing to extract versions
-- Build scripts requiring version information
-- Automated release processes
-
-#### `sync_flutter_version.sh`
-
-Bash script to sync `.flutter-version` file from `pubspec.yaml`.
-
-**Usage:**
-```bash
-./scripts/sync_flutter_version.sh
-```
-
-**What it does:**
-- Extracts Flutter/Dart SDK version from `pubspec.yaml`
-- Writes it to `.flutter-version` file
-- Auto-installs PyYAML if missing
-- Validates `pubspec.yaml` exists
-
-**When to use:**
-- After updating `environment.sdk` in `pubspec.yaml`
-- To ensure `.flutter-version` matches `pubspec.yaml`
-
-### Git Hooks
-
-#### `install-hooks.sh`
-
-Installs Git hooks from `scripts/hooks/` to `.git/hooks/`.
-
-**Usage:**
-```bash
-./scripts/install-hooks.sh
-```
-
-**What it does:**
-- Copies all hooks from `scripts/hooks/` to `.git/hooks/`
-- Makes them executable
-- Reports which hooks were installed
-
-**Available Hooks:**
-
-##### `pre-commit`
-
-Validates Dart code formatting before committing.
-
-**What it checks:**
-- Runs `dart format --set-exit-if-changed` on all Dart files
-- Blocks commit if code is not properly formatted
-- Suggests running `dart format .` to fix
-
-**Benefits:**
-- Ensures consistent code style across the team
-- Catches formatting issues early
-- No more "fix formatting" commits
-
-## 🚀 Quick Start
-
-### First-Time Setup
-
-Install Git hooks to enforce code quality:
+#### Command Line
 
 ```bash
-# From project root
-./scripts/install-hooks.sh
+# Basic upload
+python scripts/upload_to_gofile.py path/to/file.apk --token YOUR_TOKEN
+
+# With account ID and folder
+python scripts/upload_to_gofile.py path/to/file.apk \
+  --token YOUR_TOKEN \
+  --account-id YOUR_ACCOUNT_ID \
+  --folder-id FOLDER_ID
+
+# With GitHub Actions output
+python scripts/upload_to_gofile.py path/to/file.apk \
+  --token YOUR_TOKEN \
+  --github-output
+
+# Save result to JSON
+python scripts/upload_to_gofile.py path/to/file.apk \
+  --token YOUR_TOKEN \
+  --output-json result.json
 ```
 
-This will:
-- Install the pre-commit hook to check formatting
-- Ensure all commits have properly formatted code
+#### As a Module
 
-### Version Management
+```python
+from upload_to_gofile import GofileUploader
 
-Check current versions:
+uploader = GofileUploader(
+    token="YOUR_TOKEN",
+    account_id="YOUR_ACCOUNT_ID"
+)
+
+result = uploader.upload_file("path/to/file.apk")
+print(f"Download URL: {result['download_page']}")
+```
+
+### Dependencies
+
+Install dependencies with:
 
 ```bash
-# App version
-python3 scripts/get_version.py version
-
-# Flutter SDK version
-cat .flutter-version
-
-# Dart SDK version
-python3 scripts/get_version.py dart
+pip install -r scripts/requirements.txt
 ```
 
-## 📝 Best Practices
+## test_upload_to_gofile.py
 
-### 1. Always Use Hooks
+Comprehensive unit tests for the upload script.
 
-Install Git hooks immediately after cloning:
+### Running Tests
+
 ```bash
-git clone <repo>
-cd Portfolio
-./scripts/install-hooks.sh
+# Run all tests
+python scripts/test_upload_to_gofile.py
+
+# Or use unittest directly
+python -m unittest scripts/test_upload_to_gofile.py
 ```
 
-### 2. Keep Versions in Sync
+### Test Coverage
 
-After updating Flutter version in `pubspec.yaml`:
-```bash
-# Update environment.sdk in pubspec.yaml
-vim pubspec.yaml
+The test suite includes:
 
-# Sync .flutter-version
-./scripts/sync_flutter_version.sh
+- Server retrieval tests (success, errors, edge cases)
+- File upload tests (success, errors, timeouts)
+- Network error handling
+- Invalid response handling
+- Main function integration tests
+- Custom exception tests
 
-# Commit both files
-git add pubspec.yaml .flutter-version
-git commit -m "chore: update Flutter SDK to 3.40.0"
-```
+**Total: 17 unit tests** covering all major code paths.
 
-### 3. Format Before Committing
+## CI/CD Integration
 
-The pre-commit hook will block unformatted code, so format first:
-```bash
-# Format all Dart files
-dart format .
+The upload script is integrated into the GitHub Actions workflow (`firebase-hosting-merge.yml`) and automatically:
 
-# Or format specific files
-dart format lib/main.dart
+1. Builds the Android APK after the web build
+2. Sets up Python 3.11
+3. Installs dependencies
+4. Uploads the APK to Gofile.io
+5. Outputs the download URL to GitHub Actions logs
 
-# Check what would change without modifying
-dart format --output=none --set-exit-if-changed .
-```
+### Required Secrets
 
-## 🔧 Troubleshooting
+Configure these in GitHub Settings → Secrets and variables → Actions:
 
-### Pre-commit Hook Fails
-
-**Issue:** Commit is blocked with formatting error
-
-**Solution:**
-```bash
-# Format your code
-dart format .
-
-# Stage changes
-git add .
-
-# Commit again
-git commit -m "your message"
-```
-
-### PyYAML Not Installed
-
-**Issue:** `ModuleNotFoundError: No module named 'yaml'`
-
-**Solution:**
-```bash
-pip install pyyaml
-
-# Or use pip3 on some systems
-pip3 install pyyaml
-```
-
-### Script Permission Denied
-
-**Issue:** `Permission denied` when running scripts
-
-**Solution:**
-```bash
-# Make script executable
-chmod +x scripts/install-hooks.sh
-chmod +x scripts/sync_flutter_version.sh
-
-# Then run it
-./scripts/install-hooks.sh
-```
-
-### Hook Not Running
-
-**Issue:** Git hook doesn't seem to run on commit
-
-**Solution:**
-```bash
-# Re-install hooks
-./scripts/install-hooks.sh
-
-# Verify hooks are installed
-ls -la .git/hooks/
-
-# Check hook is executable
-ls -la .git/hooks/pre-commit
-```
-
-## 🆕 Adding New Scripts
-
-When adding a new utility script:
-
-1. **Place it in `scripts/` directory**
-2. **Make it executable**: `chmod +x scripts/your-script.sh`
-3. **Add documentation here** in this README
-4. **Include usage examples**
-5. **Add error handling** for common issues
-6. **Test on both macOS and Linux** if possible
-
-## 📚 Related Documentation
-
-- **[VERSION_MANAGEMENT.md](../VERSION_MANAGEMENT.md)** - Detailed version management guide
-- **[README.md](../README.md)** - Main project documentation
-
----
-
-**Note:** These scripts are designed to work on Unix-based systems (macOS, Linux). For Windows, use Git Bash or WSL.
+- `GOFILE_TOKEN`: Your Gofile.io API token
+- `GOFILE_ACCOUNT_ID`: Your Gofile.io account ID

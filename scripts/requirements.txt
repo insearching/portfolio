@@ -1,0 +1,2 @@
+# Python dependencies for Gofile.io upload script
+requests>=2.31.0,<3.0.0
