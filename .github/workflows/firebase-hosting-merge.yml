@@ -50,12 +50,20 @@ jobs:
       - name: Install Python Dependencies
         run: pip install -r scripts/requirements.txt
 
-      # Upload Android APK to Gofile.io using Python script
+      # Run Python script tests
+      - name: Run Python Script Tests
+        run: |
+          cd scripts
+          python -m unittest discover -s test -p "test_*.py" -v
+        continue-on-error: false
+
+      # Upload Android APK to Gofile.io and extract direct link
       - name: Upload Android APK to Gofile.io
         env:
           GOFILE_TOKEN: ${{ secrets.GOFILE_TOKEN }}
           GOFILE_ACCOUNT_ID: ${{ secrets.GOFILE_ACCOUNT_ID }}
         run: |
+          # Use Python script for reliable direct link extraction
           python scripts/upload_to_gofile.py \
             build/app/outputs/flutter-apk/app-release.apk \
             --token "$GOFILE_TOKEN" \

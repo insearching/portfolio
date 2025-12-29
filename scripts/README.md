@@ -4,41 +4,51 @@ This directory contains utility scripts for the Portfolio project.
 
 ## upload_to_gofile.py
 
-Python script for uploading APK files to Gofile.io cloud storage.
+Python script for uploading files to Gofile.io and **extracting true direct download links** for CI/CD automation.
 
 ### Features
 
+- **Direct link extraction** - Returns binary download URLs (not HTML landing pages)
+- **Format validation** - Enforces `/download/` requirement for automation
+- **HTTP accessibility testing** - Verifies links are downloadable
 - Automatic server selection for optimal upload speed
 - Support for authentication tokens and account IDs
 - Folder organization support
-- GitHub Actions integration
+- GitHub Actions integration with `$GITHUB_OUTPUT`
 - Comprehensive error handling
 - JSON output option
+- CI/CD friendly `--direct-link-only` mode
 
 ### Usage
 
 #### Command Line
 
 ```bash
-# Basic upload
+# Basic upload (full output with direct link)
 python scripts/upload_to_gofile.py path/to/file.apk --token YOUR_TOKEN
 
-# With account ID and folder
+# CI/CD mode - output only the direct link
 python scripts/upload_to_gofile.py path/to/file.apk \
   --token YOUR_TOKEN \
-  --account-id YOUR_ACCOUNT_ID \
-  --folder-id FOLDER_ID
+  --direct-link-only
 
 # With GitHub Actions output
 python scripts/upload_to_gofile.py path/to/file.apk \
   --token YOUR_TOKEN \
   --github-output
 
-# Save result to JSON
+# With all options
 python scripts/upload_to_gofile.py path/to/file.apk \
   --token YOUR_TOKEN \
-  --output-json result.json
+  --account-id YOUR_ACCOUNT_ID \
+  --folder-id FOLDER_ID \
+  --output-json result.json \
+  --github-output
 ```
+
+**Output includes:**
+- Landing Page: `https://gofile.io/d/{code}` (HTML - NOT for automation)
+- **Direct Link: `https://store*.gofile.io/download/web/{fileId}/{filename}`** (for CI/CD)
 
 #### As a Module
 
@@ -62,32 +72,69 @@ Install dependencies with:
 pip install -r scripts/requirements.txt
 ```
 
-## test_upload_to_gofile.py
+## test/
 
-Comprehensive unit tests for the upload script.
+Test suite directory containing all unit tests for Python scripts.
 
 ### Running Tests
 
 ```bash
-# Run all tests
-python scripts/test_upload_to_gofile.py
+# Run all tests from scripts directory
+cd scripts
+python -m unittest discover -s test -p "test_*.py" -v
 
-# Or use unittest directly
-python -m unittest scripts/test_upload_to_gofile.py
+# Run specific test file
+python -m unittest test.test_upload_to_gofile -v
+
+# Run from project root
+python -m unittest discover -s scripts/test -p "test_*.py" -v
 ```
+
+### Test Files
+
+- **`test/test_upload_to_gofile.py`** - Unit tests for `upload_to_gofile.py`
 
 ### Test Coverage
 
-The test suite includes:
+The test suite includes **31 comprehensive unit tests** organized into 8 test classes:
 
-- Server retrieval tests (success, errors, edge cases)
-- File upload tests (success, errors, timeouts)
+#### **TestGofileUploader** (15 tests)
+- Server retrieval (success, errors, edge cases)
+- File upload (success, errors, timeouts)
 - Network error handling
 - Invalid response handling
-- Main function integration tests
-- Custom exception tests
+- File path validation
 
-**Total: 17 unit tests** covering all major code paths.
+#### **TestSetFolderPublic** (3 tests)
+- Successful folder publication
+- Failure handling
+- Exception handling
+
+#### **TestDirectLink** (4 tests)
+- HTTP accessibility testing (200, 302, 404)
+- Network error handling
+- Redirect detection
+
+#### **TestGetDirectLink** (3 tests)
+- API-based extraction
+- Manual URL construction fallback
+- Multiple field name support (link, directLink)
+
+#### **TestDirectLinkValidation** (2 tests)
+- Valid format enforcement
+- Invalid format detection
+
+#### **TestUploadFileIntegration** (2 tests)
+- Complete workflow testing
+- Folder extraction from download page
+
+#### **TestMainFunction** (1 test)
+- CLI integration testing
+
+#### **TestGofileUploadError** (1 test)
+- Custom exception handling
+
+**Total: 31 unit tests** with 100% pass rate ✅
 
 ## CI/CD Integration
 
