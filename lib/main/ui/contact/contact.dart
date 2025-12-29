@@ -72,6 +72,7 @@ class _ContactState extends State<Contact> {
             AppDownloadButtons(
               // APK download URL from CI/CD (GoFile direct link)
               // Set via --dart-define=APK_DOWNLOAD_URL=... at build time
+              appStoreUrl: 'https://apps.apple.com/app/your-app-id',
               googlePlayUrl: EnvConfig.apkDownloadUrl,
             ),
           ],
