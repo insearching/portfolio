@@ -165,7 +165,7 @@ fastlane/
 
 ## CI/CD Integration
 
-The same Fastlane configuration is used in GitHub Actions. See [.github/workflows/ios-testflight.yml](../.github/workflows/ios-testflight.yml) for the CI setup.
+The same Fastlane configuration is used in GitHub Actions. See [.github/workflows/firebase-hosting-merge.yml](../.github/workflows/firebase-hosting-merge.yml) for the CI setup.
 
 ## Resources
 

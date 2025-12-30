@@ -32,7 +32,7 @@ A complete CI/CD pipeline has been implemented for automated iOS builds and Test
 
 ### 2. GitHub Actions Workflow
 
-#### `.github/workflows/ios-testflight.yml`
+#### `.github/workflows/firebase-hosting-merge.yml`
 - Automated workflow with triggers:
   - Push to `develop` branch
   - Manual workflow dispatch
@@ -120,12 +120,12 @@ git push origin develop
 ### Manual Deployment
 ```bash
 # Via GitHub CLI
-gh workflow run ios-testflight.yml \
+gh workflow run firebase-hosting-merge.yml \
   -f changelog="Fixed authentication bug" \
   -f scheme="Runner"
 
 # Or via GitHub web interface:
-# Actions → iOS TestFlight Distribution → Run workflow
+# Actions → Deploy to Firebase Hosting on merge → Run workflow
 ```
 
 ### Local Testing
@@ -226,7 +226,7 @@ Portfolio/
 ├── .gitignore                          # Updated with Fastlane ignores
 ├── .github/
 │   ├── workflows/
-│   │   └── ios-testflight.yml         # GitHub Actions workflow
+│   │   └── firebase-hosting-merge.yml         # GitHub Actions workflow
 │   └── SECRETS_CHECKLIST.md           # Secrets configuration guide
 └── fastlane/
     ├── Fastfile                        # Fastlane lanes
@@ -306,7 +306,7 @@ Portfolio/
 - **Main README**: [README.md](README.md#-ci-testflight-distribution)
 - **Fastlane Setup**: [fastlane/README_SETUP.md](fastlane/README_SETUP.md)
 - **Secrets Guide**: [.github/SECRETS_CHECKLIST.md](.github/SECRETS_CHECKLIST.md)
-- **Workflow File**: [.github/workflows/ios-testflight.yml](.github/workflows/ios-testflight.yml)
+- **Workflow File**: [.github/workflows/firebase-hosting-merge.yml](.github/workflows/firebase-hosting-merge.yml)
 
 ## 🔄 Maintenance
 

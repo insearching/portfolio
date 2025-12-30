@@ -720,7 +720,7 @@ You can also trigger the workflow manually with custom parameters:
 
 1. Go to your GitHub repository
 2. Click **Actions** tab
-3. Select **iOS TestFlight Distribution** workflow
+3. Select **Deploy to Firebase Hosting on merge** workflow
 4. Click **Run workflow** button
 5. (Optional) Enter custom **Release notes**
 6. (Optional) Override the **Scheme** name (default: `Runner`)
@@ -729,14 +729,14 @@ You can also trigger the workflow manually with custom parameters:
 **Via GitHub CLI:**
 ```bash
 # With default changelog
-gh workflow run ios-testflight.yml
+gh workflow run firebase-hosting-merge.yml
 
 # With custom changelog
-gh workflow run ios-testflight.yml \
+gh workflow run firebase-hosting-merge.yml \
   -f changelog="Fixed critical bug in authentication flow"
 
 # With custom scheme
-gh workflow run ios-testflight.yml \
+gh workflow run firebase-hosting-merge.yml \
   -f scheme="Runner" \
   -f changelog="Performance improvements and bug fixes"
 ```
@@ -745,7 +745,7 @@ gh workflow run ios-testflight.yml \
 
 **In GitHub Actions:**
 - Go to **Actions** tab in your repository
-- Click on the latest **iOS TestFlight Distribution** workflow run
+- Click on the latest **Deploy to Firebase Hosting on merge** workflow run
 - Monitor real-time logs for each step
 - Download build artifacts (IPA, dSYM) from the workflow run
 

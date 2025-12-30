@@ -136,14 +136,14 @@ git push origin develop
 
 ### Option B: Manual trigger via GitHub
 1. Go to **Actions** tab
-2. Click **iOS TestFlight Distribution**
+2. Click **Deploy to Firebase Hosting on merge**
 3. Click **Run workflow**
 4. Enter changelog (optional)
 5. Click **Run workflow**
 
 ### Option C: Via GitHub CLI
 ```bash
-gh workflow run ios-testflight.yml \
+gh workflow run firebase-hosting-merge.yml \
   -f changelog="First automated TestFlight build"
 ```
 

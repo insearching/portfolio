@@ -125,7 +125,7 @@ Test the configuration by manually triggering the workflow:
 
 ```bash
 # Via GitHub CLI
-gh workflow run ios-testflight.yml
+gh workflow run firebase-hosting-merge.yml
 
 # Or via GitHub web interface:
 # Actions tab → iOS TestFlight Distribution → Run workflow
