@@ -573,6 +573,298 @@ flutter build web --dart-define-from-file=.env
 flutter build web --dart-define=FIREBASE_EMAIL=admin@example.com
 ```
 
+## 🚀 CI TestFlight Distribution
+
+This project includes automated CI/CD pipeline for distributing iOS builds to TestFlight using GitHub Actions and Fastlane.
+
+### Overview
+
+The CI pipeline automatically:
+1. Builds and signs the iOS app on push to `develop` branch
+2. Uploads the build to TestFlight via App Store Connect API
+3. Supports manual workflow dispatch with custom release notes
+4. Provides a stable public TestFlight link for long-term distribution
+
+### Required GitHub Secrets
+
+You must configure the following secrets in your GitHub repository (`Settings` → `Secrets and variables` → `Actions` → `New repository secret`):
+
+#### App Store Connect API Key
+
+| Secret Name | Description | How to Obtain |
+|------------|-------------|---------------|
+| `APP_STORE_CONNECT_KEY_ID` | API Key ID (e.g., `AB12CD34EF`) | App Store Connect → Users and Access → Keys |
+| `APP_STORE_CONNECT_ISSUER_ID` | Issuer ID (UUID format) | App Store Connect → Users and Access → Keys (top right) |
+| `APP_STORE_CONNECT_KEY_P8` | Private key content (`.p8` file) | Download when creating the key (only shown once!) |
+
+**Creating App Store Connect API Key:**
+
+1. Go to [App Store Connect](https://appstoreconnect.apple.com/)
+2. Navigate to **Users and Access** → **Keys** tab (under Integrations)
+3. Click **Generate API Key** or **+** button
+4. Enter a name (e.g., "GitHub Actions CI")
+5. Select **Access**: Choose **App Manager** or **Developer** role
+6. Click **Generate**
+7. **Important**: Download the `.p8` file immediately - you cannot download it again!
+8. Copy the **Key ID** and **Issuer ID** from the page
+
+**Adding the P8 key to GitHub:**
+```bash
+# On macOS/Linux, copy the entire content of the .p8 file:
+cat AuthKey_AB12CD34EF.p8 | pbcopy  # macOS
+cat AuthKey_AB12CD34EF.p8           # Linux (copy manually)
+
+# Then paste it as the APP_STORE_CONNECT_KEY_P8 secret value in GitHub
+```
+
+#### Code Signing Certificates
+
+| Secret Name | Description | How to Obtain |
+|------------|-------------|---------------|
+| `IOS_DISTRIBUTION_CERT_BASE64` | Base64-encoded distribution certificate (`.p12`) | Export from Xcode or Keychain Access |
+| `IOS_DISTRIBUTION_CERT_PASSWORD` | Password for the `.p12` certificate | Set when exporting the certificate |
+
+**Exporting Distribution Certificate:**
+
+1. **Option A: From Xcode**
+   - Open Xcode → Preferences → Accounts
+   - Select your Apple ID → Select Team → Manage Certificates
+   - Right-click **Apple Distribution** certificate → Export
+   - Save as `.p12` and set a password
+   - Convert to base64:
+     ```bash
+     base64 -i distribution_certificate.p12 | pbcopy  # macOS
+     base64 -w 0 distribution_certificate.p12         # Linux
+     ```
+
+2. **Option B: From Keychain Access** (macOS)
+   - Open **Keychain Access** app
+   - Select **login** keychain → **My Certificates**
+   - Find your **Apple Distribution** certificate
+   - Right-click → Export "Apple Distribution: ..."
+   - Save as `.p12` format with a password
+   - Convert to base64:
+     ```bash
+     base64 -i YourCertificate.p12 | pbcopy
+     ```
+
+#### Provisioning Profile
+
+| Secret Name | Description | How to Obtain |
+|------------|-------------|---------------|
+| `IOS_PROVISION_PROFILE_BASE64` | Base64-encoded provisioning profile (`.mobileprovision`) | Apple Developer Portal |
+
+**Creating and Exporting Provisioning Profile:**
+
+1. Go to [Apple Developer Portal](https://developer.apple.com/account/resources/profiles/list)
+2. Click **+** to create a new profile
+3. Select **App Store** distribution type
+4. Select your **App ID** (`com.insearching.portfolio`)
+5. Select your **Distribution Certificate**
+6. Enter a name (e.g., "Portfolio AppStore")
+7. Click **Generate** and download the `.mobileprovision` file
+8. Convert to base64:
+   ```bash
+   base64 -i Portfolio_AppStore.mobileprovision | pbcopy  # macOS
+   base64 -w 0 Portfolio_AppStore.mobileprovision         # Linux
+   ```
+
+#### Optional Secrets
+
+| Secret Name | Description | Default |
+|------------|-------------|---------|
+| `KEYCHAIN_PASSWORD` | Password for temporary keychain in CI | Auto-generated UUID |
+
+### Setting Up TestFlight Public Link
+
+After your first successful build is uploaded and processed:
+
+1. Go to [App Store Connect](https://appstoreconnect.apple.com/)
+2. Select your app → **TestFlight** tab
+3. In the left sidebar, under **External Testing**, click on a group or create a new one
+4. Click **Add Build** and select your uploaded build
+5. Fill in the **Test Details** (What to Test)
+6. Click **Submit for Review** (first time only - required for external testing)
+7. Once approved, click **Public Link** in the group
+8. Click **Enable Public Link**
+9. Choose **Open to Anyone** or configure filters
+10. Copy the public link (format: `https://testflight.apple.com/join/XXXXXXXX`)
+
+**Important Notes:**
+- The public link remains stable across builds
+- Users can install new builds automatically through TestFlight
+- Each build expires after 90 days, but the link doesn't
+- You must keep uploading new builds to maintain availability
+- External testing requires Apple's review for the first build only
+
+### Running the Workflow
+
+#### Automatic Trigger
+
+The workflow automatically runs when you push to `develop` branch and changes include:
+- iOS code (`ios/**`)
+- Flutter code (`lib/**`)
+- Dependencies (`pubspec.yaml`, `pubspec.lock`)
+- Workflow or Fastlane files
+
+```bash
+git checkout develop
+git add .
+git commit -m "feat: Add new feature for iOS"
+git push origin develop
+```
+
+#### Manual Trigger
+
+You can also trigger the workflow manually with custom parameters:
+
+1. Go to your GitHub repository
+2. Click **Actions** tab
+3. Select **iOS TestFlight Distribution** workflow
+4. Click **Run workflow** button
+5. (Optional) Enter custom **Release notes**
+6. (Optional) Override the **Scheme** name (default: `Runner`)
+7. Click **Run workflow**
+
+**Via GitHub CLI:**
+```bash
+# With default changelog
+gh workflow run ios-testflight.yml
+
+# With custom changelog
+gh workflow run ios-testflight.yml \
+  -f changelog="Fixed critical bug in authentication flow"
+
+# With custom scheme
+gh workflow run ios-testflight.yml \
+  -f scheme="Runner" \
+  -f changelog="Performance improvements and bug fixes"
+```
+
+### Monitoring Builds
+
+**In GitHub Actions:**
+- Go to **Actions** tab in your repository
+- Click on the latest **iOS TestFlight Distribution** workflow run
+- Monitor real-time logs for each step
+- Download build artifacts (IPA, dSYM) from the workflow run
+
+**In App Store Connect:**
+1. Go to [App Store Connect](https://appstoreconnect.apple.com/)
+2. Select your app → **TestFlight** tab
+3. Check **iOS** builds section
+4. Wait for Apple to process the build (typically 5-15 minutes)
+5. Once status shows ✅, the build is ready for testing
+
+### Troubleshooting
+
+#### Build fails with "No signing certificate found"
+
+**Solution:**
+- Verify `IOS_DISTRIBUTION_CERT_BASE64` is correctly base64-encoded
+- Ensure `IOS_DISTRIBUTION_CERT_PASSWORD` matches the certificate password
+- Check that the certificate is a **Distribution** certificate (not Development)
+- Verify the certificate hasn't expired in Apple Developer Portal
+
+#### Build fails with "No matching provisioning profile found"
+
+**Solution:**
+- Ensure `IOS_PROVISION_PROFILE_BASE64` is correctly base64-encoded
+- Verify the provisioning profile:
+  - Type is **App Store** (not Ad Hoc or Development)
+  - App ID matches `com.insearching.portfolio`
+  - Certificate matches your distribution certificate
+  - Profile hasn't expired
+- Re-download and re-encode the provisioning profile if needed
+
+#### Upload fails with "Invalid API Key"
+
+**Solution:**
+- Verify all three API key secrets are correct:
+  - `APP_STORE_CONNECT_KEY_ID`
+  - `APP_STORE_CONNECT_ISSUER_ID`
+  - `APP_STORE_CONNECT_KEY_P8` (must be complete `.p8` file content)
+- Ensure the API key has **App Manager** or **Developer** access
+- Check the API key hasn't been revoked in App Store Connect
+
+#### Build succeeds but doesn't appear in TestFlight
+
+**Common reasons:**
+- Apple is still processing the build (wait 5-15 minutes)
+- Build has the same version/build number as existing build
+- Build was uploaded but needs compliance information
+- Check email for messages from Apple about the build
+
+**Solution:**
+- Increment version or build number in `pubspec.yaml`:
+  ```yaml
+  version: 1.0.1+2  # Increment build number (+2)
+  ```
+- Check App Store Connect for any required compliance responses
+- Verify App Store Connect API key has proper permissions
+
+#### "Missing compliance" or export restrictions
+
+If Apple asks about encryption:
+- Most apps need to add `ITSAppUsesNonExemptEncryption = NO` to `Info.plist`
+- Or respond to the compliance questions in App Store Connect
+
+### Local Testing
+
+Test the Fastlane setup locally before pushing to CI:
+
+```bash
+# Install dependencies
+bundle install
+
+# Set environment variables (create a .env.local file)
+export APP_STORE_CONNECT_KEY_ID="your_key_id"
+export APP_STORE_CONNECT_ISSUER_ID="your_issuer_id"
+export APP_STORE_CONNECT_KEY_P8="$(cat path/to/AuthKey_XXXXXX.p8)"
+export IOS_WORKSPACE="$(pwd)/ios/Runner.xcworkspace"
+export IOS_SCHEME="Runner"
+export CHANGELOG="Test build from local machine"
+
+# Run build only (no upload)
+bundle exec fastlane ios build_only
+
+# Run full beta lane (build + upload)
+bundle exec fastlane ios beta
+```
+
+### Security Best Practices
+
+✅ **Do:**
+- Store all sensitive data in GitHub Secrets
+- Use App Store Connect API key (avoids 2FA issues)
+- Regularly rotate certificates and provisioning profiles
+- Use strong passwords for certificate `.p12` files
+- Enable branch protection on `develop` branch
+
+❌ **Don't:**
+- Commit certificates, provisioning profiles, or API keys to the repository
+- Share API keys or certificates publicly
+- Use personal Apple ID credentials in CI
+- Store secrets in code or configuration files
+
+### Workflow Features
+
+- ✅ **Automatic code signing** with temporary keychain
+- ✅ **App Store Connect API** authentication (no 2FA required)
+- ✅ **Build artifacts** uploaded to GitHub (IPA, dSYM)
+- ✅ **Automatic cleanup** of sensitive files
+- ✅ **Detailed logging** and error messages
+- ✅ **Job summaries** with next steps
+- ✅ **Configurable** via workflow inputs
+- ✅ **Caching** for Ruby gems and Flutter SDK
+
+### Cost Considerations
+
+- GitHub Actions provides **2,000 free macOS minutes/month** for private repositories
+- Each build typically takes **15-25 minutes**
+- Monitor usage in **Settings** → **Billing** → **Actions usage**
+- Consider triggering builds only on significant changes
+
 ## 🤝 Contributing
 
 When contributing to this project:
@@ -600,9 +892,16 @@ flutter test
 
 This project includes detailed documentation for specific topics:
 
+### Core Documentation
 - **[CRASHLYTICS_SETUP.md](CRASHLYTICS_SETUP.md)**: Firebase Crashlytics integration for error tracking
 - **[VERSION_MANAGEMENT.md](VERSION_MANAGEMENT.md)**: Managing Flutter SDK and app versions
 - **[scripts/README.md](scripts/README.md)**: Utility scripts for Firebase data management
+
+### iOS TestFlight CI/CD
+- **[QUICKSTART_TESTFLIGHT.md](QUICKSTART_TESTFLIGHT.md)**: ⚡ Quick start guide (30 minutes to first build!)
+- **[IOS_TESTFLIGHT_SETUP.md](IOS_TESTFLIGHT_SETUP.md)**: Complete implementation details and reference
+- **[.github/SECRETS_CHECKLIST.md](.github/SECRETS_CHECKLIST.md)**: GitHub secrets configuration checklist
+- **[fastlane/README_SETUP.md](fastlane/README_SETUP.md)**: Local Fastlane setup and testing guide
 
 ## 📞 Contact
 

@@ -50,3 +50,20 @@ app.*.map.json
 
 # Firebase credentials are now in .env file (gitignored above)
 # The debug_firebase_remote_config.dart is now safe to commit (uses dart-define)
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+fastlane/README.md
+private_keys/
+*.cer
+*.p12
+*.mobileprovision
+*.dSYM.zip
+
+# Bundler
+.bundle/
+vendor/bundle/
+Gemfile.lock

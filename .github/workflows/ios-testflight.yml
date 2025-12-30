@@ -1,0 +1,238 @@
+name: iOS TestFlight Distribution
+
+on:
+  # Trigger on pushes to develop branch
+  push:
+    branches:
+      - develop
+    paths:
+      - 'ios/**'
+      - 'lib/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/ios-testflight.yml'
+      - 'fastlane/**'
+  
+  # Allow manual workflow dispatch
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: 'Release notes for TestFlight'
+        required: false
+        default: 'Bug fixes and performance improvements'
+      scheme:
+        description: 'Xcode scheme (default: Runner)'
+        required: false
+        default: 'Runner'
+
+jobs:
+  build-and-deploy:
+    name: Build and Upload to TestFlight
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true # Automatically runs bundle install and caches gems
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.4'
+          channel: 'stable'
+          cache: true
+
+      - name: Verify Flutter installation
+        run: |
+          flutter --version
+          flutter doctor -v
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Install CocoaPods dependencies
+        working-directory: ios
+        run: |
+          pod install --repo-update
+          pod --version
+
+      - name: Create temporary keychain
+        env:
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # Generate keychain password if not provided
+          KEYCHAIN_PWD="${KEYCHAIN_PASSWORD:-$(uuidgen)}"
+          KEYCHAIN_NAME="build.keychain"
+          KEYCHAIN_PATH="$HOME/Library/Keychains/$KEYCHAIN_NAME-db"
+          
+          echo "KEYCHAIN_NAME=$KEYCHAIN_NAME" >> $GITHUB_ENV
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> $GITHUB_ENV
+          echo "KEYCHAIN_PWD=$KEYCHAIN_PWD" >> $GITHUB_ENV
+          
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
+          
+          # Set keychain settings
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_NAME"
+          
+          # Unlock keychain
+          security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
+          
+          # Add to search list
+          security list-keychains -d user -s "$KEYCHAIN_NAME" login.keychain
+          
+          # Set default keychain
+          security default-keychain -s "$KEYCHAIN_NAME"
+          
+          echo "✅ Temporary keychain created and configured"
+
+      - name: Import signing certificate
+        env:
+          IOS_DISTRIBUTION_CERT_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERT_BASE64 }}
+          IOS_DISTRIBUTION_CERT_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
+        run: |
+          set -euo pipefail
+          
+          # Decode certificate
+          CERT_PATH="$RUNNER_TEMP/certificate.p12"
+          echo "$IOS_DISTRIBUTION_CERT_BASE64" | base64 --decode > "$CERT_PATH"
+          
+          # Import certificate to keychain
+          security import "$CERT_PATH" \
+            -k "$KEYCHAIN_NAME" \
+            -P "$IOS_DISTRIBUTION_CERT_PASSWORD" \
+            -T /usr/bin/codesign \
+            -T /usr/bin/security
+          
+          # Set key partition list (required for codesigning)
+          security set-key-partition-list \
+            -S apple-tool:,apple: \
+            -s \
+            -k "$KEYCHAIN_PWD" \
+            "$KEYCHAIN_NAME"
+          
+          # Verify certificate
+          security find-identity -v -p codesigning "$KEYCHAIN_NAME"
+          
+          echo "✅ Certificate imported successfully"
+
+      - name: Install provisioning profile
+        env:
+          IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+        run: |
+          set -euo pipefail
+          
+          # Create provisioning profiles directory
+          PP_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+          mkdir -p "$PP_DIR"
+          
+          # Decode and install provisioning profile
+          PP_PATH="$PP_DIR/profile.mobileprovision"
+          echo "$IOS_PROVISION_PROFILE_BASE64" | base64 --decode > "$PP_PATH"
+          
+          # Verify provisioning profile
+          if security cms -D -i "$PP_PATH" > /dev/null 2>&1; then
+            echo "✅ Provisioning profile installed successfully"
+            
+            # Extract UUID and save to environment
+            PP_UUID=$(security cms -D -i "$PP_PATH" | plutil -extract UUID raw -)
+            echo "PROVISIONING_PROFILE_UUID=$PP_UUID" >> $GITHUB_ENV
+            echo "Provisioning Profile UUID: $PP_UUID"
+          else
+            echo "❌ Invalid provisioning profile"
+            exit 1
+          fi
+
+      - name: Build and upload to TestFlight
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_P8: ${{ secrets.APP_STORE_CONNECT_KEY_P8 }}
+          IOS_WORKSPACE: ${{ github.workspace }}/ios/Runner.xcworkspace
+          IOS_SCHEME: ${{ github.event.inputs.scheme || 'Runner' }}
+          CHANGELOG: ${{ github.event.inputs.changelog || github.event.head_commit.message || 'Bug fixes and performance improvements' }}
+          PRODUCT_BUNDLE_IDENTIFIER: "com.insearching.portfolio"
+          PROVISIONING_PROFILE_SPECIFIER: "Portfolio AppStore"
+        run: |
+          set -euo pipefail
+          
+          echo "📦 Building and uploading to TestFlight..."
+          echo "Workspace: $IOS_WORKSPACE"
+          echo "Scheme: $IOS_SCHEME"
+          echo "Changelog: $CHANGELOG"
+          
+          # Run fastlane beta lane
+          bundle exec fastlane ios beta
+          
+          echo "✅ Build and upload completed successfully!"
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-artifacts
+          path: |
+            build/*.ipa
+            build/*.dSYM.zip
+            fastlane/report.xml
+            fastlane/test_output
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Cleanup keychain
+        if: always()
+        run: |
+          if [ -n "${KEYCHAIN_NAME:-}" ]; then
+            security delete-keychain "$KEYCHAIN_NAME" || true
+            echo "✅ Temporary keychain deleted"
+          fi
+
+      - name: Cleanup temporary files
+        if: always()
+        run: |
+          rm -rf "$RUNNER_TEMP/certificate.p12" || true
+          rm -rf build/ || true
+          rm -rf private_keys/ || true
+          echo "✅ Temporary files cleaned up"
+
+      - name: Job summary
+        if: success()
+        run: |
+          echo "## ✅ iOS TestFlight Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The app has been successfully uploaded to TestFlight." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to [App Store Connect](https://appstoreconnect.apple.com/)" >> $GITHUB_STEP_SUMMARY
+          echo "2. Navigate to your app → TestFlight tab" >> $GITHUB_STEP_SUMMARY
+          echo "3. Wait for Apple to process the build (typically 5-15 minutes)" >> $GITHUB_STEP_SUMMARY
+          echo "4. Once processed, add the build to your External Testing group" >> $GITHUB_STEP_SUMMARY
+          echo "5. Share the public TestFlight link with testers" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Info:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Scheme: ${{ github.event.inputs.scheme || 'Runner' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Changelog: ${{ github.event.inputs.changelog || github.event.head_commit.message || 'Bug fixes and performance improvements' }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Job summary on failure
+        if: failure()
+        run: |
+          echo "## ❌ iOS TestFlight Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The build or upload to TestFlight failed. Please check the logs above for details." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Common Issues:" >> $GITHUB_STEP_SUMMARY
+          echo "- **Certificate issues**: Verify that IOS_DISTRIBUTION_CERT_BASE64 and IOS_DISTRIBUTION_CERT_PASSWORD are correct" >> $GITHUB_STEP_SUMMARY
+          echo "- **Provisioning profile**: Ensure IOS_PROVISION_PROFILE_BASE64 matches your app identifier and certificate" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Key**: Check APP_STORE_CONNECT_KEY_ID, APP_STORE_CONNECT_ISSUER_ID, and APP_STORE_CONNECT_KEY_P8" >> $GITHUB_STEP_SUMMARY
+          echo "- **Xcode version**: Make sure the Xcode version supports your Flutter/iOS version" >> $GITHUB_STEP_SUMMARY

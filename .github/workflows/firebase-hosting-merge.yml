@@ -6,6 +6,22 @@ on:
   push:
     branches:
       - develop
+  # Allow manual trigger for iOS builds
+  workflow_dispatch:
+    inputs:
+      build_ios:
+        description: 'Build and upload iOS to TestFlight'
+        required: false
+        type: boolean
+        default: false
+      ios_changelog:
+        description: 'iOS release notes for TestFlight'
+        required: false
+        default: 'Bug fixes and performance improvements'
+      ios_scheme:
+        description: 'Xcode scheme (default: Runner)'
+        required: false
+        default: 'Runner'
 
 permissions:
   contents: write
@@ -132,3 +148,143 @@ jobs:
           projectId: serhii-hrabas
           target: serhii-hrabas
           entryPoint: ./
+
+  # iOS TestFlight deployment (manual trigger only)
+  ios_testflight:
+    name: Build and Upload iOS to TestFlight
+    runs-on: macos-latest
+    # Only run if manually triggered with build_ios=true
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.build_ios == 'true'
+    timeout-minutes: 60
+    needs: build_and_deploy  # Wait for web deployment to complete
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.38.4'
+          channel: 'stable'
+          cache: true
+
+      - name: Verify Flutter installation
+        run: |
+          flutter --version
+          flutter doctor -v
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Setup Python for iOS scripts
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Install CocoaPods dependencies
+        working-directory: ios
+        run: |
+          pod install --repo-update
+          pod --version
+
+      - name: Create temporary keychain
+        env:
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          python scripts/ios_keychain.py create \
+            --password "${KEYCHAIN_PASSWORD:-}"
+
+      - name: Import signing certificate
+        env:
+          IOS_DISTRIBUTION_CERT_BASE64: ${{ secrets.IOS_DISTRIBUTION_CERT_BASE64 }}
+          IOS_DISTRIBUTION_CERT_PASSWORD: ${{ secrets.IOS_DISTRIBUTION_CERT_PASSWORD }}
+        run: |
+          python scripts/ios_certificate.py install \
+            --cert-base64 "$IOS_DISTRIBUTION_CERT_BASE64" \
+            --cert-password "$IOS_DISTRIBUTION_CERT_PASSWORD"
+
+      - name: Install provisioning profile
+        env:
+          IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+        run: |
+          python scripts/ios_provision.py install \
+            --profile-base64 "$IOS_PROVISION_PROFILE_BASE64"
+
+      - name: Validate iOS build environment
+        run: |
+          python scripts/ios_validate.py \
+            --workspace ios/Runner.xcworkspace \
+            --scheme "${{ github.event.inputs.ios_scheme || 'Runner' }}"
+
+      - name: Build and upload to TestFlight
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY_P8: ${{ secrets.APP_STORE_CONNECT_KEY_P8 }}
+          IOS_WORKSPACE: ${{ github.workspace }}/ios/Runner.xcworkspace
+          IOS_SCHEME: ${{ github.event.inputs.ios_scheme || 'Runner' }}
+          CHANGELOG: ${{ github.event.inputs.ios_changelog || 'Bug fixes and performance improvements' }}
+          PRODUCT_BUNDLE_IDENTIFIER: "com.insearching.portfolio"
+          PROVISIONING_PROFILE_SPECIFIER: "Portfolio AppStore"
+        run: |
+          echo "📦 Building and uploading to TestFlight..."
+          bundle exec fastlane ios beta
+
+      - name: Upload build artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build-artifacts
+          path: |
+            build/*.ipa
+            build/*.dSYM.zip
+            fastlane/report.xml
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Cleanup keychain
+        if: always()
+        run: |
+          python scripts/ios_keychain.py cleanup || true
+
+      - name: Cleanup temporary files
+        if: always()
+        run: |
+          python scripts/ios_certificate.py cleanup || true
+          python scripts/ios_provision.py cleanup || true
+
+      - name: iOS Job Summary
+        if: success()
+        run: |
+          echo "## ✅ iOS TestFlight Build Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The app has been successfully uploaded to TestFlight." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Info:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Scheme: ${{ github.event.inputs.ios_scheme || 'Runner' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Changelog: ${{ github.event.inputs.ios_changelog }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check [App Store Connect](https://appstoreconnect.apple.com/) for build status." >> $GITHUB_STEP_SUMMARY
+
+      - name: iOS Job Summary on Failure
+        if: failure()
+        run: |
+          echo "## ❌ iOS TestFlight Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the logs above for details." >> $GITHUB_STEP_SUMMARY

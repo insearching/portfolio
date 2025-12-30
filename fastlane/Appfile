@@ -1,0 +1,11 @@
+# Appfile for Portfolio iOS App
+# App identifier and Apple ID configuration for fastlane
+
+# Your app's bundle identifier
+app_identifier("com.insearching.portfolio")
+
+# Your Apple Developer Portal Team ID (optional, can be set via environment variable)
+# team_id("YOUR_TEAM_ID") # Uncomment and set if needed
+
+# Note: We use App Store Connect API Key for authentication instead of Apple ID
+# This avoids 2FA issues in CI/CD environments

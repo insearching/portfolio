@@ -1,0 +1,126 @@
+# Fastfile for Portfolio iOS TestFlight Distribution
+# This file contains lanes for building and distributing the iOS app
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    # Validate required environment variables
+    validate_environment_variables
+
+    # Configure App Store Connect API Key
+    api_key = configure_app_store_connect_api_key
+
+    # Build the iOS app
+    build_ios_app(
+      workspace: ENV["IOS_WORKSPACE"],
+      scheme: ENV["IOS_SCHEME"] || "Runner",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "Portfolio.ipa",
+      clean: true,
+      export_options: {
+        provisioningProfiles: {
+          ENV["PRODUCT_BUNDLE_IDENTIFIER"] || "com.insearching.portfolio" => ENV["PROVISIONING_PROFILE_SPECIFIER"] || "Portfolio AppStore"
+        }
+      }
+    )
+
+    # Upload to TestFlight
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: "./build/Portfolio.ipa",
+      skip_waiting_for_build_processing: true,
+      skip_submission: true,
+      changelog: ENV["CHANGELOG"] || "Bug fixes and performance improvements",
+      distribute_external: false,  # Set to true when ready for external testing
+      notify_external_testers: false
+    )
+
+    UI.success("✅ Successfully uploaded to TestFlight!")
+  end
+
+  # Helper method to validate required environment variables
+  private_lane :validate_environment_variables do
+    required_vars = [
+      "APP_STORE_CONNECT_KEY_ID",
+      "APP_STORE_CONNECT_ISSUER_ID",
+      "APP_STORE_CONNECT_KEY_P8",
+      "IOS_WORKSPACE"
+    ]
+
+    missing_vars = required_vars.select { |var| ENV[var].nil? || ENV[var].empty? }
+
+    unless missing_vars.empty?
+      UI.user_error!("❌ Missing required environment variables: #{missing_vars.join(', ')}")
+    end
+
+    UI.message("✅ All required environment variables are present")
+  end
+
+  # Helper method to configure App Store Connect API Key
+  private_lane :configure_app_store_connect_api_key do
+    key_content = ENV["APP_STORE_CONNECT_KEY_P8"]
+    key_id = ENV["APP_STORE_CONNECT_KEY_ID"]
+    issuer_id = ENV["APP_STORE_CONNECT_ISSUER_ID"]
+
+    # Create a temporary directory for the key file
+    key_dir = "./private_keys"
+    FileUtils.mkdir_p(key_dir)
+    key_path = File.join(key_dir, "AuthKey_#{key_id}.p8")
+
+    # Write the key content to a file
+    File.write(key_path, key_content)
+
+    # Configure the API key
+    api_key = app_store_connect_api_key(
+      key_id: key_id,
+      issuer_id: issuer_id,
+      key_filepath: key_path,
+      duration: 1200, # 20 minutes
+      in_house: false
+    )
+
+    UI.message("✅ Configured App Store Connect API Key")
+    
+    api_key
+  end
+
+  # Optional: Lane for building only (without uploading)
+  desc "Build iOS app for TestFlight (no upload)"
+  lane :build_only do
+    validate_environment_variables
+
+    build_ios_app(
+      workspace: ENV["IOS_WORKSPACE"],
+      scheme: ENV["IOS_SCHEME"] || "Runner",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "Portfolio.ipa",
+      clean: true
+    )
+
+    UI.success("✅ Build completed successfully!")
+  end
+
+  # Error handling
+  error do |lane, exception|
+    UI.error("❌ Error in lane '#{lane}': #{exception.message}")
+    
+    # Clean up temporary key file
+    key_dir = "./private_keys"
+    FileUtils.rm_rf(key_dir) if File.directory?(key_dir)
+  end
+
+  # Cleanup after successful run
+  after_all do |lane|
+    # Clean up temporary key file
+    key_dir = "./private_keys"
+    FileUtils.rm_rf(key_dir) if File.directory?(key_dir)
+    
+    UI.success("✨ Cleaned up temporary files")
+  end
+end
